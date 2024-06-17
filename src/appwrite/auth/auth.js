@@ -24,8 +24,6 @@ class AuthService {
 
             if (user) {
                 return user;
-            } else {
-                throw new Error("Falied to create user account");
             }
         } catch (error) {
             console.log("Appwrite Service :: createAccount :: error ", error);
@@ -38,8 +36,6 @@ class AuthService {
 
             if (currentUser) {
                 return currentUser;
-            } else {
-                throw new Error("Failed to get current User");
             }
         } catch (error) {
             console.log("Appwrite Service :: getCurrentUser :: error ", error);
