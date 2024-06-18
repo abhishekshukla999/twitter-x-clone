@@ -15,15 +15,15 @@ class AuthService {
 
     async createAccount({ email, password, name }) {
         try {
-            const user = await this.account.create(
+            const userAccount = await this.account.create(
                 ID.unique(),
                 email,
                 password,
                 name
             );
 
-            if (user) {
-                return user;
+            if (userAccount) {
+                return await this.login({ email, password });
             }
         } catch (error) {
             console.log("Appwrite Service :: createAccount :: error ", error);
@@ -32,11 +32,7 @@ class AuthService {
 
     async getCurrentUser() {
         try {
-            const currentUser = await this.account.get();
-
-            if (currentUser) {
-                return currentUser;
-            }
+            return await this.account.get();
         } catch (error) {
             console.log("Appwrite Service :: getCurrentUser :: error ", error);
         }

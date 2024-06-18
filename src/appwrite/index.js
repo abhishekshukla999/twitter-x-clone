@@ -1,3 +1,4 @@
 import authService from "./auth/auth";
+import profileService from "./db/profile";
 
-export { authService };
+export { authService, profileService };
