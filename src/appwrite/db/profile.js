@@ -4,7 +4,6 @@ import { config } from "../../config/config";
 class ProfileService {
     client = new Client();
     databases;
-    storage;
 
     constructor() {
         this.client
@@ -12,7 +11,6 @@ class ProfileService {
             .setProject(config.appwriteProjectId);
 
         this.databases = new Databases(this.client);
-        this.storage = new Storage(this.client);
     }
 
     // userId to match id created during auth and userId stored in profile collection should be same
@@ -24,7 +22,7 @@ class ProfileService {
             const profile = await this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
-                ID.unique(),
+                userId,
                 { userId, username, email, name, dob, ...rest }
             );
 
@@ -36,12 +34,13 @@ class ProfileService {
         }
     }
 
-    async getProfile({ docId }) {
+    async getProfile(userId) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
-                docId,
+                userId
+
                 // [
                 //     Query.and([
                 //         Query.equal("status", true),

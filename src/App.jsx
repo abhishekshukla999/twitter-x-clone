@@ -1,9 +1,9 @@
-import { Login, Signup } from "./components";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./features/auth/authSlice";
 import authService from "./appwrite/auth/auth";
-import { useEffect, useState } from "react";
-import { Entry, Modal } from "./components";
+import { useEffect } from "react";
+import { Entry, LogoutButton } from "./components";
+import { Link, Outlet } from "react-router-dom";
 
 function App() {
     const dispatch = useDispatch();
@@ -19,19 +19,17 @@ function App() {
         });
     }, []);
 
-    const authLogout = () => {
-        authService.logout().then(() => dispatch(logout()));
-    };
-
     return (
         <>
             <div className="bg-gray-400 h-screen text-center">
                 <h1>Twitter App</h1>
 
                 <Entry />
+                {status && <LogoutButton />}
 
-                {status && <button onClick={authLogout}>Logout</button>}
-                {}
+                <Link to="/profile">Profile</Link>
+                <Link to="/">Home</Link>
+                <Outlet />
             </div>
         </>
     );

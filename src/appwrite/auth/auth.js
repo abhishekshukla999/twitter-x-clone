@@ -23,7 +23,8 @@ class AuthService {
             );
 
             if (userAccount) {
-                return await this.login({ email, password });
+                const loginData = await this.login({ email, password });
+                return [loginData, userAccount.$id];
             }
         } catch (error) {
             console.log("Appwrite Service :: createAccount :: error ", error);

@@ -1,15 +1,16 @@
 import React from "react";
 
-function Step2({ register, onBack, onSubmit }) {
+function Step2({ register, onBack }) {
     return (
         <>
             <div>Step2</div>
-            <input type="date" {...register("dob")} />
-            <input type="file" name="" id="" />
+            <input type="password" placeholder="Password" {...register("password")} />
+            <input type="file" placeholder="profile" {...register('avatar')} />
+            <input type="text" placeholder="username" {...register('username')} />
 
             <button onClick={onBack}>Back</button>
-            <p></p>
-            <button onClick={onSubmit}>Submit</button>
+            <br />
+            <button type="submit">Submit</button>
         </>
     );
 }

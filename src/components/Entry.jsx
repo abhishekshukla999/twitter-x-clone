@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 import { Login, Step1, Step2 } from "./index";
 import { useForm } from "react-hook-form";
-import authService from "../appwrite/auth/auth";
+import { authService, profileService, profileMediaService } from "../appwrite";
 import { useDispatch } from "react-redux";
 import { login } from "../features/auth/authSlice";
 
@@ -18,16 +18,33 @@ function Entry() {
     const handleNext = () => setStep(step + 1);
 
     const submitForm = async (data) => {
-        // console.log(data);
         try {
-            const { name, email, password } = data;
+            const { name, email, password, username, dob } = data;
+
             const userData = await authService.createAccount({
                 name,
                 email,
                 password,
             });
-            if (userData) {
-                dispatch(login(userData));
+
+            const [loginData, userId] = userData;
+
+            const avatarFile = await profileMediaService.uploadFile(
+                data.avatar[0]
+            );
+
+            if (loginData) {
+                // has to dispatch in store user Profile data after profile document creation
+                const avatar = avatarFile.$id;
+                const profileData = await profileService.createProfile({
+                    userId,
+                    username,
+                    email,
+                    name,
+                    dob,
+                    avatar,
+                });
+                dispatch(login(loginData));
             }
         } catch (error) {
             console.log("Error inside Entry: ", error);
@@ -59,21 +76,15 @@ function Entry() {
                         setStep(1);
                     }}
                 >
-                    {step === 1 && (
-                        <Step1 register={register} onNext={handleNext} />
-                    )}
+                    <form onSubmit={handleSubmit(submitForm)}>
+                        {step === 1 && (
+                            <Step1 register={register} onNext={handleNext} />
+                        )}
 
-                    {step === 2 && (
-                        <Step2
-                            register={register}
-                            onBack={handleBack}
-                            onSubmit={handleSubmit(submitForm)}
-                        />
-                    )}
-
-                    {
-                        // when step 3
-                    }
+                        {step === 2 && (
+                            <Step2 register={register} onBack={handleBack} />
+                        )}
+                    </form>
                 </Modal>
             </div>
             <div className="border-blue-400">
