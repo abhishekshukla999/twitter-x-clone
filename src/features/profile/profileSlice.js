@@ -2,19 +2,25 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // for user Profile data
 const initialState = {
-    state: false,
-    userData: null,
-    tweets: null,
+    status: false,
+    profileData: null,
 };
 
 const profileSlice = createSlice({
     name: "profile",
     initialState,
     reducers: {
-        profileData: (state, action) => {},
+        addProfileData: (state, action) => {
+            state.status = true;
+            state.profileData = action.payload.profileData
+        },
+        removeProfileData: (state) => {
+            state.status = false;
+            state.profileData = null;
+        },
     },
 });
 
-export const { profileData } = profileSlice.actions;
+export const { addProfileData, removeProfileData } = profileSlice.actions;
 
 export default profileSlice.reducer;
