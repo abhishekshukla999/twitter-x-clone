@@ -12,7 +12,7 @@ const profileSlice = createSlice({
     reducers: {
         addProfileData: (state, action) => {
             state.status = true;
-            state.profileData = action.payload.profileData
+            state.profileData = action.payload.profileData;
         },
         removeProfileData: (state) => {
             state.status = false;

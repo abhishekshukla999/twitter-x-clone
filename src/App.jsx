@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./features/auth/authSlice";
-import authService from "./appwrite/auth/auth";
+import { addProfileData, removeProfileData } from "./features/profile/profileSlice";
+import { authService, profileService } from "./appwrite";
 import { useEffect } from "react";
 import { Entry, LogoutButton } from "./components";
 import { Link, Outlet } from "react-router-dom";
@@ -13,6 +14,10 @@ function App() {
         authService.getCurrentUser().then((userData) => {
             if (userData) {
                 dispatch(login({ userData }));
+
+                profileService
+                    .getProfile(userData.$id)
+                    .then((profileData) => dispatch(addProfileData({ profileData })));
             } else {
                 dispatch(logout());
             }

@@ -1,4 +1,4 @@
-import { Client, Databases, Storage, ID, Query } from "appwrite";
+import { Client, Databases } from "appwrite";
 import { config } from "../../config/config";
 
 class ProfileService {
@@ -6,9 +6,7 @@ class ProfileService {
     databases;
 
     constructor() {
-        this.client
-            .setEndpoint(config.appwriteUrl)
-            .setProject(config.appwriteProjectId);
+        this.client.setEndpoint(config.appwriteUrl).setProject(config.appwriteProjectId);
 
         this.databases = new Databases(this.client);
     }
@@ -40,13 +38,6 @@ class ProfileService {
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
                 userId
-
-                // [
-                //     Query.and([
-                //         Query.equal("status", true),
-                //         Query.equal("$id", docId),
-                //     ]),
-                // ]
             );
         } catch (error) {
             console.log("Appwrite Service :: getProfile :: error ", error);
@@ -62,10 +53,7 @@ class ProfileService {
                 { ...data }
             );
         } catch (error) {
-            console.log(
-                "Appwrite Service :: getProfile :: updateProfile ",
-                error
-            );
+            console.log("Appwrite Service :: getProfile :: updateProfile ", error);
         }
     }
 
@@ -77,10 +65,7 @@ class ProfileService {
                 docId
             );
         } catch (error) {
-            console.log(
-                "Appwrite Service :: deleteProfile :: updateProfile ",
-                error
-            );
+            console.log("Appwrite Service :: deleteProfile :: updateProfile ", error);
         }
     }
 }
