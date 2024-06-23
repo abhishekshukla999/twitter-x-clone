@@ -1,18 +1,14 @@
-import { Client, Databases, Storage, ID, Query } from "appwrite";
+import { Client, Databases } from "appwrite";
 import { config } from "../../config/config";
 
 class ProfileService {
     client = new Client();
     databases;
-    storage;
 
     constructor() {
-        this.client
-            .setEndpoint(config.appwriteUrl)
-            .setProject(config.appwriteProjectId);
+        this.client.setEndpoint(config.appwriteUrl).setProject(config.appwriteProjectId);
 
         this.databases = new Databases(this.client);
-        this.storage = new Storage(this.client);
     }
 
     // userId to match id created during auth and userId stored in profile collection should be same
@@ -24,7 +20,7 @@ class ProfileService {
             const profile = await this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
-                ID.unique(),
+                userId,
                 { userId, username, email, name, dob, ...rest }
             );
 
@@ -36,18 +32,12 @@ class ProfileService {
         }
     }
 
-    async getProfile({ docId }) {
+    async getProfile(userId) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
-                docId,
-                // [
-                //     Query.and([
-                //         Query.equal("status", true),
-                //         Query.equal("$id", docId),
-                //     ]),
-                // ]
+                userId
             );
         } catch (error) {
             console.log("Appwrite Service :: getProfile :: error ", error);
@@ -63,10 +53,7 @@ class ProfileService {
                 { ...data }
             );
         } catch (error) {
-            console.log(
-                "Appwrite Service :: getProfile :: updateProfile ",
-                error
-            );
+            console.log("Appwrite Service :: getProfile :: updateProfile ", error);
         }
     }
 
@@ -78,10 +65,7 @@ class ProfileService {
                 docId
             );
         } catch (error) {
-            console.log(
-                "Appwrite Service :: deleteProfile :: updateProfile ",
-                error
-            );
+            console.log("Appwrite Service :: deleteProfile :: updateProfile ", error);
         }
     }
 }
