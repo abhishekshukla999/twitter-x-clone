@@ -11,10 +11,6 @@ class ProfileService {
         this.databases = new Databases(this.client);
     }
 
-    // userId to match id created during auth and userId stored in profile collection should be same
-    // note: as appwrite methods returns a promise already, if any promise is not fulfilled it will
-    // throw an error automatically (due any network failure or any reason that promise is rejected)
-    // you can use the if-else when you need to perform other task, otherwise no use
     async createProfile({ userId, username, email, name, dob, ...rest }) {
         try {
             const profile = await this.databases.createDocument(
@@ -32,12 +28,12 @@ class ProfileService {
         }
     }
 
-    async getProfile(userId) {
+    async getProfile(docId) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
-                userId
+                docId
             );
         } catch (error) {
             console.log("Appwrite Service :: getProfile :: error ", error);

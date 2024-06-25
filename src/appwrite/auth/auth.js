@@ -58,6 +58,15 @@ class AuthService {
             console.log("Appwrite Service :: logout :: error ", error);
         }
     }
+
+    // logout from all devices
+    async logoutAll() {
+        try {
+            return this.account.deleteSessions();
+        } catch (error) {
+            console.log("Appwrite Service :: logoutAll :: error ", error);
+        }
+    }
 }
 
 const authService = new AuthService();
