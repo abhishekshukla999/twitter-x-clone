@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./features/auth/authSlice";
-import { addProfileData, removeProfileData } from "./features/profile/profileSlice";
+import { addProfileData } from "./features/profile/profileSlice";
 import { authService, profileService } from "./appwrite";
 import { useEffect } from "react";
 import { Entry, LogoutButton } from "./components";
