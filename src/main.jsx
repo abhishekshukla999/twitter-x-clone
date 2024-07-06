@@ -5,9 +5,23 @@ import "./index.css";
 import store from "./store/store.js";
 import { Provider } from "react-redux";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Profile } from "./components/index.js";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./store/store.js";
+import {
+    Bookmarks,
+    Communities,
+    Explore,
+    Grok,
+    Home,
+    Lists,
+    Messages,
+    Notifications,
+    Premium,
+    Profile,
+    Settings,
+    VerifiedOrgs,
+    SignUp,
+} from "./pages";
 
 const router = createBrowserRouter([
     {
@@ -15,10 +29,59 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
+                path: "/home",
+                element: <Home />,
+            },
+            {
                 path: "/profile",
                 element: <Profile />,
             },
+            {
+                path: "/explore",
+                element: <Explore />,
+            },
+            {
+                path: "/notifications",
+                element: <Notifications />,
+            },
+            {
+                path: "/messages",
+                element: <Messages />,
+            },
+            {
+                path: "/grok",
+                element: <Grok />,
+            },
+            {
+                path: "/lists",
+                element: <Lists />,
+            },
+            {
+                path: "/bookmarks",
+                element: <Bookmarks />,
+            },
+            {
+                path: "/communities",
+                element: <Communities />,
+            },
+            {
+                path: "/premium",
+                element: <Premium />,
+            },
+            {
+                path: "/verified-orgs",
+                element: <VerifiedOrgs />,
+            },
+            {
+                path: "/settings",
+                element: <Settings />,
+            },
         ],
+    },
+
+    {
+        path: "/signup",
+        element: <SignUp />,
     },
 ]);
 
