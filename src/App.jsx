@@ -3,11 +3,12 @@ import { login, logout } from "./features/auth/authSlice";
 import { addProfileData } from "./features/profile/profileSlice";
 import { authService, profileService } from "./appwrite";
 import { useEffect } from "react";
-import { Entry, LogoutButton } from "./components";
-import { Link, Outlet } from "react-router-dom";
+import { Root, Header } from "./components";
+import { Outlet, useNavigate } from "react-router-dom";
 
 function App() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const status = useSelector((state) => state.auth.status);
 
     useEffect(() => {
@@ -17,24 +18,28 @@ function App() {
 
                 profileService
                     .getProfile(userData.$id)
-                    .then((profileData) => dispatch(addProfileData({ profileData })));
+                    .then((profileData) =>
+                        dispatch(addProfileData({ profileData }))
+                    );
+
+                navigate("/home");
             } else {
                 dispatch(logout());
+                document.body.style.backgroundColor = "black";
             }
         });
     }, []);
 
+    if (!status) return <Root />;
+
     return (
         <>
-            <div className="bg-gray-400 h-screen text-center">
-                <h1>Twitter App</h1>
+            <div className="flex w-screen h-screen m-0 p-0 font-sans">
+                <Header />
 
-                <Entry />
-                {status && <LogoutButton />}
-
-                <Link to="/profile">Profile</Link>
-                <Link to="/">Home</Link>
-                <Outlet />
+                <main className="flex gap-8 w-full mx-auto overflow-y-auto">
+                    <Outlet />
+                </main>
             </div>
         </>
     );
