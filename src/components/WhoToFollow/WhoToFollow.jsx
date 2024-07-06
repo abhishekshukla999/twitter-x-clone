@@ -1,4 +1,3 @@
-import React from "react";
 import FollowCard from "./FollowCard";
 
 function WhoToFollow() {
