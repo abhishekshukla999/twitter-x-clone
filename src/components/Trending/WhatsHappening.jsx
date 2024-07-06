@@ -7,6 +7,16 @@ function WhatsHappening() {
             <div className="mt-6 border border-zinc-200 rounded-xl">
                 <h1 className="m-3 font-bold text-xl">What&apos;s Happening</h1>
 
+                <div className="flex mx-3 my-4 max-w-[20rem]">
+                    <span className="mx-2">
+                        <img className="w-[79px] h-[79px] rounded-xl" src="/Live.jpg" alt="live now image" />
+                    </span>
+                    <span>
+                        <p className="font-bold">England vs Switzerland</p>
+                        <p className="text-gray-500 text-sm">UEFA European Championship &middot; LIVE</p>
+                    </span>
+                </div>
+
                 <TrendingCard
                     prefix="Trending in India"
                     title="BCCI"
@@ -27,7 +37,7 @@ function WhatsHappening() {
                     title="#Doge"
                     suffix="5K posts"
                 />
-                
+
                 <div className="m-3 p-1 text-twitter-blue text-base">
                     Show more
                 </div>
