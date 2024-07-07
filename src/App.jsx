@@ -16,19 +16,15 @@ function App() {
             if (userData) {
                 dispatch(login({ userData }));
 
-                profileService
-                    .getProfile(userData.$id)
-                    .then((profileData) =>
-                        dispatch(addProfileData({ profileData }))
-                    );
-
-                navigate("/home");
+                profileService.getProfile(userData.$id).then((profileData) => {
+                    dispatch(addProfileData({ profileData }));
+                    navigate("/home")
+                });
             } else {
                 dispatch(logout());
-                document.body.style.backgroundColor = "black";
             }
         });
-    }, []);
+    }, [navigate, dispatch, status]);
 
     if (!status) return <Root />;
 

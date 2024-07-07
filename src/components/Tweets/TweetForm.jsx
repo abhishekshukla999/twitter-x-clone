@@ -3,7 +3,7 @@ import React from "react";
 function TweetForm() {
     return (
         <>
-            <div className="whatshapp flex mt-3 w-full min-h-fit border border-t-0 border-zinc-200">
+            <div className="whatshapp flex pt-3 w-full min-h-fit border border-t-0 border-zinc-200">
                 <div className="mx-2 w-[7%]">
                     <img
                         className="w-full rounded-full"

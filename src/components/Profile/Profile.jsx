@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { TweetCard } from "../index";
 
 function Profile() {
-    // const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile.profileData);
 
     return (
         <div>

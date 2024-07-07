@@ -22,6 +22,7 @@ import {
     VerifiedOrgs,
     SignUp,
 } from "./pages";
+import Protected from "./components/Protected.jsx";
 
 const router = createBrowserRouter([
     {
@@ -30,58 +31,110 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/home",
-                element: <Home />,
+                element: (
+                    <Protected authentication={false} url="home">
+                        <Home />
+                    </Protected>
+                ),
             },
             {
                 path: "/profile",
-                element: <Profile />,
+                element: (
+                    <Protected authentication={false} url="profile">
+                        <Profile />
+                    </Protected>
+                ),
             },
             {
                 path: "/explore",
-                element: <Explore />,
+                element: (
+                    <Protected authentication={false} url="explore">
+                        <Explore />
+                    </Protected>
+                ),
             },
             {
                 path: "/notifications",
-                element: <Notifications />,
+                element: (
+                    <Protected authentication={false} url="notifications">
+                        <Notifications />
+                    </Protected>
+                ),
             },
             {
                 path: "/messages",
-                element: <Messages />,
+                element: (
+                    <Protected authentication={false} url="messages">
+                        <Messages />
+                    </Protected>
+                ),
             },
             {
                 path: "/grok",
-                element: <Grok />,
+                element: (
+                    <Protected authentication={false} url="grok">
+                        <Grok />
+                    </Protected>
+                ),
             },
             {
                 path: "/lists",
-                element: <Lists />,
+                element: (
+                    <Protected authentication={false} url="lists">
+                        <Lists />
+                    </Protected>
+                ),
             },
             {
                 path: "/bookmarks",
-                element: <Bookmarks />,
+                element: (
+                    <Protected authentication={false} url="bookmarks">
+                        <Bookmarks />
+                    </Protected>
+                ),
             },
             {
                 path: "/communities",
-                element: <Communities />,
+                element: (
+                    <Protected authentication={false} url="communities">
+                        <Communities />
+                    </Protected>
+                ),
             },
             {
                 path: "/premium",
-                element: <Premium />,
+                element: (
+                    <Protected authentication={false} url="premium">
+                        <Premium />
+                    </Protected>
+                ),
             },
             {
                 path: "/verified-orgs",
-                element: <VerifiedOrgs />,
+                element: (
+                    <Protected authentication={false} url="verified-orgs">
+                        <VerifiedOrgs />
+                    </Protected>
+                ),
             },
             {
                 path: "/settings",
-                element: <Settings />,
+                element: (
+                    <Protected authentication={false} url="settings">
+                        <Settings />
+                    </Protected>
+                ),
             },
         ],
     },
 
     {
         path: "/signup",
-        element: <SignUp />,
+        element: (
+            <Protected authentication url="signup">
+                <SignUp />
+            </Protected>
+        ),
     },
 ]);
 

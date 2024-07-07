@@ -29,6 +29,8 @@ import ChatItem from "./Messages/ChatItem";
 import Premium from "./Premium/Premium";
 import SettingsList from "./Settings/SettingsList";
 import SettingsBox from "./Settings/SettingsBox";
+import Protected from "./Protected";
+import Loader from "./Loader";
 import UnderDev from "./UnderDev/UnderDev";
 
 export {
@@ -63,5 +65,7 @@ export {
     Premium,
     SettingsList,
     SettingsBox,
+    Protected,
+    Loader,
     UnderDev,
 };
