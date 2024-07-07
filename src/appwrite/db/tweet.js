@@ -8,7 +8,7 @@ class TweetService {
     constructor() {
         this.client.setEndpoint(config.appwriteUrl).setProject(config.appwriteProjectId);
 
-        this.databases = new Databases();
+        this.databases = new Databases(this.client);
     }
 
     async createTweet({ author, content, ...rest }) {

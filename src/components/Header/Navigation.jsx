@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import PostModal from "../Modals/PostModal";
 
-function Navigation() {
+function Navigation({ post }) {
     const listStyle = "flex p-3 text-xl hover:bg-zinc-200 rounded-full w-fit";
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClose = () => {
+        setIsOpen(false);
+    };
 
     return (
         <nav className="first">
@@ -505,9 +512,14 @@ function Navigation() {
 
             <div className="post-button xl:my-4 max-xl:m-2">
                 <button className="w-60 text-xl text-white bg-twitter-blue rounded-full hover:bg-sky-600 hidden xl:block">
-                    <div className="p-3">Post</div>
+                    <div className="p-3" onClick={() => setIsOpen(true)}>
+                        Post
+                    </div>
                 </button>
-                <button className="bg-twitter-blue p-3 w-[50px] rounded-full hidden max-xl:block">
+                <button
+                    className="bg-twitter-blue p-3 w-[50px] rounded-full hidden max-xl:block"
+                    onClick={() => setIsOpen(true)}
+                >
                     <svg
                         viewBox="0 0 24 24"
                         aria-hidden="true"
@@ -519,6 +531,8 @@ function Navigation() {
                     </svg>
                 </button>
             </div>
+
+            <PostModal isOpen={isOpen} onClose={handleClose} />
         </nav>
     );
 }

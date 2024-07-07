@@ -32,6 +32,7 @@ import SettingsBox from "./Settings/SettingsBox";
 import Protected from "./Protected";
 import Loader from "./Loader";
 import UnderDev from "./UnderDev/UnderDev";
+import PostModal from "./Modals/PostModal";
 
 export {
     Login1,
@@ -68,4 +69,5 @@ export {
     Protected,
     Loader,
     UnderDev,
+    PostModal
 };

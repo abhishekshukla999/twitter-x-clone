@@ -10,7 +10,7 @@ class TweetMediaService {
             .setEndpoint(config.appwriteUrl)
             .setProject(config.appwriteProjectId);
 
-        this.storage = new Storage();
+        this.storage = new Storage(this.client);
     }
 
     async uploadFile(file) {
