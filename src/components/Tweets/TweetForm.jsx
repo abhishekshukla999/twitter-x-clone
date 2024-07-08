@@ -56,7 +56,7 @@ function TweetForm({ post }) {
 
     return (
         <>
-            <div className="tweet-form flex pt-3 w-full max-h-[70%] border border-t-0 border-zinc-200">
+            <div className="tweet-form flex max-[499px]:hidden pt-3 w-full max-h-[70%] border border-t-0 border-zinc-200">
                 <div className="mx-2 w-[7%]">
                     <img
                         className="w-full rounded-full"

@@ -1,11 +1,12 @@
 import React from "react";
-import { SettingsList, SettingsBox } from "../components";
+import { SettingsList, SettingsBox, NavigationBottom } from "../components";
 
 function Settings() {
     return (
         <>
             <SettingsList />
             <SettingsBox />
+            <NavigationBottom/>
         </>
     );
 }

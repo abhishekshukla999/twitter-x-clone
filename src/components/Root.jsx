@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Modal from "./Modal";
-import { Login1, SignUp1, SignUp2 } from "./index";
+import { useState } from "react";
+import { Login1, SignUp1, SignUp2, LogSignModal } from "./index";
 import { useForm } from "react-hook-form";
 import { authService, profileService, profileMediaService } from "../appwrite";
 import { useDispatch } from "react-redux";
@@ -154,7 +153,7 @@ function Entry() {
                                 >
                                     Create Account
                                 </button>
-                                <Modal
+                                <LogSignModal
                                     isOpen={isOpenSignup}
                                     onClose={() => {
                                         setIsOpenSignup(false);
@@ -176,7 +175,7 @@ function Entry() {
                                             />
                                         )}
                                     </form>
-                                </Modal>
+                                </LogSignModal>
                             </div>
                             <p className="text-gray-400 text-[11px] mb-5 p-2">
                                 By signing up, you agree to the
@@ -207,12 +206,12 @@ function Entry() {
                                 >
                                     Sign in
                                 </button>
-                                <Modal
+                                <LogSignModal
                                     isOpen={isOpenLogin}
                                     onClose={() => setIsOpenLogin(false)}
                                 >
                                     <Login1 />
-                                </Modal>
+                                </LogSignModal>
                             </div>
                         </div>
                     </div>

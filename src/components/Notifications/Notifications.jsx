@@ -1,15 +1,35 @@
-import React from "react";
+import { useState } from "react";
 import NotificationsCard from "./NotificationsCard";
+import NavigationMobile from "../Header/NavigationMobile";
 import { NavLink } from "react-router-dom";
 
 function Notifications() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    function handleClose() {
+        setIsOpen(false);
+    }
+
     return (
         <div className="border-r border-l h-screen">
             <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                <NavLink className="px-1.5 font-bold text-xl">Notifications</NavLink>
+                {/* Navigation Mobile */}
+                <div className="my-3 hidden max-[499px]:flex">
+                    <div className="w-1/2 " onClick={() => setIsOpen(true)}>
+                        <img
+                            className="w-8 rounded-full mx-3"
+                            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                            alt="navigation menu"
+                        />
+                    </div>
+                    <NavigationMobile isOpen={isOpen} onClose={handleClose} />
+                </div>
+                <NavLink className="px-1.5 my-auto font-bold text-xl">
+                    Notifications
+                </NavLink>
 
                 <div className="flex gap-4">
-                    <NavLink className="m-0.5">
+                    <NavLink className="mx-0.5 my-auto">
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"

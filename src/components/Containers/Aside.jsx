@@ -8,13 +8,13 @@ function Aside() {
             <WhoToFollow />
             <div className="p-5 text-zinc-600 text-[13px] max-w-[22rem]">
                 <ul className="flex gap-2 flex-wrap">
-                    <li>Terms of Service</li>
-                    <li>Privacy Policy</li>
-                    <li>Cookie Policy</li>
-                    <li>Accessibility</li>
-                    <li>Ads info</li>
-                    <li>More...</li>
-                    <li>&copy; 2024 X Corp.</li>
+                    <li className="hover:underline cursor-pointer">Terms of Service</li>
+                    <li className="hover:underline cursor-pointer">Privacy Policy</li>
+                    <li className="hover:underline cursor-pointer">Cookie Policy</li>
+                    <li className="hover:underline cursor-pointer">Accessibility</li>
+                    <li className="hover:underline cursor-pointer">Ads info</li>
+                    <li className="hover:underline cursor-pointer">More...</li>
+                    <li className="hover:underline cursor-pointer">&copy; 2024 X Corp.</li>
                 </ul>
             </div>
         </aside>

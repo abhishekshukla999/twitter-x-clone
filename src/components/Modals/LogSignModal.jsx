@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 
-function Modal({ children, isOpen, onClose }) {
+function LogSignModal({ children, isOpen, onClose }) {
     if (!isOpen) return null;
 
     return createPortal(
@@ -42,4 +42,4 @@ function Modal({ children, isOpen, onClose }) {
     );
 }
 
-export default Modal;
+export default LogSignModal;
