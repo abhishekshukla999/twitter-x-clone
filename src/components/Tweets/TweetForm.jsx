@@ -6,7 +6,7 @@ import {
     profileService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfileData } from "../../features/profile/profileSlice";
+import { updateProfileData } from "../../features/profile/profileSlice";
 
 function TweetForm({ post }) {
     // preview and upload states
@@ -44,14 +44,11 @@ function TweetForm({ post }) {
             const tweets = userData.tweets || [];
             const updatedTweets = [tweetPost.$id, ...tweets];
 
-            const profileData = await profileService.updateProfile(
-                userData.$id,
-                {
-                    tweets: updatedTweets,
-                }
-            );
+            await profileService.updateProfile(userData.$id, {
+                tweets: updatedTweets,
+            });
 
-            dispatch(addProfileData({ profileData }));
+            dispatch(updateProfileData({ tweets: updatedTweets }));
         }
     };
 

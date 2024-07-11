@@ -10,10 +10,9 @@ import {
     tweetMediaService,
     tweetService,
 } from "../../appwrite";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addTweets } from "../../features/tweet/tweetSlice";
-import { addProfileData } from "../../features/profile/profileSlice";
+import { deleteTweet } from "../../features/tweet/tweetSlice";
+import { updateProfileData } from "../../features/profile/profileSlice";
 
 function TweetCard({
     tweetId,
@@ -31,11 +30,9 @@ function TweetCard({
     updatedAt,
 }) {
     const [mediaURL, setMediaURL] = useState("");
-    const [anany] = useState((Math.random() * 1000).toFixed(0));
+    const [analytics] = useState((Math.random() * 1000).toFixed(0));
     const [date, setDate] = useState({});
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const tweetsData = useSelector((state) => state.tweets.tweetsData);
     const profileData = useSelector((state) => state.profile.profileData);
     // options box handling
     const [isOpen, setisOpen] = useState(false);
@@ -79,35 +76,26 @@ function TweetCard({
         return convertedDate;
     };
 
+    // delete a tweet
     const handleDelete = () => {
         tweetService
             .deleteTweet(tweetId)
             .then((res) => {
                 if (res) {
-                    const newTweetList = tweetsData.filter((tweet) => {
-                        return tweet.$id !== tweetId;
-                    });
-
-                    dispatch(addTweets({ tweetsData: newTweetList }));
+                    dispatch(deleteTweet({ tweetId }));
                 }
             })
             .then(async () => {
-                const tweetIds = profileData.tweets;
+                let tweetIds = profileData.tweets;
 
-                const newTweetIds = tweetIds.filter((id) => id !== tweetId);
+                tweetIds = tweetIds.filter((id) => id !== tweetId);
 
                 await profileService.updateProfile(author, {
-                    tweets: newTweetIds,
+                    tweets: tweetIds,
                 });
 
-                dispatch(
-                    addProfileData({
-                        profileData: { ...profileData, tweets: newTweetIds },
-                    })
-                );
+                dispatch(updateProfileData({ tweets: tweetIds }));
             });
-
-        navigate("/profile");
     };
 
     return (
@@ -218,15 +206,16 @@ function TweetCard({
 
                     {/* User content */}
                     <div className="text mx-1.5 my-1">{content}</div>
-                    <div className="image m-1.5">
-                        {media && (
+
+                    {media && (
+                        <div className="image m-1.5">
                             <img
                                 className="rounded-lg w-full"
                                 src={mediaURL}
                                 alt=""
                             />
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* Bottom Interactions */}
                     <div className="flex justify-between">
@@ -304,7 +293,7 @@ function TweetCard({
                                     </svg>
                                 </span>
                                 <span className="text-gray-500 m-auto">
-                                    {anany}
+                                    {analytics}
                                 </span>
                             </div>
                         </div>

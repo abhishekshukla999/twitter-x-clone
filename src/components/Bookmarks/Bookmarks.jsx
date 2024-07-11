@@ -27,10 +27,7 @@ function Bookmarks() {
                 </div>
             </div>
 
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
+            {/* Tweet Card */}
         </div>
     );
 }

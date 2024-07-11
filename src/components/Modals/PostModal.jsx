@@ -7,7 +7,7 @@ import {
     profileService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfileData } from "../../features/profile/profileSlice";
+import { updateProfileData } from "../../features/profile/profileSlice";
 
 function PostModal({ isOpen, onClose }) {
     // preview and upload states
@@ -38,13 +38,13 @@ function PostModal({ isOpen, onClose }) {
         if (tweetPost) console.log("Tweet Created");
 
         const tweets = userData.tweets || [];
-        const updatedTweets = [tweetPost.$id, ...tweets];
+        const updatedTweets = [tweetPost?.$id, ...tweets];
 
-        const profileData = await profileService.updateProfile(userData.$id, {
+        await profileService.updateProfile(userData.$id, {
             tweets: updatedTweets,
         });
 
-        dispatch(addProfileData({ profileData }));
+        dispatch(updateProfileData({ tweets: updatedTweets }));
     };
 
     const openAndReadFile = (e) => {

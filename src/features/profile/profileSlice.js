@@ -14,6 +14,12 @@ const profileSlice = createSlice({
             state.status = true;
             state.profileData = action.payload.profileData;
         },
+        updateProfileData: (state, action) => {
+            state.profileData = {
+                ...state.profileData,
+                ...action.payload,
+            };
+        },
         removeProfileData: (state) => {
             state.status = false;
             state.profileData = null;
@@ -21,6 +27,7 @@ const profileSlice = createSlice({
     },
 });
 
-export const { addProfileData, removeProfileData } = profileSlice.actions;
+export const { addProfileData, updateProfileData, removeProfileData } =
+    profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -4,6 +4,7 @@ import { authService } from "../../appwrite";
 import { useDispatch } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import { removeProfileData } from "../../features/profile/profileSlice";
+import { removeTweets } from "../../features/tweet/tweetSlice";
 
 function NavigationMobile({ isOpen, onClose }) {
     const dispatch = useDispatch();
@@ -13,6 +14,7 @@ function NavigationMobile({ isOpen, onClose }) {
         authService.logout().then(() => {
             dispatch(logout());
             dispatch(removeProfileData());
+            dispatch(removeTweets());
         });
     };
 
@@ -167,7 +169,11 @@ function NavigationMobile({ isOpen, onClose }) {
                             </NavLink>
                         </div>
                         <div className="p-1 my-6">
-                            <NavLink className={`${listStyle}`} title="Logout">
+                            <NavLink
+                                className={`${listStyle}`}
+                                title="Logout"
+                                onClick={handleLogout}
+                            >
                                 <span className="mx-1">
                                     <svg
                                         viewBox="0 0 24 24"

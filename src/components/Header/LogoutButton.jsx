@@ -23,6 +23,7 @@ function LogoutButton() {
         setIsOpen(false);
     };
 
+
     return (
         <>
             <div
@@ -40,8 +41,8 @@ function LogoutButton() {
                         />
                     </div>
                     <div className="flex-[0_0_60%] flex-nowrap hidden xl:block">
-                        <p className="font-bold">{userData.name}</p>
-                        <p className="text-gray-500">@{userData.username}</p>
+                        <p className="font-bold">{userData?.name}</p>
+                        <p className="text-gray-500">@{userData?.username}</p>
                     </div>
                     <div className="m-3 hidden xl:block">
                         <svg
@@ -61,7 +62,7 @@ function LogoutButton() {
                     className="w-full hover:bg-gray-200 p-2 cursor-pointer font-bold rounded-lg border-2"
                     onClick={authLogout}
                 >
-                    Logout @{userData.username}
+                    Logout @{userData?.username}
                 </div>
             </LogoutModal>
         </>

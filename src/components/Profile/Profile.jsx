@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { TweetCard } from "../index";
+import { Loader, TweetCard } from "../index";
 import { tweetService } from "../../appwrite";
 import { addTweets } from "../../features/tweet/tweetSlice";
 
@@ -18,6 +18,7 @@ function Profile() {
             const tweetsCollection = await Promise.all(
                 tweets.map(async (tweetId) => {
                     const tweet = await tweetService.getTweet(tweetId);
+                    console.log("API Called");
                     return tweet;
                 })
             );
@@ -25,14 +26,11 @@ function Profile() {
             // console.log(tweetsCollection);
 
             dispatch(addTweets({ tweetsData: tweetsCollection }));
+            setLoading(false);
         };
 
         fetchTweets();
-
-        setLoading(false);
-    }, []);
-
-    if (loading) return <h1>Loading.....</h1>;
+    }, [dispatch]);
 
     return (
         <div>
@@ -128,6 +126,15 @@ function Profile() {
                     </p>
                 </div>
 
+                <div className="flex gap-4 text-sm mx-4 my-3 text-gray-700">
+                    <span className="">
+                        <strong>48</strong> Following
+                    </span>
+                    <span className="">
+                        <strong>90M</strong> Followers
+                    </span>
+                </div>
+
                 <div className="social flex flex-wrap mx-3 text-sm">
                     <div className="flex grow">
                         <span className="mx-1">
@@ -196,26 +203,30 @@ function Profile() {
             </div>
 
             {/* mapping */}
-            <div>
-                {tweetsData.map((tweet) => (
-                    <TweetCard
-                        key={tweet.$id}
-                        tweetId={tweet.$id}
-                        name={tweet.name}
-                        username={tweet.username}
-                        content={tweet.content}
-                        media={tweet.media}
-                        likes={tweet.likes}
-                        replies={tweet.replies}
-                        retweets={tweet.retweets}
-                        author={tweet.author}
-                        slug={tweet.slug}
-                        bookmarked={tweet.bookmarked}
-                        createdAt={tweet.$createdAt}
-                        updatedAt={tweet.$updatedAt}
-                    />
-                ))}
-            </div>
+            {loading ? (
+                <Loader />
+            ) : (
+                <div>
+                    {tweetsData.map((tweet) => (
+                        <TweetCard
+                            key={tweet.$id}
+                            tweetId={tweet.$id}
+                            name={tweet.name}
+                            username={tweet.username}
+                            content={tweet.content}
+                            media={tweet.media}
+                            likes={tweet.likes}
+                            replies={tweet.replies}
+                            retweets={tweet.retweets}
+                            author={tweet.author}
+                            slug={tweet.slug}
+                            bookmarked={tweet.bookmarked}
+                            createdAt={tweet.$createdAt}
+                            updatedAt={tweet.$updatedAt}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

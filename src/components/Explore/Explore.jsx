@@ -60,7 +60,7 @@ function Explore() {
                 </form>
             </div>
             <div>
-                <TweetCard />
+                {/* Tweet Card */}
             </div>
         </div>
     );

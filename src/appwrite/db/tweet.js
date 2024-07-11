@@ -32,12 +32,13 @@ class TweetService {
         }
     }
 
-    async getTweet(docId) {
+    async getTweet(docId, queries = []) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
                 config.appwriteTweetsCollectionId,
-                docId
+                docId,
+                queries
             );
         } catch (error) {
             console.log("Appwrite Service :: getTweet :: error ", error);
