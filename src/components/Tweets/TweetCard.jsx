@@ -12,7 +12,8 @@ import {
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTweet } from "../../features/tweet/tweetSlice";
-import { updateProfileData } from "../../features/profile/profileSlice";
+import { addProfileData } from "../../features/profile/profileSlice";
+import PostModal from "../Modals/PostModal";
 
 function TweetCard({
     tweetId,
@@ -36,6 +37,8 @@ function TweetCard({
     const profileData = useSelector((state) => state.profile.profileData);
     // options box handling
     const [isOpen, setisOpen] = useState(false);
+    //edit handling
+    const [isOpenEdit, setIsOpenEdit] = useState(false);
 
     useEffect(() => {
         const fetchMedia = () => {
@@ -85,16 +88,20 @@ function TweetCard({
                     dispatch(deleteTweet({ tweetId }));
                 }
             })
-            .then(async () => {
+            .then(() => {
                 let tweetIds = profileData.tweets;
 
                 tweetIds = tweetIds.filter((id) => id !== tweetId);
 
-                await profileService.updateProfile(author, {
-                    tweets: tweetIds,
-                });
-
-                dispatch(updateProfileData({ tweets: tweetIds }));
+                profileService
+                    .updateProfile(author, {
+                        tweets: tweetIds,
+                    })
+                    .then((res) => {
+                        if (res) {
+                            dispatch(addProfileData({ profileData: res }));
+                        }
+                    });
             });
     };
 
@@ -138,11 +145,20 @@ function TweetCard({
                             </span>
                             <span className="mx-0.5 font-light">&middot;</span>
                             <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
+                            {createdAt !== updatedAt && (
+                                <span className="mx-0.5 font-light">
+                                    &middot; Edited
+                                </span>
+                            )}
                         </div>
+
                         {/* options */}
                         <div
                             className="mx-0.5 cursor-pointer relative"
-                            onClick={() => setisOpen(true)}
+                            title="Options"
+                            onClick={() => {
+                                setisOpen(true);
+                            }}
                         >
                             <svg
                                 viewBox="0 0 24 24"
@@ -156,7 +172,7 @@ function TweetCard({
 
                             {/* options layover */}
                             {isOpen && (
-                                <div className="absolute bg-white right-full w-[300px] border rounded-lg shadow-xl">
+                                <div className="absolute bg-white right-full w-[240px] border rounded-xl shadow-2xl">
                                     <button
                                         className="font-bold mx-3 text-3xl"
                                         onClick={(e) => {
@@ -168,7 +184,7 @@ function TweetCard({
                                     </button>
                                     <div className="my-2 w-full">
                                         <div
-                                            className="my-3 flex gap-2 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
+                                            className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
                                             onClick={handleDelete}
                                         >
                                             <span>
@@ -184,7 +200,14 @@ function TweetCard({
                                             </span>
                                             <span>Delete</span>
                                         </div>
-                                        <div className="my-3 text-base flex gap-2 font-bold px-5 py-1 hover:bg-gray-200 w-full">
+                                        <div
+                                            className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsOpenEdit(true);
+                                                setisOpen(false);
+                                            }}
+                                        >
                                             <span>
                                                 <svg
                                                     className="w-5"
@@ -202,6 +225,14 @@ function TweetCard({
                                 </div>
                             )}
                         </div>
+                        <PostModal
+                            isOpen={isOpenEdit}
+                            onClose={(e) => {
+                                e.stopPropagation();
+                                setIsOpenEdit(false);
+                            }}
+                            post ={{tweetId, content, media}}
+                        />
                     </div>
 
                     {/* User content */}

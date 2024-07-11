@@ -5,7 +5,7 @@ function LogoutModal({ children, isOpen, onClose }) {
 
     return createPortal(
         <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white opacity-100 p-5 rounded-xl shadow-lg relative l- w-fit text-black">
+            <div className="bg-white overflow-y-auto opacity-100 p-5 rounded-xl shadow-lg relative l- w-fit text-black">
                 <div className="m-2">
                     <button
                         className="rounded-lg absolute top-2.5 left-2.5 bg-none border-none text-2xl cursor-pointer"

@@ -45,6 +45,18 @@ class TweetService {
         }
     }
 
+    async getTweets(queries = []) {
+        try {
+            return this.databases.listDocuments(
+                config.appwriteDatabaseId,
+                config.appwriteTweetsCollectionId,
+                queries
+            );
+        } catch (error) {
+            console.log("Appwrite Service :: getTweets :: error ", error);
+        }
+    }
+
     async updateTweet(docId, { ...data }) {
         try {
             return await this.databases.updateDocument(

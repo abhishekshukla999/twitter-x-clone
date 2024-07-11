@@ -1,36 +1,41 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Loader, TweetCard } from "../index";
 import { tweetService } from "../../appwrite";
 import { addTweets } from "../../features/tweet/tweetSlice";
+import { Query } from "appwrite";
 
 function Profile() {
     const [loading, setLoading] = useState(true);
     const userData = useSelector((state) => state.profile.profileData);
     const tweetsData = useSelector((state) => state.tweets.tweetsData);
+    const tweetsLength = useSelector(
+        (state) => state.profile.profileData.tweets
+    );
     const dispatch = useDispatch();
+
+    useCallback(() => {}, []);
 
     useEffect(() => {
         const fetchTweets = async () => {
-            const tweets = userData.tweets;
+            const tweetsCollection = await tweetService.getTweets([
+                Query.equal("author", userData.$id),
+                Query.orderDesc("$createdAt"),
+            ]);
 
-            const tweetsCollection = await Promise.all(
-                tweets.map(async (tweetId) => {
-                    const tweet = await tweetService.getTweet(tweetId);
-                    console.log("API Called");
-                    return tweet;
-                })
-            );
+            // console.log(tweetsCollection.documents);
 
-            // console.log(tweetsCollection);
-
-            dispatch(addTweets({ tweetsData: tweetsCollection }));
+            dispatch(addTweets({ tweetsData: tweetsCollection.documents }));
             setLoading(false);
         };
 
-        fetchTweets();
-    }, [dispatch]);
+        if (tweetsLength?.length !== tweetsData?.length) {
+            fetchTweets();
+        } else {
+            setLoading(false);
+        }
+    }, [dispatch, tweetsLength]);
 
     return (
         <div>

@@ -5,46 +5,80 @@ import {
     tweetService,
     tweetMediaService,
     profileService,
+    profileMediaService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
-import { updateProfileData } from "../../features/profile/profileSlice";
+import { addProfileData } from "../../features/profile/profileSlice";
+import { updateTweets } from "../../features/tweet/tweetSlice";
 
-function PostModal({ isOpen, onClose }) {
+function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
     const [preImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm({
+        defaultValues: {
+            content: post.content || "",
+        },
+    });
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.profile.profileData);
 
     const submitPost = async (data) => {
-        if (uploadImage) {
-            const file = await tweetMediaService.uploadFile(uploadImage);
+        if (post) {
+            const file = uploadImage
+                ? await tweetMediaService.uploadFile(uploadImage)
+                : null;
 
-            if (file) {
-                const fileId = file.$id;
-                data.media = fileId;
+            if (file && post.media) {
+                await tweetMediaService.deleteFile(post.media);
+            }
+
+            tweetService
+                .updateTweet(post.tweetId, {
+                    content: String(data.content),
+                    media: file ? file.$id : post.media,
+                })
+                .then((tweet) => {
+                    if (tweet) {
+                        dispatch(updateTweets({ tweetId: tweet.$id, tweet }));
+                        reset();
+                    }
+                });
+        } else {
+            if (uploadImage) {
+                const file = await tweetMediaService.uploadFile(uploadImage);
+
+                if (file) {
+                    const fileId = file.$id;
+                    data.media = fileId;
+                }
+            }
+
+            const tweetPost = await tweetService.createTweet({
+                name: userData.name,
+                username: userData.username,
+                author: userData.$id,
+                content: String(data.content).trim(),
+                media: data.media || "",
+            });
+
+            if (tweetPost) {
+                console.log("Tweet Created");
+
+                const tweets = userData.tweets || [];
+                const updatedTweets = [tweetPost?.$id, ...tweets];
+
+                profileService
+                    .updateProfile(userData.$id, {
+                        tweets: updatedTweets,
+                    })
+                    .then((res) => {
+                        dispatch(addProfileData({ profileData: res }));
+                    });
             }
         }
 
-        const tweetPost = await tweetService.createTweet({
-            name: userData.name,
-            username: userData.username,
-            author: userData.$id,
-            content: String(data.content).trim(),
-            media: data.media || "",
-        });
-
-        if (tweetPost) console.log("Tweet Created");
-
-        const tweets = userData.tweets || [];
-        const updatedTweets = [tweetPost?.$id, ...tweets];
-
-        await profileService.updateProfile(userData.$id, {
-            tweets: updatedTweets,
-        });
-
-        dispatch(updateProfileData({ tweets: updatedTweets }));
+        reset();
     };
 
     const openAndReadFile = (e) => {
@@ -62,7 +96,7 @@ function PostModal({ isOpen, onClose }) {
 
     return createPortal(
         <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white opacity-100 p-5 rounded-xl shadow-lg relative w-fit max-h-[60vh] max-[702px]:h-screen max-[702px]:w-screen text-black">
+            <div className="bg-white overflow-y-auto opacity-100 p-5 rounded-xl shadow-lg relative w-fit max-h-fit max-[702px]:h-screen max-[702px]:w-screen text-black">
                 <div className="">
                     <button
                         className="rounded-lg m-3 absolute top-2.5 left-2.5 bg-none border-none text-2xl cursor-pointer"
@@ -113,7 +147,7 @@ function PostModal({ isOpen, onClose }) {
                                 <textarea
                                     className="w-full max-h-[60vh] overflow-y-auto text-xl focus:outline-none whitespace-normal p-2 resize-none"
                                     type="text"
-                                    rows="10"
+                                    rows="5"
                                     placeholder="What is happening?!"
                                     maxLength="500"
                                     {...register("content")}
@@ -135,6 +169,16 @@ function PostModal({ isOpen, onClose }) {
                                             src={preImage}
                                         />
                                     </div>
+                                )}
+
+                                {post && (
+                                    <img
+                                        className="w-80"
+                                        src={tweetMediaService.getFilePreview(
+                                            post.media
+                                        )}
+                                        alt="Tweet Image"
+                                    />
                                 )}
                             </div>
                             {/* usables */}
@@ -248,7 +292,7 @@ function PostModal({ isOpen, onClose }) {
                                         type="submit"
                                         className="w-16 md:w-20 md:mx-2 py-2 font-bold text-base text-white bg-twitter-blue hover:bg-blue-600 rounded-full"
                                     >
-                                        Post
+                                        {post ? "Update" : "Post"}
                                     </button>
                                 </div>
                             </div>

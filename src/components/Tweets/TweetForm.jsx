@@ -6,50 +6,50 @@ import {
     profileService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
-import { updateProfileData } from "../../features/profile/profileSlice";
+import { addProfileData } from "../../features/profile/profileSlice";
 
-function TweetForm({ post }) {
+function TweetForm() {
     // preview and upload states
     const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.profile.profileData);
 
     const submitPost = async (data) => {
-        if (post) {
-            const file = data.image[0]
-                ? await tweetMediaService.uploadFile(data.image[0])
-                : null;
-        } else {
-            if (uploadImage) {
-                const file = await tweetMediaService.uploadFile(uploadImage);
+        if (uploadImage) {
+            const file = await tweetMediaService.uploadFile(uploadImage);
 
-                if (file) {
-                    const fileId = file.$id;
-                    data.media = fileId;
-                }
+            if (file) {
+                const fileId = file.$id;
+                data.media = fileId;
             }
+        }
 
-            const tweetPost = await tweetService.createTweet({
-                name: userData.name,
-                username: userData.username,
-                author: userData.$id,
-                content: String(data.content).trim(),
-                media: data.media || "",
-            });
+        const tweetPost = await tweetService.createTweet({
+            name: userData.name,
+            username: userData.username,
+            author: userData.$id,
+            content: String(data.content),
+            media: data.media || "",
+        });
 
-            if (tweetPost) console.log("Tweet Created");
+        if (tweetPost) {
+            console.log("Tweet Created");
 
             const tweets = userData.tweets || [];
-            const updatedTweets = [tweetPost.$id, ...tweets];
+            const updatedTweets = [tweetPost?.$id, ...tweets];
 
-            await profileService.updateProfile(userData.$id, {
-                tweets: updatedTweets,
-            });
-
-            dispatch(updateProfileData({ tweets: updatedTweets }));
+            profileService
+                .updateProfile(userData.$id, {
+                    tweets: updatedTweets,
+                })
+                .then((res) => {
+                    dispatch(addProfileData({ profileData: res }));
+                });
         }
+
+        reset();
     };
 
     const openAndReadFile = (e) => {
