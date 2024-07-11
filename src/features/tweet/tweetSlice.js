@@ -2,21 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     status: false,
-    tweetData: null,
+    tweetsData: null,
 };
 
 const tweetSlice = createSlice({
-    name: "tweet",
+    name: "tweets",
     initialState,
     reducers: {
         addTweets: (state, action) => {
             state.status = true;
-            state.tweetData = action.payload.tweetData;
+            state.tweetsData = action.payload.tweetsData;
         },
 
         removeTweets: (state) => {
             state.status = false;
-            state.tweetData = null;
+            state.tweetsData = null;
         },
     },
 });

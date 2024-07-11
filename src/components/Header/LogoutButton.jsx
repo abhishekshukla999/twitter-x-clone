@@ -1,18 +1,21 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authService } from "../../appwrite";
 import { logout } from "../../features/auth/authSlice";
 import { removeProfileData } from "../../features/profile/profileSlice";
+import { removeTweets } from "../../features/tweet/tweetSlice";
 import LogoutModal from "../Modals/LogoutModal";
 
 function LogoutButton() {
-    const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
+    const dispatch = useDispatch();
+    const userData = useSelector((state) => state.profile.profileData);
 
     const authLogout = () => {
         authService.logout().then(() => {
             dispatch(logout());
             dispatch(removeProfileData());
+            dispatch(removeTweets());
         });
     };
 
@@ -37,8 +40,8 @@ function LogoutButton() {
                         />
                     </div>
                     <div className="flex-[0_0_60%] flex-nowrap hidden xl:block">
-                        <p className="font-bold">Abhishek Shuklaaa</p>
-                        <p className="text-gray-500">@username</p>
+                        <p className="font-bold">{userData.name}</p>
+                        <p className="text-gray-500">@{userData.username}</p>
                     </div>
                     <div className="m-3 hidden xl:block">
                         <svg
@@ -58,7 +61,7 @@ function LogoutButton() {
                     className="w-full hover:bg-gray-200 p-2 cursor-pointer font-bold rounded-lg border-2"
                     onClick={authLogout}
                 >
-                    Logout @username
+                    Logout @{userData.username}
                 </div>
             </LogoutModal>
         </>

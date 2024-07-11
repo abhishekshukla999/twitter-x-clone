@@ -2,7 +2,7 @@ function Loader() {
     return (
         <div className="min-h-screen w-screen flex justify-center items-center">
             <svg
-                className="w-20 bg-transparent"
+                className="w-16 bg-transparent"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="xMidYMid"

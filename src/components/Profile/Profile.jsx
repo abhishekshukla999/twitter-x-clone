@@ -1,9 +1,38 @@
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { TweetCard } from "../index";
+import { tweetService } from "../../appwrite";
+import { addTweets } from "../../features/tweet/tweetSlice";
 
 function Profile() {
-    const profileData = useSelector((state) => state.profile.profileData);
+    const [loading, setLoading] = useState(true);
+    const userData = useSelector((state) => state.profile.profileData);
+    const tweetsData = useSelector((state) => state.tweets.tweetsData);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const fetchTweets = async () => {
+            const tweets = userData.tweets;
+
+            const tweetsCollection = await Promise.all(
+                tweets.map(async (tweetId) => {
+                    const tweet = await tweetService.getTweet(tweetId);
+                    return tweet;
+                })
+            );
+
+            // console.log(tweetsCollection);
+
+            dispatch(addTweets({ tweetsData: tweetsCollection }));
+        };
+
+        fetchTweets();
+
+        setLoading(false);
+    }, []);
+
+    if (loading) return <h1>Loading.....</h1>;
 
     return (
         <div>
@@ -21,7 +50,7 @@ function Profile() {
                 </NavLink>
 
                 <NavLink className="right w-[90%]">
-                    <p className="font-bold text-base">Abhishek Shukla</p>
+                    <p className="font-bold text-base">{userData.name}</p>
                     <p className="text-sm font-light">5 posts</p>
                 </NavLink>
             </div>
@@ -71,7 +100,7 @@ function Profile() {
                 <div className="mt-20 ml-4">
                     <div className="flex">
                         <span className="font-bold text-xl">
-                            Elon Musk Shukla
+                            {userData.name}
                         </span>
                         <span>
                             <svg
@@ -88,7 +117,7 @@ function Profile() {
                         </span>
                     </div>
 
-                    <p className="text-gray-500">@elonmusk</p>
+                    <p className="text-gray-500">@{userData.username}</p>
                 </div>
 
                 <div className="bio m-4">
@@ -126,7 +155,9 @@ function Profile() {
                                 </g>
                             </svg>
                         </span>
-                        <span className="text-blue-500">abhishekshukla.xyz</span>
+                        <span className="text-blue-500">
+                            abhishekshukla.xyz
+                        </span>
                     </div>
                     <div className="flex grow">
                         <span className="mx-1">
@@ -140,7 +171,9 @@ function Profile() {
                                 </g>
                             </svg>
                         </span>
-                        <span className="text-gray-500">Joined August 2024</span>
+                        <span className="text-gray-500">
+                            Joined August 2024
+                        </span>
                     </div>
                 </div>
             </div>
@@ -162,11 +195,27 @@ function Profile() {
                 </NavLink>
             </div>
 
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
+            {/* mapping */}
+            <div>
+                {tweetsData.map((tweet) => (
+                    <TweetCard
+                        key={tweet.$id}
+                        tweetId={tweet.$id}
+                        name={tweet.name}
+                        username={tweet.username}
+                        content={tweet.content}
+                        media={tweet.media}
+                        likes={tweet.likes}
+                        replies={tweet.replies}
+                        retweets={tweet.retweets}
+                        author={tweet.author}
+                        slug={tweet.slug}
+                        bookmarked={tweet.bookmarked}
+                        createdAt={tweet.$createdAt}
+                        updatedAt={tweet.$updatedAt}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

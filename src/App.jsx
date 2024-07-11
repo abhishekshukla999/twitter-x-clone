@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./features/auth/authSlice";
-import { addProfileData } from "./features/profile/profileSlice";
+import { addProfileData, removeProfileData } from "./features/profile/profileSlice";
 import { authService, profileService } from "./appwrite";
 import { useEffect } from "react";
 import { Root, Header } from "./components";
 import { Outlet, useNavigate } from "react-router-dom";
+import { removeTweets } from "./features/tweet/tweetSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -18,10 +19,12 @@ function App() {
 
                 profileService.getProfile(userData.$id).then((profileData) => {
                     dispatch(addProfileData({ profileData }));
-                    navigate("/home")
+                    // navigate("/home")
                 });
             } else {
                 dispatch(logout());
+                dispatch(removeProfileData());
+                dispatch(removeTweets())
             }
         });
     }, [navigate, dispatch, status]);

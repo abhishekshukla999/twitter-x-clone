@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { tweetService, tweetMediaService } from "../../appwrite";
-import { useSelector } from "react-redux";
+import {
+    tweetService,
+    tweetMediaService,
+    profileService,
+} from "../../appwrite";
+import { useSelector, useDispatch } from "react-redux";
+import { addProfileData } from "../../features/profile/profileSlice";
 
 function TweetForm({ post }) {
     // preview and upload states
     const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
     const { register, handleSubmit } = useForm();
+    const dispatch = useDispatch();
     const userData = useSelector((state) => state.profile.profileData);
 
     const submitPost = async (data) => {
@@ -26,12 +32,26 @@ function TweetForm({ post }) {
             }
 
             const tweetPost = await tweetService.createTweet({
-                author: userData.userId,
+                name: userData.name,
+                username: userData.username,
+                author: userData.$id,
                 content: String(data.content).trim(),
                 media: data.media || "",
             });
 
             if (tweetPost) console.log("Tweet Created");
+
+            const tweets = userData.tweets || [];
+            const updatedTweets = [tweetPost.$id, ...tweets];
+
+            const profileData = await profileService.updateProfile(
+                userData.$id,
+                {
+                    tweets: updatedTweets,
+                }
+            );
+
+            dispatch(addProfileData({ profileData }));
         }
     };
 
@@ -100,7 +120,7 @@ function TweetForm({ post }) {
                         <div className="flex my-2 flex-wrap">
                             {/* file upload */}
                             <div
-                                className="mx-0.5 p-2 w-fit h-fit rounded-full"
+                                className="mx-0.5 p-2 w-fit h-fit hover:bg-blue-100 rounded-full"
                                 title="media"
                             >
                                 <label htmlFor="mediaFile" className="">

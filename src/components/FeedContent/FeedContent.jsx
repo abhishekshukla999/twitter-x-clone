@@ -47,13 +47,7 @@ function FeedContent() {
             <TweetForm />
 
             {/* TweetCard */}
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
-            <TweetCard />
+            
         </div>
     );
 }

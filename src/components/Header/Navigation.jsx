@@ -286,7 +286,7 @@ function Navigation() {
                                     </g>
                                 </svg>
                             </span>
-                            <span className="px-4">Settings and privacy</span>
+                            <span className="px-4">Settings</span>
                         </NavLink>
                     </li>
                 </ul>

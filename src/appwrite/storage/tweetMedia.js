@@ -32,15 +32,15 @@ class TweetMediaService {
                 fileId
             );
         } catch (error) {
-            console.log("Appwrite Service :: uploadFile :: error ", error);
+            console.log("Appwrite Service :: deleteFile :: error ", error);
         }
     }
 
     getFilePreview(fileId) {
         try {
-            return this.getFilePreview(config.appwriteTweetsBucketId, fileId);
+            return this.storage.getFilePreview(config.appwriteTweetsBucketId, fileId);
         } catch (error) {
-            console.log("Appwrite Service :: uploadFile :: error ", error);
+            console.log("Appwrite Service :: getFilePreview :: error ", error);
         }
     }
 }

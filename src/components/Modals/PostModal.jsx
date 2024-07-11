@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import { tweetService, tweetMediaService } from "../../appwrite";
-import { useSelector } from "react-redux";
+import {
+    tweetService,
+    tweetMediaService,
+    profileService,
+} from "../../appwrite";
+import { useSelector, useDispatch } from "react-redux";
+import { addProfileData } from "../../features/profile/profileSlice";
 
 function PostModal({ isOpen, onClose }) {
     // preview and upload states
     const [preImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
     const { register, handleSubmit } = useForm();
+    const dispatch = useDispatch();
     const userData = useSelector((state) => state.profile.profileData);
 
     const submitPost = async (data) => {
@@ -20,13 +26,25 @@ function PostModal({ isOpen, onClose }) {
                 data.media = fileId;
             }
         }
+
         const tweetPost = await tweetService.createTweet({
-            author: userData.userId,
+            name: userData.name,
+            username: userData.username,
+            author: userData.$id,
             content: String(data.content).trim(),
             media: data.media || "",
         });
 
         if (tweetPost) console.log("Tweet Created");
+
+        const tweets = userData.tweets || [];
+        const updatedTweets = [tweetPost.$id, ...tweets];
+
+        const profileData = await profileService.updateProfile(userData.$id, {
+            tweets: updatedTweets,
+        });
+
+        dispatch(addProfileData({ profileData }));
     };
 
     const openAndReadFile = (e) => {

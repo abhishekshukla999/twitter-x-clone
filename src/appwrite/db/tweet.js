@@ -6,21 +6,22 @@ class TweetService {
     databases;
 
     constructor() {
-        this.client.setEndpoint(config.appwriteUrl).setProject(config.appwriteProjectId);
+        this.client
+            .setEndpoint(config.appwriteUrl)
+            .setProject(config.appwriteProjectId);
 
         this.databases = new Databases(this.client);
     }
 
-    async createTweet({ author, content, ...rest }) {
+    async createTweet({ name, username, author, content, ...rest }) {
         try {
-            const tweetId = ID.unique();
-
             return await this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteTweetsCollectionId,
-                tweetId,
+                ID.unique(),
                 {
-                    tweetId,
+                    name,
+                    username,
                     author,
                     content,
                     ...rest,
