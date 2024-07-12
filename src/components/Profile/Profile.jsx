@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { EditProfileModal, Loader, Posts, TweetCard } from "../index";
+import {
+    EditProfileModal,
+    Likes,
+    Loader,
+    Posts,
+    TweetCard,
+    Media,
+    Replies,
+} from "../index";
 import { profileMediaService, tweetService } from "../../appwrite";
 import { addTweets } from "../../features/tweet/tweetSlice";
 import { Query } from "appwrite";
@@ -16,6 +24,7 @@ function Profile() {
     const authId = useSelector((state) => state.auth.userData.$id);
     const dispatch = useDispatch();
     const [isProfileEdit, setIsProfileEdit] = useState(false);
+    const [currProfileCompo, setCurrProfileCompo] = useState("posts");
 
     useEffect(() => {
         const fetchTweets = async () => {
@@ -240,7 +249,7 @@ function Profile() {
                     </div>
                 </div>
 
-                <div className="flex gap-4 text-sm mx-4 my-3 text-gray-700">
+                <div className="flex gap-4 text-sm px-4 py-3 text-gray-700">
                     <span className="hover:underline cursor-pointer">
                         <strong>{userData.following.length}</strong> Following
                     </span>
@@ -250,23 +259,76 @@ function Profile() {
                 </div>
             </div>
 
-            <div className="top flex px-3 py-4 top-0 backdrop-blur-3xl opacity-80 border-b border-l border-r border-b-zinc-200">
+            <div className="top flex top-0 backdrop-blur-3xl opacity-80 border-b border-l border-r border-b-zinc-200">
                 <NavLink
-                    to="/profile"
-                    className="left w-1/2 flex justify-center font-bold text-base"
+                    className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrProfileCompo("posts");
+                    }}
                 >
-                    Posts
+                    <div
+                        className={`py-4 ${
+                            currProfileCompo === "posts"
+                                ? "text-black border-b-4 border-twitter-blue"
+                                : "text-gray-600"
+                        }`}
+                    >
+                        Posts
+                    </div>
                 </NavLink>
 
-                <NavLink className="right w-1/2 flex justify-center font-bold text-base">
-                    Replies
+                <NavLink
+                    className={`right w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrProfileCompo("replies");
+                    }}
+                >
+                    <div
+                        className={`py-4 ${
+                            currProfileCompo === "replies"
+                                ? "text-black border-b-4 border-twitter-blue"
+                                : "text-gray-600"
+                        }`}
+                    >
+                        Replies
+                    </div>
                 </NavLink>
-                <NavLink className="left w-1/2 flex justify-center font-bold text-base">
-                    Media
+                <NavLink
+                    className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrProfileCompo("media");
+                    }}
+                >
+                    <div
+                        className={`py-4 ${
+                            currProfileCompo === "media"
+                                ? "text-black border-b-4 border-twitter-blue"
+                                : "text-gray-600"
+                        }`}
+                    >
+                        Media
+                    </div>
                 </NavLink>
 
-                <NavLink className="right w-1/2 flex justify-center font-bold text-base">
-                    Likes
+                <NavLink
+                    className={`right w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrProfileCompo("likes");
+                    }}
+                >
+                    <div
+                        className={`py-4 ${
+                            currProfileCompo === "likes"
+                                ? "text-black border-b-4 border-twitter-blue"
+                                : "text-gray-600"
+                        }`}
+                    >
+                        Likes
+                    </div>
                 </NavLink>
             </div>
 
@@ -274,32 +336,49 @@ function Profile() {
             {loading ? (
                 <Loader />
             ) : (
-                <Posts>
-                    {tweetsData.length === 0 ? (
-                        <div className="text-3xl font-bold text-center">
-                            @{userData.username} don&apos;t have any posts
-                        </div>
-                    ) : (
-                        tweetsData.map((tweet) => (
-                            <TweetCard
-                                key={tweet.$id}
-                                tweetId={tweet.$id}
-                                name={tweet.name}
-                                username={tweet.username}
-                                content={tweet.content}
-                                media={tweet.media}
-                                likes={tweet.likes}
-                                replies={tweet.replies}
-                                retweets={tweet.retweets}
-                                author={tweet.author}
-                                slug={tweet.slug}
-                                bookmarked={tweet.bookmarked}
-                                createdAt={tweet.$createdAt}
-                                updatedAt={tweet.$updatedAt}
-                            />
-                        ))
-                    )}
-                </Posts>
+                (() => {
+                    switch (currProfileCompo) {
+                        case "posts":
+                            return (
+                                <Posts>
+                                    {tweetsData.length === 0 ? (
+                                        <div className="text-3xl font-bold text-center">
+                                            @{userData.username} don&apos;t have
+                                            any posts
+                                        </div>
+                                    ) : (
+                                        tweetsData.map((tweet) => (
+                                            <TweetCard
+                                                key={tweet.$id}
+                                                tweetId={tweet.$id}
+                                                name={tweet.name}
+                                                username={tweet.username}
+                                                content={tweet.content}
+                                                media={tweet.media}
+                                                likes={tweet.likes}
+                                                replies={tweet.replies}
+                                                retweets={tweet.retweets}
+                                                author={tweet.author}
+                                                slug={tweet.slug}
+                                                bookmarked={tweet.bookmarked}
+                                                createdAt={tweet.$createdAt}
+                                                updatedAt={tweet.$updatedAt}
+                                            />
+                                        ))
+                                    )}
+                                </Posts>
+                            );
+                        case "replies":
+                            return <Replies>Replies by user</Replies>;
+                        case "media":
+                            return <Media>Media posted by user</Media>;
+                        case "likes":
+                            return <Likes>Likes by user</Likes>;
+
+                        default:
+                            return null;
+                    }
+                })()
             )}
         </div>
     );

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function Replies() {
-  return (
-    <div>Replies by user</div>
-  )
+function Replies({ children }) {
+    return <div>{children}</div>;
 }
 
-export default Replies
+export default Replies;

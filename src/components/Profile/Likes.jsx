@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function Likes() {
-  return (
-    <div>Post Liked by user</div>
-  )
+function Likes({ children }) {
+    return <div>{children}</div>;
 }
 
-export default Likes
+export default Likes;

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function Media() {
-  return (
-    <div>Media Posted by user</div>
-  )
+function Media({ children }) {
+    return <div>{children}</div>;
 }
 
-export default Media
+export default Media;
