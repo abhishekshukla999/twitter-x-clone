@@ -5,7 +5,6 @@ import {
     tweetService,
     tweetMediaService,
     profileService,
-    profileMediaService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addProfileData } from "../../features/profile/profileSlice";
@@ -13,7 +12,7 @@ import { updateTweets } from "../../features/tweet/tweetSlice";
 
 function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
-    const [preImage, setPrevImage] = useState(null);
+    const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
@@ -153,7 +152,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                                     {...register("content")}
                                 />
 
-                                {preImage && (
+                                {prevImage && (
                                     <div className="preview w-28">
                                         <div
                                             className="relative left-28 cursor-pointer"
@@ -166,7 +165,7 @@ function PostModal({ isOpen, onClose, post = false }) {
 
                                         <img
                                             className="rounded-lg"
-                                            src={preImage}
+                                            src={prevImage}
                                         />
                                     </div>
                                 )}

@@ -38,6 +38,11 @@ import NavigationModal from "./Modals/NavigationModal";
 import NavigationMD from "./Header/NavigationMD";
 import NavigationMobile from "./Header/NavigationMobile";
 import NavigationBottom from "./Header/NavigationBottom";
+import EditProfileModal from "./Modals/EditProfileModal";
+import Likes from "./Profile/Likes";
+import Media from "./Profile/Media";
+import Replies from "./Profile/Replies";
+import Posts from "./Profile/Posts";
 
 export {
     Login1,
@@ -80,4 +85,9 @@ export {
     NavigationMD,
     NavigationBottom,
     NavigationMobile,
+    EditProfileModal,
+    Likes,
+    Media,
+    Replies,
+    Posts,
 };
