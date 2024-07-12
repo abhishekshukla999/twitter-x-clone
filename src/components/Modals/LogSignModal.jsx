@@ -1,11 +1,11 @@
 import { createPortal } from "react-dom";
 
-function Modal({ children, isOpen, onClose }) {
+function LogSignModal({ children, isOpen, onClose }) {
     if (!isOpen) return null;
 
     return createPortal(
         <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-black opacity-100 p-5 rounded-xl shadow-lg relative w-fit min-h-[70%] max-[702px]:h-screen max-[702px]:w-screen text-black">
+            <div className="bg-black overflow-y-auto opacity-100 p-5 rounded-xl shadow-lg relative w-fit min-h-[70%] max-[702px]:h-screen max-[702px]:w-screen text-black">
                 <div className="">
                     <button
                         className="rounded-lg m-3 absolute top-2.5 left-2.5 bg-none border-none text-2xl cursor-pointer"
@@ -42,4 +42,4 @@ function Modal({ children, isOpen, onClose }) {
     );
 }
 
-export default Modal;
+export default LogSignModal;

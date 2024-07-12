@@ -1,10 +1,29 @@
-import React from "react";
+import { useState } from "react";
 import TweetCard from "../Tweets/TweetCard";
+import NavigationMobile from "../Header/NavigationMobile";
 
 function Explore() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClose = () => {
+        setIsOpen(false);
+    };
+
     return (
         <div>
-            <div className="p-2 border-l border-r">
+            <div className="flex p-2 border-l border-r">
+                {/* Navigation Mobile */}
+                <div className="my-3 hidden max-[499px]:flex">
+                    <div className="w-1/2 " onClick={() => setIsOpen(true)}>
+                        <img
+                            className="w-8 rounded-full mx-3"
+                            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                            alt="navigation menu"
+                        />
+                    </div>
+                    <NavigationMobile isOpen={isOpen} onClose={handleClose} />
+                </div>
+                
                 <form className="max-w-md p-1 mx-auto w-full">
                     <label
                         htmlFor="default-search"
@@ -41,7 +60,7 @@ function Explore() {
                 </form>
             </div>
             <div>
-                <TweetCard />
+                {/* Tweet Card */}
             </div>
         </div>
     );

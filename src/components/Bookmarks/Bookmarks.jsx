@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import TweetCard from "../Tweets/TweetCard";
 
@@ -8,7 +7,9 @@ function Bookmarks() {
             <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%] border-l border-r">
                 <NavLink className="px-1.5 font-bold text-xl">
                     <div>Bookmarks</div>
-                    <div className="text-sm font-light text-gray-600">@username</div>
+                    <div className="text-sm font-light text-gray-600">
+                        @username
+                    </div>
                 </NavLink>
 
                 <div className="flex gap-4">
@@ -26,10 +27,7 @@ function Bookmarks() {
                 </div>
             </div>
 
-            <TweetCard/>
-            <TweetCard/>
-            <TweetCard/>
-            <TweetCard/>
+            {/* Tweet Card */}
         </div>
     );
 }

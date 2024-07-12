@@ -1,9 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import authService from "../../appwrite/auth/auth";
+import { authService, profileService } from "../../appwrite";
 import { login as authLogin } from "../../features/auth/authSlice";
 import { NavLink } from "react-router-dom";
+import { addProfileData } from "../../features/profile/profileSlice";
 
 function Login1() {
     const { register, handleSubmit } = useForm();
@@ -17,6 +18,14 @@ function Login1() {
                 const userData = await authService.getCurrentUser();
                 if (userData) {
                     dispatch(authLogin({ userData }));
+
+                    const profileData = await profileService.getProfile(
+                        userData.$id
+                    );
+
+                    if (profileData) {
+                        dispatch(addProfileData({ profileData }));
+                    }
                 }
             }
         } catch (error) {
@@ -63,7 +72,7 @@ function Login1() {
                                     <path fill="none" d="M0 0h48v48H0z"></path>
                                 </g>
                             </svg>
-                            <apan>Sign up with Google</apan>
+                            <span>Sign up with Google</span>
                         </NavLink>
                     </div>
                     <div className="mx-7 my-2 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">

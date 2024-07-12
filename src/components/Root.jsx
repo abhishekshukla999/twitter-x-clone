@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import Modal from "./Modal";
-import { Login1, SignUp1, SignUp2 } from "./index";
+import { useState } from "react";
+import { Login1, SignUp1, SignUp2, LogSignModal } from "./index";
 import { useForm } from "react-hook-form";
-import { authService, profileService, profileMediaService } from "../appwrite";
+import { authService, profileService } from "../appwrite";
 import { useDispatch } from "react-redux";
 import { login } from "../features/auth/authSlice";
+import { addProfileData } from "../features/profile/profileSlice";
 import { NavLink } from "react-router-dom";
 
 function Entry() {
@@ -30,25 +30,24 @@ function Entry() {
 
             const [loginData, userId] = userData;
 
-            const avatarFile = await profileMediaService.uploadFile(
-                data.avatar[0]
-            );
-
             if (loginData) {
                 // has to dispatch in store user Profile data after profile document creation
-                const avatar = avatarFile.$id;
                 const profileData = await profileService.createProfile({
                     userId,
                     username,
                     email,
                     name,
                     dob,
-                    avatar,
                 });
-                dispatch(login(loginData));
+
+                dispatch(login({userData: loginData}));
+
+                if (profileData) {
+                    dispatch(addProfileData({ profileData }));
+                }
             }
         } catch (error) {
-            console.log("Error inside Entry: ", error);
+            console.log("Error in singup from root: ", error);
         }
     };
 
@@ -126,7 +125,7 @@ function Entry() {
                                         ></path>
                                     </g>
                                 </svg>
-                                <apan>Sign up with Google</apan>
+                                <span>Sign up with Google</span>
                             </NavLink>
                             <NavLink className="flex justify-center bg-white text-black font-[500] my-2 p-2 rounded-full">
                                 <svg
@@ -154,7 +153,7 @@ function Entry() {
                                 >
                                     Create Account
                                 </button>
-                                <Modal
+                                <LogSignModal
                                     isOpen={isOpenSignup}
                                     onClose={() => {
                                         setIsOpenSignup(false);
@@ -176,7 +175,7 @@ function Entry() {
                                             />
                                         )}
                                     </form>
-                                </Modal>
+                                </LogSignModal>
                             </div>
                             <p className="text-gray-400 text-[11px] mb-5 p-2">
                                 By signing up, you agree to the
@@ -207,12 +206,12 @@ function Entry() {
                                 >
                                     Sign in
                                 </button>
-                                <Modal
+                                <LogSignModal
                                     isOpen={isOpenLogin}
                                     onClose={() => setIsOpenLogin(false)}
                                 >
                                     <Login1 />
-                                </Modal>
+                                </LogSignModal>
                             </div>
                         </div>
                     </div>

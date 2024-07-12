@@ -17,7 +17,7 @@ class ProfileService {
                 config.appwriteDatabaseId,
                 config.appwriteUsersCollectionId,
                 userId,
-                { userId, username, email, name, dob, ...rest }
+                { username, email, name, dob, ...rest }
             );
 
             if (profile) {
@@ -49,7 +49,7 @@ class ProfileService {
                 { ...data }
             );
         } catch (error) {
-            console.log("Appwrite Service :: getProfile :: updateProfile ", error);
+            console.log("Appwrite Service :: updateProfile :: error ", error);
         }
     }
 
@@ -61,7 +61,7 @@ class ProfileService {
                 docId
             );
         } catch (error) {
-            console.log("Appwrite Service :: deleteProfile :: updateProfile ", error);
+            console.log("Appwrite Service :: deleteProfile :: error ", error);
         }
     }
 }

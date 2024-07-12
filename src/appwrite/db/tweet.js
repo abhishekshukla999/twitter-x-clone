@@ -6,21 +6,22 @@ class TweetService {
     databases;
 
     constructor() {
-        this.client.setEndpoint(config.appwriteUrl).setProject(config.appwriteProjectId);
+        this.client
+            .setEndpoint(config.appwriteUrl)
+            .setProject(config.appwriteProjectId);
 
-        this.databases = new Databases();
+        this.databases = new Databases(this.client);
     }
 
-    async createTweet({ author, content, ...rest }) {
+    async createTweet({ name, username, author, content, ...rest }) {
         try {
-            const tweetId = ID.unique();
-
             return await this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteTweetsCollectionId,
-                tweetId,
+                ID.unique(),
                 {
-                    tweetId,
+                    name,
+                    username,
                     author,
                     content,
                     ...rest,
@@ -31,15 +32,28 @@ class TweetService {
         }
     }
 
-    async getTweet(docId) {
+    async getTweet(docId, queries = []) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
                 config.appwriteTweetsCollectionId,
-                docId
+                docId,
+                queries
             );
         } catch (error) {
             console.log("Appwrite Service :: getTweet :: error ", error);
+        }
+    }
+
+    async getTweets(queries = []) {
+        try {
+            return this.databases.listDocuments(
+                config.appwriteDatabaseId,
+                config.appwriteTweetsCollectionId,
+                queries
+            );
+        } catch (error) {
+            console.log("Appwrite Service :: getTweets :: error ", error);
         }
     }
 

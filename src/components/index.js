@@ -1,6 +1,6 @@
 import Login1 from "./LoginForm/Login1";
 import Root from "./Root";
-import Modal from "./Modal";
+import LogSignModal from "./Modals/LogSignModal";
 import SignUp1 from "./SignupForm/SignUp1";
 import SignUp2 from "./SignupForm/SignUp2";
 import AvatarForm from "./Profile/AvatarForm";
@@ -29,12 +29,20 @@ import ChatItem from "./Messages/ChatItem";
 import Premium from "./Premium/Premium";
 import SettingsList from "./Settings/SettingsList";
 import SettingsBox from "./Settings/SettingsBox";
+import Protected from "./Protected";
+import Loader from "./Loader";
 import UnderDev from "./UnderDev/UnderDev";
+import PostModal from "./Modals/PostModal";
+import LogoutModal from "./Modals/LogoutModal";
+import NavigationModal from "./Modals/NavigationModal";
+import NavigationMD from "./Header/NavigationMD";
+import NavigationMobile from "./Header/NavigationMobile";
+import NavigationBottom from "./Header/NavigationBottom";
 
 export {
     Login1,
     Root,
-    Modal,
+    LogSignModal,
     SignUp1,
     SignUp2,
     AvatarForm,
@@ -63,5 +71,13 @@ export {
     Premium,
     SettingsList,
     SettingsBox,
+    Protected,
+    Loader,
     UnderDev,
+    PostModal,
+    LogoutModal,
+    NavigationModal,
+    NavigationMD,
+    NavigationBottom,
+    NavigationMobile,
 };

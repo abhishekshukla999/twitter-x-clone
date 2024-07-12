@@ -1,10 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./features/auth/authSlice";
-import { addProfileData } from "./features/profile/profileSlice";
+import {
+    addProfileData,
+    removeProfileData,
+} from "./features/profile/profileSlice";
 import { authService, profileService } from "./appwrite";
 import { useEffect } from "react";
 import { Root, Header } from "./components";
 import { Outlet, useNavigate } from "react-router-dom";
+import { removeTweets } from "./features/tweet/tweetSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -16,19 +20,17 @@ function App() {
             if (userData) {
                 dispatch(login({ userData }));
 
-                profileService
-                    .getProfile(userData.$id)
-                    .then((profileData) =>
-                        dispatch(addProfileData({ profileData }))
-                    );
-
-                navigate("/home");
+                profileService.getProfile(userData.$id).then((profileData) => {
+                    dispatch(addProfileData({ profileData }));
+                    // navigate("/home")
+                });
             } else {
                 dispatch(logout());
-                document.body.style.backgroundColor = "black";
+                dispatch(removeProfileData());
+                dispatch(removeTweets());
             }
         });
-    }, []);
+    }, [navigate, dispatch]);
 
     if (!status) return <Root />;
 
