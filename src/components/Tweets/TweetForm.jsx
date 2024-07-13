@@ -50,6 +50,8 @@ function TweetForm() {
         }
 
         reset();
+        setPrevImage(null);
+        setUploadImage(null);
     };
 
     const openAndReadFile = (e) => {

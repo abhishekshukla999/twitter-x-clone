@@ -80,7 +80,12 @@ function TweetCard({
     };
 
     // delete a tweet
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if (media) {
+            await tweetMediaService.deleteFile(media);
+            console.log("File Deleted");
+        }
+
         tweetService
             .deleteTweet(tweetId)
             .then((res) => {
@@ -231,7 +236,7 @@ function TweetCard({
                                 e.stopPropagation();
                                 setIsOpenEdit(false);
                             }}
-                            post ={{tweetId, content, media}}
+                            post={{ tweetId, content, media }}
                         />
                     </div>
 
