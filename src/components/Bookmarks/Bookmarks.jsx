@@ -9,8 +9,8 @@ import Loader from "../Loader";
 function Bookmarks() {
     const userData = useSelector((state) => state.profile.profileData);
     const authData = useSelector((state) => state.auth.userData);
-    const bookmarks = userData.bookmarks;
     const [bookTweets, setBookTweets] = useState([]);
+    const [loader, setLoader] = useState(true);
 
     useEffect(() => {
         async function fetchBookmarks() {
@@ -24,6 +24,8 @@ function Bookmarks() {
                 Query.equal("$id", tweetIds),
             ]);
             setBookTweets([...bookMarkedTweets.documents]);
+
+            setLoader(false);
         }
 
         fetchBookmarks();
@@ -55,7 +57,9 @@ function Bookmarks() {
             </div>
 
             {/* Tweet Card */}
-            {bookmarks.length !== 0 ? (
+            {loader ? (
+                <Loader />
+            ) : bookTweets.length === 0 ? (
                 <div className="p-4 text-2xl font-bold text-center border-l border-r">
                     You don&apos;t have any bookmarks
                 </div>

@@ -373,7 +373,7 @@ function Profile() {
                         case "media":
                             return <Media>Media posted by user</Media>;
                         case "likes":
-                            return <Likes>Likes by user</Likes>;
+                            return <Likes />;
 
                         default:
                             return null;

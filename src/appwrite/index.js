@@ -4,6 +4,7 @@ import profileMediaService from "./storage/profileMedia";
 import tweetService from "./db/tweet";
 import tweetMediaService from "./storage/tweetMedia";
 import bookmarksService from "./db/bookmark";
+import likeService from "./db/likes";
 
 export {
     authService,
@@ -12,4 +13,5 @@ export {
     tweetService,
     tweetMediaService,
     bookmarksService,
+    likeService,
 };

@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import {
     bookmarksService,
+    likeService,
     profileService,
     tweetMediaService,
     tweetService,
@@ -44,6 +45,7 @@ function TweetCard({
     const [isOpenEdit, setIsOpenEdit] = useState(false);
 
     const [myBookmark, setMyBookmark] = useState(false);
+    const [myLike, setMyLike] = useState(false);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -61,6 +63,19 @@ function TweetCard({
 
                 if (isBookmarked.documents.length !== 0) {
                     setMyBookmark(true);
+                }
+            }
+
+            if (likes.length !== 0) {
+                const isLiked = await likeService.getLikes([
+                    Query.and([
+                        Query.equal("tweetId", tweetId),
+                        Query.equal("userId", authData.$id),
+                    ]),
+                ]);
+
+                if (isLiked.documents.length !== 0) {
+                    setMyLike(true);
                 }
             }
         };
@@ -137,8 +152,6 @@ function TweetCard({
                 ]),
             ]);
 
-            console.log(isBookmarked);
-
             if (isBookmarked.documents.length === 0) {
                 const bookmark = await bookmarksService.createBookmark({
                     userId: authData.$id,
@@ -180,6 +193,64 @@ function TweetCard({
                         })
                         .catch((err) => {
                             console.log("Error delete bookmarks :: ", err);
+                        });
+                }
+            }
+        }
+    };
+
+    const handleLike = async () => {
+        if (authData) {
+            const isLiked = await likeService.getLikes([
+                Query.and([
+                    Query.equal("tweetId", tweetId),
+                    Query.equal("userId", authData.$id),
+                ]),
+            ]);
+
+            console.log(isLiked);
+
+            if (isLiked.documents.length === 0) {
+                const like = await likeService.createLike({
+                    userId: authData.$id,
+                    tweetId,
+                });
+
+                if (like) {
+                    likes = [like.$id, ...likes];
+
+                    tweetService
+                        .updateTweet(tweetId, { likes })
+                        .then((res) => {
+                            if (res) {
+                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                setMyLike(true);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("Error add like :: ", err);
+                        });
+                }
+            } else {
+                const like = await likeService.deleteLike(
+                    isLiked.documents["0"].$id
+                );
+
+                if (like) {
+                    likes = likes.filter(
+                        (likeId) => likeId !== isLiked.documents["0"].$id
+                    );
+
+                    tweetService
+                        .updateTweet(tweetId, { likes })
+                        .then((res) => {
+                            if (res) {
+                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                setMyLike(false);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("Error delete like :: ", err);
                         });
                 }
             }
@@ -374,9 +445,9 @@ function TweetCard({
                                     {retweets.length}
                                 </span>
                             </div>
-                            <div className="flex mr-auto">
+                            <div className="flex mr-auto" onClick={handleLike}>
                                 <span className="m-1 rounded-full text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-red-100 hover:text-red-500">
-                                    {false ? (
+                                    {myLike ? (
                                         <FontAwesomeIcon
                                             icon={faHeartSolid}
                                             className="w-5 text-red-500"
