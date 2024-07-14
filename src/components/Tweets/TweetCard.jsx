@@ -6,14 +6,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import {
+    bookmarksService,
     profileService,
     tweetMediaService,
     tweetService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTweet } from "../../features/tweet/tweetSlice";
+import { deleteTweet, updateTweets } from "../../features/tweet/tweetSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
 import PostModal from "../Modals/PostModal";
+import { Query } from "appwrite";
 
 function TweetCard({
     tweetId,
@@ -21,12 +23,12 @@ function TweetCard({
     username,
     content,
     media = "",
-    likes,
-    replies,
-    retweets,
+    likes = [],
+    replies = [],
+    retweets = [],
     author,
     slug,
-    bookmarked = false,
+    bookmarks = [],
     createdAt,
     updatedAt,
 }) {
@@ -35,15 +37,31 @@ function TweetCard({
     const [date, setDate] = useState({});
     const dispatch = useDispatch();
     const profileData = useSelector((state) => state.profile.profileData);
+    const authData = useSelector((state) => state.auth.userData);
     // options box handling
     const [isOpen, setisOpen] = useState(false);
     //edit handling
     const [isOpenEdit, setIsOpenEdit] = useState(false);
 
+    const [myBookmark, setMyBookmark] = useState(false);
+
     useEffect(() => {
-        const fetchMedia = () => {
+        const fetchMedia = async () => {
             if (media) {
                 setMediaURL(tweetMediaService.getFilePreview(media));
+            }
+
+            if (bookmarks.length !== 0) {
+                const isBookmarked = await bookmarksService.getBookmarks([
+                    Query.and([
+                        Query.equal("tweetId", tweetId),
+                        Query.equal("userId", authData.$id),
+                    ]),
+                ]);
+
+                if (isBookmarked.documents.length !== 0) {
+                    setMyBookmark(true);
+                }
             }
         };
 
@@ -99,7 +117,7 @@ function TweetCard({
                 tweetIds = tweetIds.filter((id) => id !== tweetId);
 
                 profileService
-                    .updateProfile(author, {
+                    .updateProfile(profileData.$id, {
                         tweets: tweetIds,
                     })
                     .then((res) => {
@@ -110,9 +128,67 @@ function TweetCard({
             });
     };
 
+    const handleBookmark = async () => {
+        if (authData) {
+            const isBookmarked = await bookmarksService.getBookmarks([
+                Query.and([
+                    Query.equal("tweetId", tweetId),
+                    Query.equal("userId", authData.$id),
+                ]),
+            ]);
+
+            console.log(isBookmarked);
+
+            if (isBookmarked.documents.length === 0) {
+                const bookmark = await bookmarksService.createBookmark({
+                    userId: authData.$id,
+                    tweetId,
+                });
+
+                if (bookmark) {
+                    bookmarks = [bookmark.$id, ...bookmarks];
+
+                    tweetService
+                        .updateTweet(tweetId, { bookmarks })
+                        .then((res) => {
+                            if (res) {
+                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                setMyBookmark(true);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("Error add bookmarks :: ", err);
+                        });
+                }
+            } else {
+                const bookmark = await bookmarksService.deleteBookmark(
+                    isBookmarked.documents["0"].$id
+                );
+
+                if (bookmark) {
+                    bookmarks = bookmarks.filter(
+                        (bookId) => bookId !== isBookmarked.documents["0"].$id
+                    );
+
+                    tweetService
+                        .updateTweet(tweetId, { bookmarks })
+                        .then((res) => {
+                            if (res) {
+                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                setMyBookmark(false);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("Error delete bookmarks :: ", err);
+                        });
+                }
+            }
+        }
+    };
+
     return (
         <>
-            <div className="post flex px-2 border border-t-0 pt-2 pb-2">
+            <div className="post flex px-2 border border-t-0 pt-2">
                 {/* User avatar */}
                 <div className="avatar w-[9%]">
                     <div className="m-1">
@@ -336,8 +412,11 @@ function TweetCard({
 
                         {/* BookMark and share */}
                         <div className="flex">
-                            <div className="rounded-full my-auto text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-blue-100 hover:text-twitter-blue">
-                                {bookmarked ? (
+                            <div
+                                className="rounded-full my-auto text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-blue-100 hover:text-twitter-blue"
+                                onClick={handleBookmark}
+                            >
+                                {myBookmark ? (
                                     <FontAwesomeIcon
                                         icon={faBookmarkSolid}
                                         className="w-5 text-twitter-blue"

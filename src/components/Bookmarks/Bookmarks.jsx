@@ -1,14 +1,41 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import TweetCard from "../Tweets/TweetCard";
+import { useSelector } from "react-redux";
+import { bookmarksService, tweetService } from "../../appwrite";
+import { Query } from "appwrite";
+import Loader from "../Loader";
 
 function Bookmarks() {
+    const userData = useSelector((state) => state.profile.profileData);
+    const authData = useSelector((state) => state.auth.userData);
+    const bookmarks = userData.bookmarks;
+    const [bookTweets, setBookTweets] = useState([]);
+
+    useEffect(() => {
+        async function fetchBookmarks() {
+            const myBookmarks = await bookmarksService.getBookmarks([
+                Query.equal("userId", [authData.$id]),
+                Query.orderDesc("$createdAt"),
+            ]);
+
+            const tweetIds = myBookmarks.documents.map((book) => book.tweetId);
+            const bookMarkedTweets = await tweetService.getTweets([
+                Query.equal("$id", tweetIds),
+            ]);
+            setBookTweets([...bookMarkedTweets.documents]);
+        }
+
+        fetchBookmarks();
+    }, []);
+
     return (
         <div>
             <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%] border-l border-r">
                 <NavLink className="px-1.5 font-bold text-xl">
                     <div>Bookmarks</div>
                     <div className="text-sm font-light text-gray-600">
-                        @username
+                        @{userData.username}
                     </div>
                 </NavLink>
 
@@ -28,6 +55,32 @@ function Bookmarks() {
             </div>
 
             {/* Tweet Card */}
+            {bookmarks.length !== 0 ? (
+                <div className="p-4 text-2xl font-bold text-center border-l border-r">
+                    You don&apos;t have any bookmarks
+                </div>
+            ) : (
+                <div>
+                    {bookTweets.map((tweet) => (
+                        <TweetCard
+                            key={tweet.$id}
+                            tweetId={tweet.$id}
+                            name={tweet.name}
+                            username={tweet.username}
+                            content={tweet.content}
+                            media={tweet.media}
+                            likes={tweet.likes}
+                            replies={tweet.replies}
+                            retweets={tweet.retweets}
+                            author={tweet.author}
+                            slug={tweet.slug}
+                            bookmarks={tweet.bookmarks}
+                            createdAt={tweet.$createdAt}
+                            updatedAt={tweet.$updatedAt}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

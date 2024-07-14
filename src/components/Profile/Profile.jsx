@@ -360,7 +360,7 @@ function Profile() {
                                                 retweets={tweet.retweets}
                                                 author={tweet.author}
                                                 slug={tweet.slug}
-                                                bookmarked={tweet.bookmarked}
+                                                bookmarks={tweet.bookmarks}
                                                 createdAt={tweet.$createdAt}
                                                 updatedAt={tweet.$updatedAt}
                                             />
