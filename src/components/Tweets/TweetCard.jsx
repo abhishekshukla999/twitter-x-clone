@@ -9,6 +9,7 @@ import {
     bookmarksService,
     likeService,
     profileService,
+    retweetService,
     tweetMediaService,
     tweetService,
 } from "../../appwrite";
@@ -46,6 +47,7 @@ function TweetCard({
 
     const [myBookmark, setMyBookmark] = useState(false);
     const [myLike, setMyLike] = useState(false);
+    const [myRetweet, setMyRetweet] = useState(false);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -75,6 +77,19 @@ function TweetCard({
                 ]);
 
                 if (isLiked.documents.length !== 0) {
+                    setMyLike(true);
+                }
+            }
+
+            if (retweets.length !== 0) {
+                const isRetweeted = await retweetService.getRetweets([
+                    Query.and([
+                        Query.equal("tweetId", tweetId),
+                        Query.equal("userId", authData.$id),
+                    ]),
+                ]);
+
+                if (isRetweeted.documents.length !== 0) {
                     setMyLike(true);
                 }
             }
@@ -116,7 +131,6 @@ function TweetCard({
     const handleDelete = async () => {
         if (media) {
             await tweetMediaService.deleteFile(media);
-            console.log("File Deleted");
         }
 
         tweetService
@@ -208,8 +222,6 @@ function TweetCard({
                 ]),
             ]);
 
-            console.log(isLiked);
-
             if (isLiked.documents.length === 0) {
                 const like = await likeService.createLike({
                     userId: authData.$id,
@@ -251,6 +263,63 @@ function TweetCard({
                         })
                         .catch((err) => {
                             console.log("Error delete like :: ", err);
+                        });
+                }
+            }
+        }
+    };
+
+    const handleRetweet = async () => {
+        if (authData) {
+            const isRetweeted = await retweetService.getRetweets([
+                Query.and([
+                    Query.equal("tweetId", tweetId),
+                    Query.equal("userId", authData.$id),
+                ]),
+            ]);
+
+            if (isRetweeted.documents.length === 0) {
+                const retweet = await retweetService.createRetweet({
+                    userId: authData.$id,
+                    tweetId,
+                });
+
+                if (retweet) {
+                    retweets = [retweet.$id, ...retweets];
+
+                    tweetService
+                        .updateTweet(tweetId, { retweets })
+                        .then((res) => {
+                            if (res) {
+                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                setMyRetweet(true);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("Error add retweet :: ", err);
+                        });
+                }
+            } else {
+                const retweet = await retweetService.deleteRetweet(
+                    isRetweeted.documents["0"].$id
+                );
+
+                if (retweet) {
+                    retweets = retweets.filter(
+                        (retweetId) =>
+                            retweetId !== isRetweeted.documents["0"].$id
+                    );
+
+                    tweetService
+                        .updateTweet(tweetId, { retweets })
+                        .then((res) => {
+                            if (res) {
+                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                setMyRetweet(false);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("Error delete retweet :: ", err);
                         });
                 }
             }
@@ -404,7 +473,7 @@ function TweetCard({
                     <div className="flex justify-between">
                         <div className="flex w-[92%]">
                             <div className="flex mr-auto">
-                                <span className="mx-1 my-auto p-2 rounded-full hover:bg-blue-100 cursor-pointer">
+                                <span className="my-1 my-auto p-2 rounded-full hover:bg-blue-100 cursor-pointer">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
@@ -419,13 +488,16 @@ function TweetCard({
                                     {replies.length}
                                 </span>
                             </div>
-                            <div className="flex mr-auto">
-                                <span className="mx-1 my-auto p-2 rounded-full cursor-pointer">
+                            <div
+                                className="flex mr-auto"
+                                onClick={handleRetweet}
+                            >
+                                <span className="my-1 my-auto p-2 rounded-full cursor-pointer">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
                                         className={`w-5 ${
-                                            false
+                                            myRetweet
                                                 ? "fill-green-500"
                                                 : "fill-gray-500"
                                         } hover:fill-green-500 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1xvli5t r-1hdv0qi`}
@@ -437,7 +509,7 @@ function TweetCard({
                                 </span>
                                 <span
                                     className={`${
-                                        false
+                                        myRetweet
                                             ? "text-green-500"
                                             : "text-gray-500"
                                     }  my-auto`}
@@ -446,7 +518,7 @@ function TweetCard({
                                 </span>
                             </div>
                             <div className="flex mr-auto" onClick={handleLike}>
-                                <span className="m-1 rounded-full text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-red-100 hover:text-red-500">
+                                <span className="my-1 rounded-full text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-red-100 hover:text-red-500">
                                     {myLike ? (
                                         <FontAwesomeIcon
                                             icon={faHeartSolid}
@@ -459,12 +531,18 @@ function TweetCard({
                                         />
                                     )}
                                 </span>
-                                <span className="text-gray-500 m-auto">
+                                <span
+                                    className={`${
+                                        myLike
+                                            ? "text-red-500"
+                                            : "text-gray-500"
+                                    }  m-auto cursor-pointer`}
+                                >
                                     {likes.length}
                                 </span>
                             </div>
                             <div className="flex mr-auto my-auto cursor-pointer">
-                                <span className="m-1 p-2 rounded-full hover:bg-blue-100">
+                                <span className="my-1 p-2 rounded-full hover:bg-blue-100">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"

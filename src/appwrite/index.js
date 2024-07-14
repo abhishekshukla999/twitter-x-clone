@@ -5,6 +5,7 @@ import tweetService from "./db/tweet";
 import tweetMediaService from "./storage/tweetMedia";
 import bookmarksService from "./db/bookmark";
 import likeService from "./db/likes";
+import retweetService from "./db/retweet";
 
 export {
     authService,
@@ -14,4 +15,5 @@ export {
     tweetMediaService,
     bookmarksService,
     likeService,
+    retweetService,
 };
