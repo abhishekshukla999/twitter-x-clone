@@ -1,7 +1,7 @@
 import { Client, Databases, ID } from "appwrite";
 import { config } from "../../config/config";
 
-class BookmarkService {
+class LikeService {
     client = new Client();
     databases;
 
@@ -13,47 +13,44 @@ class BookmarkService {
         this.databases = new Databases(this.client);
     }
 
-    async createBookmark({ userId, tweetId }) {
+    async createLike({ userId, tweetId }) {
         try {
-            return await this.databases.createDocument(
+            return this.databases.createDocument(
                 config.appwriteDatabaseId,
-                config.appwriteBookmarksCollectionId,
+                config.appwriteLikesCollectionId,
                 ID.unique(),
-                {
-                    userId,
-                    tweetId,
-                }
+                { userId, tweetId }
             );
         } catch (error) {
-            console.log("Appwrite Service :: createBookmarks :: error ", error);
+            console.log("Appwrite Service :: createLike :: error ", error);
         }
     }
 
-    async getBookmarks(queries = []) {
+    async getLikes(queries = []) {
         try {
             return this.databases.listDocuments(
                 config.appwriteDatabaseId,
-                config.appwriteBookmarksCollectionId,
+                config.appwriteLikesCollectionId,
                 queries
             );
         } catch (error) {
-            console.log("Appwrite Service :: getBookmarks :: error ", error);
+            console.log("Appwrite Service :: getLikes :: error ", error);
         }
     }
 
-    async deleteBookmark(docId) {
+    async deleteLike(docId) {
         try {
             return this.databases.deleteDocument(
                 config.appwriteDatabaseId,
-                config.appwriteBookmarksCollectionId,
+                config.appwriteLikesCollectionId,
                 docId
             );
         } catch (error) {
-            console.log("Appwrite Service :: deleteBookmark :: error ", error);
+            console.log("Appwrite Service :: deleteLike :: error ", error);
         }
     }
 }
 
-const bookmarkService = new BookmarkService();
+const likeService = new LikeService();
 
-export default bookmarkService;
+export default likeService;
