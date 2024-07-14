@@ -6,7 +6,9 @@ class ProfileService {
     databases;
 
     constructor() {
-        this.client.setEndpoint(config.appwriteUrl).setProject(config.appwriteProjectId);
+        this.client
+            .setEndpoint(config.appwriteUrl)
+            .setProject(config.appwriteProjectId);
 
         this.databases = new Databases(this.client);
     }

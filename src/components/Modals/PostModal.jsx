@@ -40,7 +40,6 @@ function PostModal({ isOpen, onClose, post = false }) {
                 .then((tweet) => {
                     if (tweet) {
                         dispatch(updateTweets({ tweetId: tweet.$id, tweet }));
-                        reset();
                     }
                 });
         } else {
@@ -78,6 +77,8 @@ function PostModal({ isOpen, onClose, post = false }) {
         }
 
         reset();
+        setPrevImage(null);
+        setUploadImage(null);
     };
 
     const openAndReadFile = (e) => {
@@ -99,7 +100,12 @@ function PostModal({ isOpen, onClose, post = false }) {
                 <div className="">
                     <button
                         className="rounded-lg m-3 absolute top-2.5 left-2.5 bg-none border-none text-2xl cursor-pointer"
-                        onClick={onClose}
+                        onClick={() => {
+                            onClose();
+                            reset();
+                            setPrevImage(null);
+                            setUploadImage(null);
+                        }}
                     >
                         <svg
                             viewBox="0 0 24 24"
@@ -170,7 +176,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                                     </div>
                                 )}
 
-                                {post && (
+                                {post && post.media && (
                                     <img
                                         className="w-80"
                                         src={tweetMediaService.getFilePreview(
