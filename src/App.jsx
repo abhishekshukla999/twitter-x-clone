@@ -22,7 +22,7 @@ function App() {
 
                 profileService.getProfile(userData.$id).then((profileData) => {
                     dispatch(addProfileData({ profileData }));
-                    // navigate("/home")
+                    navigate("/home")
                 });
             } else {
                 dispatch(logout());

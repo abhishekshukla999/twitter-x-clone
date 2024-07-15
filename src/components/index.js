@@ -43,6 +43,7 @@ import Likes from "./Profile/Likes";
 import Media from "./Profile/Media";
 import Replies from "./Profile/Replies";
 import Posts from "./Profile/Posts";
+import PremiumModal from "./Modals/PremiumModal";
 
 export {
     Login1,
@@ -90,4 +91,5 @@ export {
     Media,
     Replies,
     Posts,
+    PremiumModal,
 };
