@@ -34,9 +34,6 @@ function Profile({ username }) {
     const [isProfileEdit, setIsProfileEdit] = useState(false);
     const [currProfileCompo, setCurrProfileCompo] = useState("posts");
 
-    // dependencies
-    // const {} = useSelector((state) => state.otherProfile.otherProfile);
-
     useEffect(() => {
         const fetchProfile = async () => {
             try {

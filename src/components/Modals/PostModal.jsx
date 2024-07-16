@@ -50,6 +50,12 @@ function PostModal({ isOpen, onClose, post = false }) {
                         );
                         dispatch(addTweets({ tweetsData: [...tweetsArr] }));
                     }
+                })
+                .catch((error) => {
+                    console.log("Error Updating tweets :: ", error);
+                })
+                .finally(() => {
+                    onClose();
                 });
         } else {
             if (uploadImage) {
