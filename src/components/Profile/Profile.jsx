@@ -34,6 +34,9 @@ function Profile({ username }) {
     const [isProfileEdit, setIsProfileEdit] = useState(false);
     const [currProfileCompo, setCurrProfileCompo] = useState("posts");
 
+    // dependencies
+    // const {} = useSelector((state) => state.otherProfile.otherProfile);
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -75,7 +78,7 @@ function Profile({ username }) {
                     Query.orderDesc("$createdAt"),
                 ]);
 
-                console.log(tweetsCollection.documents);
+                // console.log(tweetsCollection.documents);
 
                 if (tweetsCollection.documents.length !== 0) {
                     dispatch(
@@ -88,12 +91,19 @@ function Profile({ username }) {
                 console.error("Error fetching tweets:", error);
             } finally {
                 setTweetLoading(false);
-                console.log(otherProfileData || "No data found");
             }
         };
 
         fetchTweets();
-    }, [dispatch, username, otherProfileData?.$id]);
+    }, [dispatch, username, otherProfileData?.$id, tweetsData.length]);
+
+    const imageUrl = () => {
+        if (otherProfileData?.avatar) {
+            return profileMediaService.getFilePreview(otherProfileData.avatar);
+        } else {
+            return "/defaultAvatar.png";
+        }
+    };
 
     const toLocalDate = (date) => {
         const toLocal = new Date(date);
@@ -151,7 +161,7 @@ function Profile({ username }) {
                     <div className="border border-b-0">
                         {/* cover */}
                         <div>
-                            {!otherProfileData.profileCover ? (
+                            {!otherProfileData?.profileCover ? (
                                 <div className="h-[200px] w-[590px] bg-gray-300"></div>
                             ) : (
                                 <img
@@ -161,7 +171,7 @@ function Profile({ username }) {
                                             otherProfileData?.profileCover
                                         ) || ""
                                     }
-                                    alt=""
+                                    alt="Cover Image"
                                 />
                             )}
                         </div>
@@ -171,12 +181,8 @@ function Profile({ username }) {
                             <div className="p-4 absolute -top-20">
                                 <img
                                     className="rounded-full h-[133.5px] w-[133.5px] p-1 bg-white"
-                                    src={`${
-                                        profileMediaService.getFilePreview(
-                                            otherProfileData?.avatar
-                                        ) || "/defaultAvatar.png"
-                                    }`}
-                                    alt=""
+                                    src={imageUrl()}
+                                    alt="Avatar Image"
                                 />
                             </div>
                             {/* Edit / Follow */}
@@ -199,8 +205,7 @@ function Profile({ username }) {
 
                                 <EditProfileModal
                                     isOpen={isProfileEdit}
-                                    onClose={(e) => {
-                                        e.stopPropagation();
+                                    onClose={() => {
                                         setIsProfileEdit(false);
                                     }}
                                 />

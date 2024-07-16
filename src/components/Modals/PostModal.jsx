@@ -5,10 +5,12 @@ import {
     tweetService,
     tweetMediaService,
     profileService,
+    profileMediaService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addProfileData } from "../../features/profile/profileSlice";
-import { updateTweets } from "../../features/tweet/tweetSlice";
+import { addTweets } from "../../features/tweet/tweetSlice";
+import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 
 function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
@@ -21,6 +23,10 @@ function PostModal({ isOpen, onClose, post = false }) {
     });
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.profile.profileData);
+    const otherProfile = useSelector(
+        (state) => state.otherProfile.otherProfile
+    );
+    const tweetsData = useSelector((state) => state.tweets.tweetsData);
 
     const submitPost = async (data) => {
         if (post) {
@@ -38,8 +44,11 @@ function PostModal({ isOpen, onClose, post = false }) {
                     media: file ? file.$id : post.media,
                 })
                 .then((tweet) => {
-                    if (tweet) {
-                        dispatch(updateTweets({ tweetId: tweet.$id, tweet }));
+                    if (tweet && userData.$id === otherProfile.$id) {
+                        const tweetsArr = tweetsData.map((item) =>
+                            item.$id === tweet.$id ? tweet : item
+                        );
+                        dispatch(addTweets({ tweetsData: [...tweetsArr] }));
                     }
                 });
         } else {
@@ -53,15 +62,20 @@ function PostModal({ isOpen, onClose, post = false }) {
             }
 
             const tweetPost = await tweetService.createTweet({
-                name: userData.name,
-                username: userData.username,
-                author: userData.$id,
+                name: userData?.name,
+                username: userData?.username,
+                author: userData?.$id,
                 content: String(data.content).trim(),
                 media: data.media || "",
             });
 
             if (tweetPost) {
-                console.log("Tweet Created");
+                console.info("Tweet Created");
+
+                if (userData.$id === otherProfile.$id) {
+                    const tweetsArr = [tweetPost, ...tweetsData];
+                    dispatch(addTweets({ tweetsData: [...tweetsArr] }));
+                }
 
                 const tweets = userData.tweets || [];
                 const updatedTweets = [tweetPost?.$id, ...tweets];
@@ -72,6 +86,9 @@ function PostModal({ isOpen, onClose, post = false }) {
                     })
                     .then((res) => {
                         dispatch(addProfileData({ profileData: res }));
+                        if (userData.$id === otherProfile.$id) {
+                            dispatch(addOtherProfile({ currentProfile: res }));
+                        }
                     });
             }
         }
@@ -90,6 +107,14 @@ function PostModal({ isOpen, onClose, post = false }) {
     const removeImage = () => {
         setPrevImage(null);
         setUploadImage(null);
+    };
+
+    const imageUrl = () => {
+        if (userData?.avatar) {
+            return profileMediaService.getFilePreview(userData.avatar);
+        } else {
+            return "/defaultAvatar.png";
+        }
     };
 
     if (!isOpen) return null;
@@ -138,7 +163,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                         <div className="mx-2 w-[7%]">
                             <img
                                 className="w-full rounded-full"
-                                src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                                src={imageUrl()}
                                 alt=""
                             />
                         </div>

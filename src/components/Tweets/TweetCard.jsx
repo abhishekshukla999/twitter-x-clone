@@ -14,8 +14,9 @@ import {
     tweetService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTweet, updateTweets } from "../../features/tweet/tweetSlice";
+import { addTweets } from "../../features/tweet/tweetSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
+import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 import PostModal from "../Modals/PostModal";
 import { Query } from "appwrite";
 
@@ -38,8 +39,12 @@ function TweetCard({
     const [analytics] = useState((Math.random() * 1000).toFixed(0));
     const [date, setDate] = useState({});
     const dispatch = useDispatch();
-    const profileData = useSelector((state) => state.profile.profileData);
+    const userData = useSelector((state) => state.profile.profileData);
     const authData = useSelector((state) => state.auth.userData);
+    const tweetsData = useSelector((state) => state.tweets.tweetsData);
+    const otherProfile = useSelector(
+        (state) => state.otherProfile.otherProfile
+    );
     // options box handling
     const [isOpen, setisOpen] = useState(false);
     //edit handling
@@ -97,7 +102,7 @@ function TweetCard({
 
         fetchMedia();
         setDate(toLocalDate(updatedAt));
-    }, []);
+    }, [media, content]);
 
     // converting date to local
     const toLocalDate = (date) => {
@@ -137,21 +142,29 @@ function TweetCard({
             .deleteTweet(tweetId)
             .then((res) => {
                 if (res) {
-                    dispatch(deleteTweet({ tweetId }));
+                    let tweetsArr = tweetsData.filter(
+                        (tweet) => tweet.$id !== tweetId
+                    );
+                    dispatch(addTweets({ tweetsData: [...tweetsArr] }));
                 }
             })
             .then(() => {
-                let tweetIds = profileData.tweets;
+                let tweetIds = userData.tweets || [];
 
                 tweetIds = tweetIds.filter((id) => id !== tweetId);
 
                 profileService
-                    .updateProfile(profileData.$id, {
+                    .updateProfile(userData.$id, {
                         tweets: tweetIds,
                     })
                     .then((res) => {
                         if (res) {
                             dispatch(addProfileData({ profileData: res }));
+                            if (userData.$id === otherProfile.$id) {
+                                dispatch(
+                                    addOtherProfile({ currentProfile: res })
+                                );
+                            }
                         }
                     });
             });
@@ -179,7 +192,12 @@ function TweetCard({
                         .updateTweet(tweetId, { bookmarks })
                         .then((res) => {
                             if (res) {
-                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                const tweetsArr = tweetsData.map((item) =>
+                                    item.$id === res.$id ? res : item
+                                );
+                                dispatch(
+                                    addTweets({ tweetsData: [...tweetsArr] })
+                                );
                                 setMyBookmark(true);
                             }
                         })
@@ -201,7 +219,12 @@ function TweetCard({
                         .updateTweet(tweetId, { bookmarks })
                         .then((res) => {
                             if (res) {
-                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                const tweetsArr = tweetsData.map((item) =>
+                                    item.$id === res.$id ? res : item
+                                );
+                                dispatch(
+                                    addTweets({ tweetsData: [...tweetsArr] })
+                                );
                                 setMyBookmark(false);
                             }
                         })
@@ -235,7 +258,12 @@ function TweetCard({
                         .updateTweet(tweetId, { likes })
                         .then((res) => {
                             if (res) {
-                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                const tweetsArr = tweetsData.map((item) =>
+                                    item.$id === res.$id ? res : item
+                                );
+                                dispatch(
+                                    addTweets({ tweetsData: [...tweetsArr] })
+                                );
                                 setMyLike(true);
                             }
                         })
@@ -257,7 +285,12 @@ function TweetCard({
                         .updateTweet(tweetId, { likes })
                         .then((res) => {
                             if (res) {
-                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                const tweetsArr = tweetsData.map((item) =>
+                                    item.$id === res.$id ? res : item
+                                );
+                                dispatch(
+                                    addTweets({ tweetsData: [...tweetsArr] })
+                                );
                                 setMyLike(false);
                             }
                         })
@@ -291,7 +324,12 @@ function TweetCard({
                         .updateTweet(tweetId, { retweets })
                         .then((res) => {
                             if (res) {
-                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                const tweetsArr = tweetsData.map((item) =>
+                                    item.$id === res.$id ? res : item
+                                );
+                                dispatch(
+                                    addTweets({ tweetsData: [...tweetsArr] })
+                                );
                                 setMyRetweet(true);
                             }
                         })
@@ -314,7 +352,12 @@ function TweetCard({
                         .updateTweet(tweetId, { retweets })
                         .then((res) => {
                             if (res) {
-                                dispatch(updateTweets({ tweetId, tweet: res }));
+                                const tweetsArr = tweetsData.map((item) =>
+                                    item.$id === res.$id ? res : item
+                                );
+                                dispatch(
+                                    addTweets({ tweetsData: [...tweetsArr] })
+                                );
                                 setMyRetweet(false);
                             }
                         })
@@ -448,8 +491,7 @@ function TweetCard({
                         </div>
                         <PostModal
                             isOpen={isOpenEdit}
-                            onClose={(e) => {
-                                e.stopPropagation();
+                            onClose={() => {
                                 setIsOpenEdit(false);
                             }}
                             post={{ tweetId, content, media }}
@@ -473,7 +515,7 @@ function TweetCard({
                     <div className="flex justify-between">
                         <div className="flex w-[92%]">
                             <div className="flex mr-auto">
-                                <span className="my-1 my-auto p-2 rounded-full hover:bg-blue-100 cursor-pointer">
+                                <span className="my-auto p-2 rounded-full hover:bg-blue-100 cursor-pointer">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
@@ -492,7 +534,7 @@ function TweetCard({
                                 className="flex mr-auto"
                                 onClick={handleRetweet}
                             >
-                                <span className="my-1 my-auto p-2 rounded-full cursor-pointer">
+                                <span className="my-auto p-2 rounded-full cursor-pointer">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"

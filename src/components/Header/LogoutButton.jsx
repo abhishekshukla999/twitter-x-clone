@@ -25,10 +25,18 @@ function LogoutButton() {
         setIsOpen(false);
     };
 
+    const imageUrl = () => {
+        if (userData?.avatar) {
+            return profileMediaService.getFilePreview(userData.avatar);
+        } else {
+            return "/defaultAvatar.png";
+        }
+    };
+
     return (
         <>
             <div
-                className="m-2 p-0.5 text-base rounded-full hover:bg-zinc-200"
+                className="m-2 p-0.5 text-base rounded-full hover:bg-zinc-200 cursor-pointer"
                 onClick={() => {
                     setIsOpen(true);
                 }}
@@ -37,9 +45,7 @@ function LogoutButton() {
                     <div className="profile m-2">
                         <img
                             className="w-[40px] rounded-full"
-                            src={profileMediaService.getFilePreview(
-                                userData?.avatar
-                            )}
+                            src={imageUrl()}
                             alt="avatar"
                         />
                     </div>
