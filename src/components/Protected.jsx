@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 
-function Protected({ children, authentication = true, url }) {
+function Protected({ children, authentication = true }) {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(true);
     const authStatus = useSelector((state) => state.auth.status);
@@ -12,11 +12,11 @@ function Protected({ children, authentication = true, url }) {
         if (authentication && authStatus !== authentication) {
             navigate("/");
         } else if (!authentication && authStatus !== authentication) {
-            navigate(`/${url}`);
+            navigate("");
         }
 
         setLoader(false);
-    }, [authStatus, authentication, navigate, url]);
+    }, [authStatus, authentication, navigate]);
 
     return loader ? <Loader /> : children;
 }

@@ -42,6 +42,18 @@ class ProfileService {
         }
     }
 
+    async getProfiles(queries = []) {
+        try {
+            return await this.databases.listDocuments(
+                config.appwriteDatabaseId,
+                config.appwriteUsersCollectionId,
+                queries
+            );
+        } catch (error) {
+            console.log("Appwrite Service :: getProfiles :: error ", error);
+        }
+    }
+
     async updateProfile(docId, { ...data }) {
         try {
             return this.databases.updateDocument(

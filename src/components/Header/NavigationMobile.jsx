@@ -1,13 +1,15 @@
 import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
 import { authService } from "../../appwrite";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import { removeProfileData } from "../../features/profile/profileSlice";
 import { removeTweets } from "../../features/tweet/tweetSlice";
+import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
 
 function NavigationMobile({ isOpen, onClose }) {
     const dispatch = useDispatch();
+    const profileData = useSelector((state) => state.profile.profileData);
     const listStyle = "flex text-xl hover:bg-zinc-200 rounded-full w-fit";
 
     const handleLogout = () => {
@@ -15,6 +17,7 @@ function NavigationMobile({ isOpen, onClose }) {
             dispatch(logout());
             dispatch(removeProfileData());
             dispatch(removeTweets());
+            dispatch(removeOtherProfile())
         });
     };
 
@@ -71,13 +74,13 @@ function NavigationMobile({ isOpen, onClose }) {
                     <div className="">
                         <div className="p-1 my-6">
                             <NavLink
-                                to="/home"
+                                to={`/${profileData?.username}` || "#"}
                                 className={({ isActive }) =>
                                     `${listStyle} ${
                                         isActive ? "font-bold" : null
                                     }`
                                 }
-                                title="Home"
+                                title="Profile"
                             >
                                 <span className="mx-1">
                                     <svg
@@ -86,11 +89,11 @@ function NavigationMobile({ isOpen, onClose }) {
                                         className="w-7 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
                                     >
                                         <g>
-                                            <path d="M21.591 7.146L12.52 1.157c-.316-.21-.724-.21-1.04 0l-9.071 5.99c-.26.173-.409.456-.409.757v13.183c0 .502.418.913.929.913H9.14c.51 0 .929-.41.929-.913v-7.075h3.909v7.075c0 .502.417.913.928.913h6.165c.511 0 .929-.41.929-.913V7.904c0-.301-.158-.584-.408-.758z"></path>
+                                            <path d="M5.651 19h12.698c-.337-1.8-1.023-3.21-1.945-4.19C15.318 13.65 13.838 13 12 13s-3.317.65-4.404 1.81c-.922.98-1.608 2.39-1.945 4.19zm.486-5.56C7.627 11.85 9.648 11 12 11s4.373.85 5.863 2.44c1.477 1.58 2.366 3.8 2.632 6.46l.11 1.1H3.395l.11-1.1c.266-2.66 1.155-4.88 2.632-6.46zM12 4c-1.105 0-2 .9-2 2s.895 2 2 2 2-.9 2-2-.895-2-2-2zM8 6c0-2.21 1.791-4 4-4s4 1.79 4 4-1.791 4-4 4-4-1.79-4-4z"></path>
                                         </g>
                                     </svg>
                                 </span>
-                                <span className="px-4">Home</span>
+                                <span className="px-4">Profile</span>
                             </NavLink>
                         </div>
                         <div className="p-1 my-6">

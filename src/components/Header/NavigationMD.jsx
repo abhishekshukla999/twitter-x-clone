@@ -1,7 +1,10 @@
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
 function SideMenuMD() {
     const listStyle = "flex p-3 text-xl hover:bg-zinc-200 rounded-full w-fit";
+
+    const profileData = useSelector((state) => state.profile.profileData);
 
     return (
         <div className="sidebar-sm hidden min-[500px]:max-[1279px]:block">
@@ -214,7 +217,7 @@ function SideMenuMD() {
                 </li>
                 <li className="p-1">
                     <NavLink
-                        to="/profile"
+                        to={`/${profileData?.username}` || "#"}
                         className={({ isActive }) =>
                             `${listStyle} ${isActive ? "bg-gray-200" : null}`
                         }
