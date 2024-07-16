@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     status: false,
-    tweetsData: null,
+    tweetsData: [],
 };
 
 const tweetSlice = createSlice({
@@ -13,26 +13,13 @@ const tweetSlice = createSlice({
             state.status = true;
             state.tweetsData = action.payload.tweetsData;
         },
-        deleteTweet: (state, action) => {
-            state.tweetsData = state.tweetsData.filter(
-                (tweet) => tweet.$id !== action.payload.tweetId
-            );
-        },
-        updateTweets: (state, action) => {
-            state.tweetsData = state.tweetsData.map((tweet) => {
-                return tweet.$id === action.payload.tweetId
-                    ? action.payload.tweet
-                    : tweet;
-            });
-        },
         removeTweets: (state) => {
             state.status = false;
-            state.tweetsData = null;
+            state.tweetsData = [];
         },
     },
 });
 
-export const { addTweets, deleteTweet, updateTweets, removeTweets } =
-    tweetSlice.actions;
+export const { addTweets, removeTweets } = tweetSlice.actions;
 
 export default tweetSlice.reducer;

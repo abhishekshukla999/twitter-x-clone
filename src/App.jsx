@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { Root, Header } from "./components";
 import { Outlet, useNavigate } from "react-router-dom";
 import { removeTweets } from "./features/tweet/tweetSlice";
+import { removeOtherProfile } from "./features/profile/otherProfileSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -21,13 +22,16 @@ function App() {
                 dispatch(login({ userData }));
 
                 profileService.getProfile(userData.$id).then((profileData) => {
-                    dispatch(addProfileData({ profileData }));
-                    navigate("/home")
+                    if (profileData) {
+                        dispatch(addProfileData({ profileData }));
+                    }
+                    // navigate("/home")
                 });
             } else {
                 dispatch(logout());
                 dispatch(removeProfileData());
                 dispatch(removeTweets());
+                dispatch(removeOtherProfile());
             }
         });
     }, [navigate, dispatch]);

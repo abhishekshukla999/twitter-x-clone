@@ -2,11 +2,13 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import PostModal from "../Modals/PostModal";
 import NavigationMD from "./NavigationMD";
+import { useSelector } from "react-redux";
 
 function Navigation() {
     const listStyle = "flex p-3 text-xl hover:bg-zinc-200 rounded-full w-fit";
 
     const [isOpen, setIsOpen] = useState(false);
+    const profileData = useSelector((state) => state.profile.profileData);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -246,7 +248,7 @@ function Navigation() {
                     </li>
                     <li className="p-1">
                         <NavLink
-                            to="/profile"
+                            to={`/${profileData?.username}` || "#"}
                             className={({ isActive }) =>
                                 `${listStyle} ${isActive ? "font-bold" : null}`
                             }

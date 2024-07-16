@@ -4,30 +4,33 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { profileMediaService, profileService } from "../../appwrite";
 import { addProfileData } from "../../features/profile/profileSlice";
+import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 
 function EditProfileModal({ isOpen, onClose }) {
     const userData = useSelector((state) => state.profile.profileData);
     const dispatch = useDispatch();
-    const { register, handleSubmit } = useForm({
+    const { register, handleSubmit, reset } = useForm({
         defaultValues: {
-            name: userData.name,
-            bio: userData.bio || "",
-            location: userData.location || "",
-            website: userData.website || "",
+            name: userData?.name,
+            bio: userData?.bio || "",
+            location: userData?.location || "",
+            website: userData?.website || "",
         },
     });
     const [isEditDob, setIsEditDob] = useState(false);
     // preview and upload states for profile
     const [prevProfileImage, setPrevProfileImage] = useState(
-        profileMediaService.getFilePreview(userData.avatar) ||
+        profileMediaService.getFilePreview(userData?.avatar) ||
             "/defaultAvatar.png"
     );
     const [uploadProfileImage, setUploadProfileImage] = useState(null);
     // preview and upload states foCover
     const [prevCoverImage, setPrevCoverImage] = useState(
-        profileMediaService.getFilePreview(userData.profileCover) || ""
+        profileMediaService.getFilePreview(userData?.profileCover) || ""
     );
     const [uploadCoverImage, setUploadCoverImage] = useState(null);
+
+    const [dob, setDob] = useState(userData?.dob);
 
     const toLocalDate = (date) => {
         const toLocal = new Date(date);
@@ -58,7 +61,7 @@ function EditProfileModal({ isOpen, onClose }) {
         if (uploadCoverImage) {
             const file = await profileMediaService.uploadFile(uploadCoverImage);
 
-            if (userData.profileCover) {
+            if (userData?.profileCover) {
                 await profileMediaService.deleteFile(userData.profileCover);
             }
 
@@ -72,7 +75,7 @@ function EditProfileModal({ isOpen, onClose }) {
                 uploadProfileImage
             );
 
-            if (userData.avatar) {
+            if (userData?.avatar) {
                 await profileMediaService.deleteFile(userData.avatar);
             }
 
@@ -82,14 +85,18 @@ function EditProfileModal({ isOpen, onClose }) {
         }
 
         profileService
-            .updateProfile(userData.$id, {
+            .updateProfile(userData?.$id, {
                 ...data,
             })
-            .then((res) => dispatch(addProfileData({ profileData: res })))
+            .then((res) => {
+                dispatch(addProfileData({ profileData: res }));
+                dispatch(addOtherProfile({ currentProfile: res }));
+            })
             .catch((err) =>
                 console.log("Error updating user profile :: ", err)
             );
 
+        reset();
         onClose();
     };
 
@@ -110,6 +117,10 @@ function EditProfileModal({ isOpen, onClose }) {
         setUploadCoverImage(null);
     };
 
+    const formClose = () => {
+        onClose();
+    };
+
     if (!isOpen) return null;
 
     return createPortal(
@@ -121,7 +132,7 @@ function EditProfileModal({ isOpen, onClose }) {
                 <div className="flex gap-5 py-1 sticky top-0 bg-white opacity-80">
                     <button
                         className="rounded-lg bg-none border-none text-2xl cursor-pointer my-auto px-3"
-                        onClick={onClose}
+                        onClick={formClose}
                     >
                         <svg
                             viewBox="0 0 24 24"
@@ -294,18 +305,19 @@ function EditProfileModal({ isOpen, onClose }) {
                         />
                     </div>
                     <div className="flex flex-col p-2 my-5 mx-3">
-                        <div className="text-gray-500">
-                            Birth date{" "}
-                            <button
-                                className="text-twitter-blue"
-                                onClick={() => setIsEditDob((prev) => !prev)}
+                        <div className="text-gray-500 flex gap-1">
+                            <div>Birth date</div>
+                            <div
+                                className="text-twitter-blue cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsEditDob((prev) => !prev);
+                                }}
                             >
                                 {isEditDob ? "Save" : "Edit"}
-                            </button>
+                            </div>
                         </div>
-                        <div className="text-xl">
-                            {toLocalDate(userData.dob)}
-                        </div>
+                        <div className="text-xl">{toLocalDate(dob)}</div>
                         {isEditDob && (
                             <div>
                                 <input
@@ -313,6 +325,7 @@ function EditProfileModal({ isOpen, onClose }) {
                                     placeholder="DOB"
                                     className="focus:outline-none"
                                     {...register("dob", { required: true })}
+                                    onChange={(e) => setDob(e.target.value)}
                                 />
                             </div>
                         )}

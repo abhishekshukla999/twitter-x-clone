@@ -32,15 +32,15 @@ const router = createBrowserRouter([
             {
                 path: "/home",
                 element: (
-                    <Protected authentication={false} url="home">
+                    <Protected authentication={false}>
                         <Home />
                     </Protected>
                 ),
             },
             {
-                path: "/profile",
+                path: "/:username",
                 element: (
-                    <Protected authentication={false} url="profile">
+                    <Protected authentication={false}>
                         <Profile />
                     </Protected>
                 ),
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
             {
                 path: "/explore",
                 element: (
-                    <Protected authentication={false} url="explore">
+                    <Protected authentication={false}>
                         <Explore />
                     </Protected>
                 ),
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
             {
                 path: "/notifications",
                 element: (
-                    <Protected authentication={false} url="notifications">
+                    <Protected authentication={false}>
                         <Notifications />
                     </Protected>
                 ),
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
             {
                 path: "/messages",
                 element: (
-                    <Protected authentication={false} url="messages">
+                    <Protected authentication={false}>
                         <Messages />
                     </Protected>
                 ),
@@ -72,7 +72,7 @@ const router = createBrowserRouter([
             {
                 path: "/grok",
                 element: (
-                    <Protected authentication={false} url="grok">
+                    <Protected authentication={false}>
                         <Grok />
                     </Protected>
                 ),
@@ -80,7 +80,7 @@ const router = createBrowserRouter([
             {
                 path: "/lists",
                 element: (
-                    <Protected authentication={false} url="lists">
+                    <Protected authentication={false}>
                         <Lists />
                     </Protected>
                 ),
@@ -88,7 +88,7 @@ const router = createBrowserRouter([
             {
                 path: "/bookmarks",
                 element: (
-                    <Protected authentication={false} url="bookmarks">
+                    <Protected authentication={false}>
                         <Bookmarks />
                     </Protected>
                 ),
@@ -96,7 +96,7 @@ const router = createBrowserRouter([
             {
                 path: "/communities",
                 element: (
-                    <Protected authentication={false} url="communities">
+                    <Protected authentication={false}>
                         <Communities />
                     </Protected>
                 ),
@@ -104,7 +104,7 @@ const router = createBrowserRouter([
             {
                 path: "/premium",
                 element: (
-                    <Protected authentication={false} url="premium">
+                    <Protected authentication={false}>
                         <Premium />
                     </Protected>
                 ),
@@ -112,7 +112,7 @@ const router = createBrowserRouter([
             {
                 path: "/verified-orgs",
                 element: (
-                    <Protected authentication={false} url="verified-orgs">
+                    <Protected authentication={false}>
                         <VerifiedOrgs />
                     </Protected>
                 ),
@@ -120,7 +120,7 @@ const router = createBrowserRouter([
             {
                 path: "/settings",
                 element: (
-                    <Protected authentication={false} url="settings">
+                    <Protected authentication={false}>
                         <Settings />
                     </Protected>
                 ),
@@ -131,7 +131,7 @@ const router = createBrowserRouter([
     {
         path: "/signup",
         element: (
-            <Protected authentication url="signup">
+            <Protected authentication>
                 <SignUp />
             </Protected>
         ),
@@ -139,11 +139,11 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
                 <RouterProvider router={router} />
             </PersistGate>
         </Provider>
-    </React.StrictMode>
+    // </React.StrictMode>
 );

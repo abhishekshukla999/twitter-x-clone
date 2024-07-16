@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authService } from "../../appwrite";
+import { authService, profileMediaService } from "../../appwrite";
 import { logout } from "../../features/auth/authSlice";
 import { removeProfileData } from "../../features/profile/profileSlice";
 import { removeTweets } from "../../features/tweet/tweetSlice";
 import LogoutModal from "../Modals/LogoutModal";
+import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
 
 function LogoutButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,7 @@ function LogoutButton() {
             dispatch(logout());
             dispatch(removeProfileData());
             dispatch(removeTweets());
+            dispatch(removeOtherProfile());
         });
     };
 
@@ -23,11 +25,18 @@ function LogoutButton() {
         setIsOpen(false);
     };
 
+    const imageUrl = () => {
+        if (userData?.avatar) {
+            return profileMediaService.getFilePreview(userData.avatar);
+        } else {
+            return "/defaultAvatar.png";
+        }
+    };
 
     return (
         <>
             <div
-                className="m-2 p-0.5 text-base rounded-full hover:bg-zinc-200"
+                className="m-2 p-0.5 text-base rounded-full hover:bg-zinc-200 cursor-pointer"
                 onClick={() => {
                     setIsOpen(true);
                 }}
@@ -36,7 +45,7 @@ function LogoutButton() {
                     <div className="profile m-2">
                         <img
                             className="w-[40px] rounded-full"
-                            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                            src={imageUrl()}
                             alt="avatar"
                         />
                     </div>

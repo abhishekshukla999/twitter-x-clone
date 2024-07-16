@@ -4,6 +4,7 @@ import {
     tweetService,
     tweetMediaService,
     profileService,
+    profileMediaService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addProfileData } from "../../features/profile/profileSlice";
@@ -65,6 +66,14 @@ function TweetForm() {
         setUploadImage(null);
     };
 
+    const imageUrl = () => {
+        if (userData?.avatar) {
+            return profileMediaService.getFilePreview(userData.avatar);
+        } else {
+            return "/defaultAvatar.png";
+        }
+    };
+
     // handling textarea change when input changes
     // this conflicting with react-hook-form and useRef
     // const handleTextareaChange = () => {
@@ -79,7 +88,7 @@ function TweetForm() {
                 <div className="mx-2 w-[7%]">
                     <img
                         className="w-full rounded-full"
-                        src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                        src={imageUrl()}
                         alt=""
                     />
                 </div>

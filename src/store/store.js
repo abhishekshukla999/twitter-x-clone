@@ -12,10 +12,12 @@ import storage from "redux-persist/lib/storage";
 import authSlice from "../features/auth/authSlice";
 import profileSlice from "../features/profile/profileSlice";
 import tweetSlice from "../features/tweet/tweetSlice";
+import otherProfileSlice from "../features/profile/otherProfileSlice";
 
 const rootReducer = combineReducers({
     auth: authSlice,
     profile: profileSlice,
+    otherProfile: otherProfileSlice,
     tweets: tweetSlice,
 });
 
