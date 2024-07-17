@@ -7,30 +7,31 @@ import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 
 function EditProfileModal({ isOpen, onClose }) {
-    const userData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile.profileData);
+    const otherProfile = useSelector((state) => state.otherProfile);
     const dispatch = useDispatch();
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
-            name: userData?.name,
-            bio: userData?.bio || "",
-            location: userData?.location || "",
-            website: userData?.website || "",
+            name: profileData?.name,
+            bio: profileData?.bio || "",
+            location: profileData?.location || "",
+            website: profileData?.website || "",
         },
     });
     const [isEditDob, setIsEditDob] = useState(false);
     // preview and upload states for profile
     const [prevProfileImage, setPrevProfileImage] = useState(
-        profileMediaService.getFilePreview(userData?.avatar) ||
+        profileMediaService.getFilePreview(profileData?.avatar) ||
             "/defaultAvatar.png"
     );
     const [uploadProfileImage, setUploadProfileImage] = useState(null);
     // preview and upload states foCover
     const [prevCoverImage, setPrevCoverImage] = useState(
-        profileMediaService.getFilePreview(userData?.profileCover) || ""
+        profileMediaService.getFilePreview(profileData?.profileCover) || ""
     );
     const [uploadCoverImage, setUploadCoverImage] = useState(null);
 
-    const [dob, setDob] = useState(userData?.dob);
+    const [dob, setDob] = useState(profileData?.dob);
 
     const toLocalDate = (date) => {
         const toLocal = new Date(date);
@@ -61,8 +62,8 @@ function EditProfileModal({ isOpen, onClose }) {
         if (uploadCoverImage) {
             const file = await profileMediaService.uploadFile(uploadCoverImage);
 
-            if (userData?.profileCover) {
-                await profileMediaService.deleteFile(userData.profileCover);
+            if (profileData?.profileCover) {
+                await profileMediaService.deleteFile(profileData.profileCover);
             }
 
             if (file) {
@@ -75,8 +76,8 @@ function EditProfileModal({ isOpen, onClose }) {
                 uploadProfileImage
             );
 
-            if (userData?.avatar) {
-                await profileMediaService.deleteFile(userData.avatar);
+            if (profileData?.avatar) {
+                await profileMediaService.deleteFile(profileData.avatar);
             }
 
             if (file) {
@@ -85,12 +86,16 @@ function EditProfileModal({ isOpen, onClose }) {
         }
 
         profileService
-            .updateProfile(userData?.$id, {
+            .updateProfile(profileData?.$id, {
                 ...data,
             })
             .then((res) => {
                 dispatch(addProfileData({ profileData: res }));
-                dispatch(addOtherProfile({ currentProfile: res }));
+
+                if (otherProfile.data.$id === profileData.$id) {
+                    const updatedOtherProfile = { ...otherProfile, data: res };
+                    dispatch(addOtherProfile(updatedOtherProfile));
+                }
             })
             .catch((err) =>
                 console.log("Error updating user profile :: ", err)

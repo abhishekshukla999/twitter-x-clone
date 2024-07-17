@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // for user Profile data
 const initialState = {
-    status: false,
-    profileData: null,
+    profileData: {},
 };
 
 const profileSlice = createSlice({
@@ -11,12 +10,10 @@ const profileSlice = createSlice({
     initialState,
     reducers: {
         addProfileData: (state, action) => {
-            state.status = true;
             state.profileData = action.payload.profileData;
         },
         removeProfileData: (state) => {
-            state.status = false;
-            state.profileData = null;
+            state.profileData = {};
         },
     },
 });

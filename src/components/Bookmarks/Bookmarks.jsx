@@ -7,37 +7,50 @@ import { Query } from "appwrite";
 import Loader from "../Loader";
 
 function Bookmarks() {
-    const userData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile.profileData);
     const authData = useSelector((state) => state.auth.userData);
     const [bookTweets, setBookTweets] = useState([]);
     const [loader, setLoader] = useState(true);
 
+    // bookmark remove should update the value and remove from list
+    // list should be rendered based on creation, last in first out
+
     useEffect(() => {
         async function fetchBookmarks() {
-            const myBookmarks = await bookmarksService.getBookmarks([
-                Query.equal("userId", [authData.$id]),
-                Query.orderDesc("$createdAt"),
-            ]);
+            try {
+                if (authData) {
+                    const myBookmarks = await bookmarksService.getBookmarks([
+                        Query.equal("userId", [authData.$id]),
+                        Query.orderDesc("$createdAt"),
+                    ]);
 
-            const tweetIds = myBookmarks.documents.map((book) => book.tweetId);
-            const bookMarkedTweets = await tweetService.getTweets([
-                Query.equal("$id", tweetIds),
-            ]);
-            setBookTweets([...bookMarkedTweets.documents]);
-
-            setLoader(false);
+                    if (myBookmarks.documents.length !== 0) {
+                        const tweetIds = myBookmarks.documents.map(
+                            (book) => book.tweetId
+                        );
+                        const bookMarkedTweets = await tweetService.getTweets([
+                            Query.equal("$id", tweetIds),
+                        ]);
+                        setBookTweets([...bookMarkedTweets.documents]);
+                    }
+                }
+            } catch (error) {
+                console.error("Error in fetching bookmarks :: ", error);
+            } finally {
+                setLoader(false);
+            }
         }
 
         fetchBookmarks();
-    }, []);
+    }, [bookTweets.length]);
 
     return (
         <div>
-            <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%] border-l border-r">
+            <div className="top flex justify-between p-3 pt-1 sticky top-0 backdrop-blur-3xl opacity-[100%] border-l border-r">
                 <NavLink className="px-1.5 font-bold text-xl">
                     <div>Bookmarks</div>
                     <div className="text-sm font-light text-gray-600">
-                        @{userData.username}
+                        @{profileData?.username}
                     </div>
                 </NavLink>
 

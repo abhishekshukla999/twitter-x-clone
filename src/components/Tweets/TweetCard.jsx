@@ -23,25 +23,23 @@ import { Query } from "appwrite";
 
 function TweetCard({
     tweetId,
-    name,
-    username,
     content,
     media = "",
-    likes = [],
-    replies = [],
-    retweets = [],
+    likes = 0,
+    replies = 0,
+    retweets = 0,
     author,
-    slug,
-    bookmarks = [],
+    bookmarks = 0,
     createdAt,
     updatedAt,
 }) {
     const [mediaURL, setMediaURL] = useState("");
     const [avatarURL, setAvatarURL] = useState("/defaultAvatar.png");
+    const [authorInfo, setAuthorInfo] = useState(null);
     const [analytics] = useState((Math.random() * 1000).toFixed(0));
     const [date, setDate] = useState({});
     const dispatch = useDispatch();
-    const userData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile.profileData);
     const authData = useSelector((state) => state.auth.userData);
     const tweetsData = useSelector((state) => state.tweets.tweetsData);
     const otherProfile = useSelector(
@@ -55,6 +53,27 @@ function TweetCard({
     const [myBookmark, setMyBookmark] = useState(false);
     const [myLike, setMyLike] = useState(false);
     const [myRetweet, setMyRetweet] = useState(false);
+
+    useEffect(() => {
+        const avatarUrl = async () => {
+            const authorData = await profileService.getProfile(author);
+
+            if (authorData) {
+                const url = profileMediaService.getFilePreview(
+                    authorData.avatar
+                );
+
+                setAvatarURL(url);
+
+                setAuthorInfo({
+                    name: authorData.name,
+                    username: authorData.username,
+                });
+            }
+        };
+
+        avatarUrl();
+    }, []);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -103,20 +122,8 @@ function TweetCard({
         };
 
         fetchMedia();
-        setDate(toLocalDate(updatedAt));
+        setDate(toLocalDate(createdAt));
     }, [media, content]);
-
-    useEffect(() => {
-        const avatarUrl = async () => {
-            const authorData = await profileService.getProfile(author);
-
-            const url = profileMediaService.getFilePreview(authorData.avatar);
-
-            setAvatarURL(url);
-        };
-
-        avatarUrl();
-    }, [author]);
 
     // converting date to local
     const toLocalDate = (date) => {
@@ -164,19 +171,19 @@ function TweetCard({
                 }
             })
             .then(() => {
-                let tweetIds = userData.tweets || [];
+                const tweetIds = profileData?.tweets || [];
 
-                tweetIds = tweetIds.filter((id) => id !== tweetId);
+                const updatedtweetIds = tweetIds.filter((id) => id !== tweetId);
 
                 profileService
-                    .updateProfile(userData.$id, {
-                        tweets: tweetIds,
+                    .updateProfile(profileData?.$id, {
+                        tweets: updatedtweetIds,
                     })
                     .then((res) => {
                         if (res) {
                             dispatch(addProfileData({ profileData: res }));
 
-                            if (userData.$id === otherProfile.$id) {
+                            if (profileData?.$id === otherProfile?.$id) {
                                 dispatch(
                                     addOtherProfile({ currentProfile: res })
                                 );
@@ -186,79 +193,88 @@ function TweetCard({
             });
     };
 
-    const handleBookmark = async () => {
-        if (authData) {
-            const isBookmarked = await bookmarksService.getBookmarks([
-                Query.and([
-                    Query.equal("tweetId", tweetId),
-                    Query.equal("userId", authData.$id),
-                ]),
-            ]);
+    // const handleBookmark = async () => {
+    //     if (authData) {
+    //         const allBookmarks = await bookmarksService.getBookmarks([
+    //             Query.equal("tweetId", [tweetId]),
+    //         ]);
 
-            if (isBookmarked.documents.length === 0) {
-                setMyBookmark(true);
+    //         const isBookmarked = allBookmarks.documents.filter();
+    //         console.log(isBookmarked);
 
-                const bookmark = await bookmarksService.createBookmark({
-                    userId: authData.$id,
-                    tweetId,
-                });
+    //         if (isBookmarked.documents.length === 0) {
+    //             setMyBookmark(true);
 
-                if (bookmark) {
-                    bookmarks = [bookmark.$id, ...bookmarks];
+    //             try {
+    //                 const bookmark = await bookmarksService.createBookmark({
+    //                     userId: authData.$id,
+    //                     tweetId,
+    //                 });
 
-                    tweetService
-                        .updateTweet(tweetId, { bookmarks })
-                        .then((res) => {
-                            if (res) {
-                                const tweetsArr = tweetsData.map((item) =>
-                                    item.$id === res.$id ? res : item
-                                );
+    //                 if (bookmark) {
+    //                     const newBookmarks = [bookmark.$id, ...bookmarks];
 
-                                dispatch(
-                                    addTweets({ tweetsData: [...tweetsArr] })
-                                );
-                            }
-                        })
-                        .catch((err) => {
-                            setMyBookmark(false);
+    //                     const updatedTweet = await tweetService.updateTweet(
+    //                         tweetId,
+    //                         { bookmarks: newBookmarks }
+    //                     );
 
-                            console.log("Error add bookmarks :: ", err);
-                        });
-                }
-            } else {
-                setMyBookmark(false);
+    //                     if (updatedTweet) {
+    //                         const updatedTweetsData = tweetsData.map((item) =>
+    //                             item.$id === updatedTweet.$id
+    //                                 ? updatedTweet
+    //                                 : item
+    //                         );
 
-                const bookmark = await bookmarksService.deleteBookmark(
-                    isBookmarked.documents["0"].$id
-                );
+    //                         dispatch(
+    //                             addTweets({ tweetsData: updatedTweetsData })
+    //                         );
+    //                     }
+    //                 }
+    //             } catch (error) {
+    //                 setMyBookmark(false);
+    //                 console.error("Error adding bookmark :: ", error);
+    //             }
+    //         } else {
+    //             setMyBookmark(false);
 
-                if (bookmark) {
-                    bookmarks = bookmarks.filter(
-                        (bookId) => bookId !== isBookmarked.documents["0"].$id
-                    );
+    //             try {
+    //                 const bookmarkId = isBookmarked.documents[0].$id;
+    //                 const bookmark = await bookmarksService.deleteBookmark(
+    //                     bookmarkId
+    //                 );
 
-                    tweetService
-                        .updateTweet(tweetId, { bookmarks })
-                        .then((res) => {
-                            if (res) {
-                                const tweetsArr = tweetsData.map((item) =>
-                                    item.$id === res.$id ? res : item
-                                );
+    //                 if (bookmark) {
+    //                     const newBookmarks = bookmarks.filter(
+    //                         (bookId) => bookId !== bookmarkId
+    //                     );
 
-                                dispatch(
-                                    addTweets({ tweetsData: [...tweetsArr] })
-                                );
-                            }
-                        })
-                        .catch((err) => {
-                            setMyBookmark(true);
+    //                     const updatedTweet = await tweetService.updateTweet(
+    //                         tweetId,
+    //                         { bookmarks: newBookmarks }
+    //                     );
 
-                            console.log("Error delete bookmarks :: ", err);
-                        });
-                }
-            }
-        }
-    };
+    //                     if (updatedTweet) {
+    //                         const updatedTweetsData = tweetsData.map((item) =>
+    //                             item.$id === updatedTweet.$id
+    //                                 ? updatedTweet
+    //                                 : item
+    //                         );
+
+    //                         dispatch(
+    //                             addTweets({ tweetsData: updatedTweetsData })
+    //                         );
+    //                     }
+    //                 }
+    //             } catch (error) {
+    //                 setMyBookmark(true);
+    //                 console.error("Error deleting bookmark :: ", error);
+    //             }
+    //         }
+    //     }
+    // };
+
+    const handleBookmark = async () => {};
 
     const handleLike = async () => {
         if (authData) {
@@ -272,62 +288,70 @@ function TweetCard({
             if (isLiked.documents.length === 0) {
                 setMyLike(true);
 
-                const like = await likeService.createLike({
-                    userId: authData.$id,
-                    tweetId,
-                });
+                try {
+                    const like = await likeService.createLike({
+                        userId: authData.$id,
+                        tweetId,
+                    });
 
-                if (like) {
-                    likes = [like.$id, ...likes];
+                    if (like) {
+                        const newLikes = [like.$id, ...likes];
 
-                    tweetService
-                        .updateTweet(tweetId, { likes })
-                        .then((res) => {
-                            if (res) {
-                                const tweetsArr = tweetsData.map((item) =>
-                                    item.$id === res.$id ? res : item
-                                );
+                        const updatedLikes = await tweetService.updateTweet(
+                            tweetId,
+                            { likes: newLikes }
+                        );
 
-                                dispatch(
-                                    addTweets({ tweetsData: [...tweetsArr] })
-                                );
-                            }
-                        })
-                        .catch((err) => {
-                            setMyLike(false);
+                        if (updatedLikes) {
+                            const updatedLikessData = tweetsData.map((item) =>
+                                item.$id === updatedLikes.$id
+                                    ? updatedLikes
+                                    : item
+                            );
 
-                            console.log("Error add like :: ", err);
-                        });
+                            dispatch(
+                                addTweets({
+                                    tweetsData: updatedLikessData,
+                                })
+                            );
+                        }
+                    }
+                } catch (error) {
+                    setMyLike(false);
+                    console.error("Error adding like :: ", error);
                 }
             } else {
                 setMyLike(false);
 
-                const like = await likeService.deleteLike(
-                    isLiked.documents["0"].$id
-                );
+                try {
+                    const likedId = isLiked.documents["0"].$id;
+                    const like = await likeService.deleteLike(likedId);
 
-                if (like) {
-                    likes = likes.filter(
-                        (likeId) => likeId !== isLiked.documents["0"].$id
-                    );
+                    if (like) {
+                        const newLikes = likes.filter(
+                            (likeId) => likeId !== likedId
+                        );
 
-                    tweetService
-                        .updateTweet(tweetId, { likes })
-                        .then((res) => {
-                            if (res) {
-                                const tweetsArr = tweetsData.map((item) =>
-                                    item.$id === res.$id ? res : item
-                                );
-                                dispatch(
-                                    addTweets({ tweetsData: [...tweetsArr] })
-                                );
-                            }
-                        })
-                        .catch((err) => {
-                            setMyLike(true);
+                        const updatedTweet = await tweetService.updateTweet(
+                            tweetId,
+                            { likes: newLikes }
+                        );
 
-                            console.log("Error delete like :: ", err);
-                        });
+                        if (updatedTweet) {
+                            const updatedTweetsData = tweetsData.map((item) =>
+                                item.$id === updatedTweet.$id
+                                    ? updatedTweet
+                                    : item
+                            );
+
+                            dispatch(
+                                addTweets({ tweetsData: updatedTweetsData })
+                            );
+                        }
+                    }
+                } catch (error) {
+                    setMyLike(true);
+                    console.log("Error deleting like :: ", error);
                 }
             }
         }
@@ -345,64 +369,70 @@ function TweetCard({
             if (isRetweeted.documents.length === 0) {
                 setMyRetweet(true);
 
-                const retweet = await retweetService.createRetweet({
-                    userId: authData.$id,
-                    tweetId,
-                });
+                try {
+                    const retweet = await retweetService.createRetweet({
+                        userId: authData.$id,
+                        tweetId,
+                    });
 
-                if (retweet) {
-                    retweets = [retweet.$id, ...retweets];
+                    if (retweet) {
+                        const newRetweets = [retweet.$id, ...retweets];
 
-                    tweetService
-                        .updateTweet(tweetId, { retweets })
-                        .then((res) => {
-                            if (res) {
-                                const tweetsArr = tweetsData.map((item) =>
-                                    item.$id === res.$id ? res : item
-                                );
+                        const updatedTweet = await tweetService.updateTweet(
+                            tweetId,
+                            { retweets: newRetweets }
+                        );
 
-                                dispatch(
-                                    addTweets({ tweetsData: [...tweetsArr] })
-                                );
-                            }
-                        })
-                        .catch((err) => {
-                            setMyRetweet(false);
+                        if (updatedTweet) {
+                            const updatedTweetsData = tweetsData.map((item) =>
+                                item.$id === updatedTweet.$id
+                                    ? updatedTweet
+                                    : item
+                            );
 
-                            console.log("Error add retweet :: ", err);
-                        });
+                            dispatch(
+                                addTweets({ tweetsData: updatedTweetsData })
+                            );
+                        }
+                    }
+                } catch (error) {
+                    setMyRetweet(false);
+                    console.log("Error adding retweet :: ", error);
                 }
             } else {
                 setMyRetweet(false);
 
-                const retweet = await retweetService.deleteRetweet(
-                    isRetweeted.documents["0"].$id
-                );
-
-                if (retweet) {
-                    retweets = retweets.filter(
-                        (retweetId) =>
-                            retweetId !== isRetweeted.documents["0"].$id
+                try {
+                    const retweetedId = isRetweeted.documents["0"].$id;
+                    const retweet = await retweetService.deleteRetweet(
+                        retweetedId
                     );
 
-                    tweetService
-                        .updateTweet(tweetId, { retweets })
-                        .then((res) => {
-                            if (res) {
-                                const tweetsArr = tweetsData.map((item) =>
-                                    item.$id === res.$id ? res : item
-                                );
+                    if (retweet) {
+                        const newRetweets = retweets.filter(
+                            (retweetId) => retweetId !== retweetedId
+                        );
 
-                                dispatch(
-                                    addTweets({ tweetsData: [...tweetsArr] })
-                                );
-                            }
-                        })
-                        .catch((err) => {
-                            setMyRetweet(true);
+                        const updatedTweet = await tweetService.updateTweet(
+                            tweetId,
+                            { retweets: newRetweets }
+                        );
 
-                            console.log("Error delete retweet :: ", err);
-                        });
+                        if (updatedTweet) {
+                            const updatedTweetsData = tweetsData.map((item) =>
+                                item.$id === updatedTweet.$id
+                                    ? updatedTweet
+                                    : item
+                            );
+
+                            dispatch(
+                                addTweets({ tweetsData: updatedTweetsData })
+                            );
+                        }
+                    }
+                } catch (error) {
+                    setMyRetweet(true);
+                    console.log("Error deleting retweet :: ", error);
                 }
             }
         }
@@ -446,9 +476,11 @@ function TweetCard({
                         {/* User details */}
                         <div className="flex justify-between">
                             <div className="user-details flex flex-wrap mx-0.5 text-base">
-                                <span className="mx-0.5 font-bold">{name}</span>
+                                <span className="mx-0.5 font-bold">
+                                    {authorInfo?.name}
+                                </span>
                                 <span className="mx-0.5 text-zin font-light">
-                                    @{username}
+                                    @{authorInfo?.username}
                                 </span>
                                 <span className="mx-0.5 font-light">
                                     &middot;
@@ -569,7 +601,7 @@ function TweetCard({
                         {media && (
                             <div className="image m-1.5">
                                 <img
-                                    className="rounded-lg w-full"
+                                    className="rounded-2xl w-full"
                                     src={mediaURL}
                                     alt=""
                                 />
@@ -592,7 +624,7 @@ function TweetCard({
                                         </svg>
                                     </span>
                                     <span className="text-gray-500 my-auto">
-                                        {replies.length}
+                                        {replies}
                                     </span>
                                 </div>
                                 <div
@@ -621,7 +653,7 @@ function TweetCard({
                                                 : "text-gray-500"
                                         }  my-auto`}
                                     >
-                                        {retweets.length}
+                                        {retweets}
                                     </span>
                                 </div>
                                 <div
@@ -648,7 +680,7 @@ function TweetCard({
                                                 : "text-gray-500"
                                         }  m-auto cursor-pointer`}
                                     >
-                                        {likes.length}
+                                        {likes}
                                     </span>
                                 </div>
                                 <div className="flex mr-auto my-auto cursor-pointer">
@@ -689,7 +721,7 @@ function TweetCard({
                                 </div>
                                 {author === authData.$id && (
                                     <span className="text-gray-500 m-auto">
-                                        {bookmarks.length}
+                                        {bookmarks}
                                     </span>
                                 )}
                                 <div className="cursor-pointer p-2 m-auto hover:bg-red-100 rounded-full">
