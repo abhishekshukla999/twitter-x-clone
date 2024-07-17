@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addTweets } from "../../features/tweet/tweetSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
+import { Query } from "appwrite";
 
 function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
@@ -22,86 +23,85 @@ function PostModal({ isOpen, onClose, post = false }) {
         },
     });
     const dispatch = useDispatch();
-    const userData = useSelector((state) => state.profile.profileData);
-    const otherProfile = useSelector(
-        (state) => state.otherProfile.otherProfile
-    );
+    const profileData = useSelector((state) => state.profile.profileData);
+    const otherProfile = useSelector((state) => state.otherProfile);
     const tweetsData = useSelector((state) => state.tweets.tweetsData);
+    const authData = useSelector((state) => state.auth.userData);
 
     const submitPost = async (data) => {
         if (post) {
-            const file = uploadImage
-                ? await tweetMediaService.uploadFile(uploadImage)
-                : null;
+            try {
+                const file = uploadImage
+                    ? await tweetMediaService.uploadFile(uploadImage)
+                    : null;
 
-            if (file && post.media) {
-                await tweetMediaService.deleteFile(post.media);
-            }
+                if (file && post.media) {
+                    await tweetMediaService.deleteFile(post.media);
+                }
 
-            tweetService
-                .updateTweet(post.tweetId, {
-                    content: String(data.content),
-                    media: file ? file.$id : post.media,
-                })
-                .then((tweet) => {
-                    if (tweet && userData.$id === otherProfile.$id) {
-                        const tweetsArr = tweetsData.map((item) =>
-                            item.$id === tweet.$id ? tweet : item
-                        );
-                        dispatch(addTweets({ tweetsData: [...tweetsArr] }));
+                const updatedTweetPost = await tweetService.updateTweet(
+                    post.tweetId,
+                    {
+                        content: data.content,
+                        media: file ? file.$id : post.media,
                     }
-                })
-                .catch((error) => {
-                    console.log("Error Updating tweets :: ", error);
-                })
-                .finally(() => {
-                    onClose();
-                });
-        } else {
-            if (uploadImage) {
-                const file = await tweetMediaService.uploadFile(uploadImage);
+                );
 
-                if (file) {
-                    const fileId = file.$id;
-                    data.media = fileId;
+                if (updatedTweetPost) {
+                    console.log("Tweet Updated");
                 }
+            } catch (error) {
+                console.log("Error Updating tweets :: ", error);
+            } finally {
+                onClose();
+                setPrevImage(null);
+                setUploadImage(null);
             }
+        } else {
+            try {
+                if (uploadImage) {
+                    const file = await tweetMediaService.uploadFile(
+                        uploadImage
+                    );
 
-            const tweetPost = await tweetService.createTweet({
-                name: userData?.name,
-                username: userData?.username,
-                author: userData?.$id,
-                content: String(data.content).trim(),
-                media: data.media || "",
-            });
-
-            if (tweetPost) {
-                console.info("Tweet Created");
-
-                if (userData.$id === otherProfile.$id) {
-                    const tweetsArr = [tweetPost, ...tweetsData];
-                    dispatch(addTweets({ tweetsData: [...tweetsArr] }));
+                    if (file) {
+                        const fileId = file.$id;
+                        data.media = fileId;
+                    }
                 }
 
-                const tweets = userData.tweets || [];
-                const updatedTweets = [tweetPost?.$id, ...tweets];
+                const tweetPost = await tweetService.createTweet({
+                    author: authData?.$id,
+                    content: data.content,
+                    media: data.media || "",
+                });
 
-                profileService
-                    .updateProfile(userData.$id, {
-                        tweets: updatedTweets,
-                    })
-                    .then((res) => {
-                        dispatch(addProfileData({ profileData: res }));
-                        if (userData.$id === otherProfile.$id) {
-                            dispatch(addOtherProfile({ currentProfile: res }));
-                        }
-                    });
+                if (tweetPost) {
+                    console.info("Tweet Created");
+
+                    if (authData.$id === otherProfile.data?.$id) {
+                        const postCount = await tweetService.getTweets([
+                            Query.equal("author", [authData.$id]),
+                        ]);
+
+                        const updatedOtherProfile = {
+                            ...otherProfile,
+                            tweets: postCount.documents.length,
+                        };
+
+                        // console.log(updatedOtherProfile);
+
+                        dispatch(addOtherProfile(updatedOtherProfile));
+                    }
+                }
+            } catch (error) {
+                console.error("Error creating tweet :: ", error);
+            } finally {
+                reset();
+                setPrevImage(null);
+                setUploadImage(null);
             }
         }
-
-        reset();
-        setPrevImage(null);
-        setUploadImage(null);
     };
 
     const openAndReadFile = (e) => {
@@ -116,8 +116,8 @@ function PostModal({ isOpen, onClose, post = false }) {
     };
 
     const imageUrl = () => {
-        if (userData?.avatar) {
-            return profileMediaService.getFilePreview(userData.avatar);
+        if (profileData?.avatar) {
+            return profileMediaService.getFilePreview(profileData.avatar);
         } else {
             return "/defaultAvatar.png";
         }
@@ -190,31 +190,41 @@ function PostModal({ isOpen, onClose, post = false }) {
                                 />
 
                                 {prevImage && (
-                                    <div className="preview w-28">
-                                        <div
-                                            className="relative left-28 cursor-pointer"
-                                            onClick={removeImage}
-                                        >
-                                            <span className="text-2xl font-bold">
-                                                &times;
-                                            </span>
-                                        </div>
+                                    <div>
+                                        <span className="font-bold text-sm">
+                                            New Image
+                                        </span>
+                                        <div className="preview w-28">
+                                            <div
+                                                className="relative left-28 cursor-pointer"
+                                                onClick={removeImage}
+                                            >
+                                                <span className="text-2xl font-bold">
+                                                    &times;
+                                                </span>
+                                            </div>
 
-                                        <img
-                                            className="rounded-lg"
-                                            src={prevImage}
-                                        />
+                                            <img
+                                                className="rounded-lg"
+                                                src={prevImage}
+                                            />
+                                        </div>
                                     </div>
                                 )}
 
                                 {post && post.media && (
-                                    <img
-                                        className="w-80"
-                                        src={tweetMediaService.getFilePreview(
-                                            post.media
-                                        )}
-                                        alt="Tweet Image"
-                                    />
+                                    <div>
+                                        <span className="font-bold text-sm text-gray-400">
+                                            Current Image
+                                        </span>
+                                        <img
+                                            className="w-80"
+                                            src={tweetMediaService.getFilePreview(
+                                                post.media
+                                            )}
+                                            alt="Tweet Image"
+                                        />
+                                    </div>
                                 )}
                             </div>
                             {/* usables */}

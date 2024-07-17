@@ -42,9 +42,7 @@ function TweetCard({
     const profileData = useSelector((state) => state.profile.profileData);
     const authData = useSelector((state) => state.auth.userData);
     const tweetsData = useSelector((state) => state.tweets.tweetsData);
-    const otherProfile = useSelector(
-        (state) => state.otherProfile.otherProfile
-    );
+    const otherProfile = useSelector((state) => state.otherProfile);
     // options box handling
     const [isOpen, setisOpen] = useState(false);
     //edit handling
@@ -155,42 +153,34 @@ function TweetCard({
 
     // delete a tweet
     const handleDelete = async () => {
-        if (media) {
-            await tweetMediaService.deleteFile(media);
-        }
+        try {
+            if (media) {
+                await tweetMediaService.deleteFile(media);
+            }
 
-        tweetService
-            .deleteTweet(tweetId)
-            .then((res) => {
-                if (res) {
-                    let tweetsArr = tweetsData.filter(
-                        (tweet) => tweet.$id !== tweetId
-                    );
+            const deletedTweet = await tweetService.deleteTweet(tweetId);
 
-                    dispatch(addTweets({ tweetsData: [...tweetsArr] }));
+            if (deletedTweet) {
+                console.log("Tweet Deleted");
+
+                if (authData.$id === otherProfile.data?.$id) {
+                    const postCount = await tweetService.getTweets([
+                        Query.equal("author", [authData.$id]),
+                    ]);
+
+                    const updatedOtherProfile = {
+                        ...otherProfile,
+                        tweets: postCount.documents.length,
+                    };
+
+                    // console.log(updatedOtherProfile);
+
+                    dispatch(addOtherProfile(updatedOtherProfile));
                 }
-            })
-            .then(() => {
-                const tweetIds = profileData?.tweets || [];
-
-                const updatedtweetIds = tweetIds.filter((id) => id !== tweetId);
-
-                profileService
-                    .updateProfile(profileData?.$id, {
-                        tweets: updatedtweetIds,
-                    })
-                    .then((res) => {
-                        if (res) {
-                            dispatch(addProfileData({ profileData: res }));
-
-                            if (profileData?.$id === otherProfile?.$id) {
-                                dispatch(
-                                    addOtherProfile({ currentProfile: res })
-                                );
-                            }
-                        }
-                    });
-            });
+            }
+        } catch (error) {
+            console.error("Error deleting tweet :: ", error);
+        }
     };
 
     // const handleBookmark = async () => {

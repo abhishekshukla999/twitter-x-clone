@@ -31,6 +31,7 @@ function Profile({ username }) {
     const dispatch = useDispatch();
     const [isProfileEdit, setIsProfileEdit] = useState(false);
     const [currProfileCompo, setCurrProfileCompo] = useState("posts");
+    const { tweets, followers, following } = otherProfileData;
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -45,14 +46,14 @@ function Profile({ username }) {
 
                     // console.log(currentProfile);
 
-                    const numPosts = await tweetService.getTweets([
+                    const postCount = await tweetService.getTweets([
                         Query.equal("author", [currentProfile.$id]),
                     ]);
 
                     dispatch(
                         addOtherProfile({
                             data: currentProfile,
-                            tweets: numPosts.documents.length,
+                            tweets: postCount.documents.length,
                             followers: 0,
                             following: 0,
                         })
@@ -72,7 +73,7 @@ function Profile({ username }) {
         };
 
         fetchData();
-    }, [dispatch, username]);
+    }, [dispatch, username, tweets, followers, following]);
 
     useEffect(() => {
         if (!otherProfileData.data?.$id) return;
@@ -113,7 +114,13 @@ function Profile({ username }) {
         };
 
         fetchTweets();
-    }, [dispatch, username, otherProfileData.data?.$id, tweetsData?.length]);
+    }, [
+        dispatch,
+        username,
+        otherProfileData.data?.$id,
+        tweetsData?.length,
+        tweets,
+    ]);
 
     const imageUrl = () => {
         if (otherProfileData.data?.avatar) {
@@ -456,8 +463,12 @@ function Profile({ username }) {
                                                 replies={tweet.replies}
                                                 retweets={tweet.retweets}
                                                 bookmarks={tweet.bookmarks}
-                                                createdAt={tweet.data.$createdAt}
-                                                updatedAt={tweet.data.$updatedAt}
+                                                createdAt={
+                                                    tweet.data.$createdAt
+                                                }
+                                                updatedAt={
+                                                    tweet.data.$updatedAt
+                                                }
                                             />
                                         ))
                                     )}
