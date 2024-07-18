@@ -32,8 +32,6 @@ function Bookmarks() {
                             Query.equal("$id", tweetIds),
                         ]);
 
-                        console.log(bookMarkedTweets.documents);
-
                         // map of tweetId to bookmark createdAt
                         const bookmarkMap = myBookmarks.documents.reduce(
                             (map, bookmark) => {

@@ -11,6 +11,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { removeTweets } from "./features/tweet/tweetSlice";
 import { removeOtherProfile } from "./features/profile/otherProfileSlice";
 import { removeBookmarks } from "./features/bookmark/bookmarkSlice";
+import { removeLikes } from "./features/like/likeSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -34,6 +35,7 @@ function App() {
                 dispatch(removeTweets());
                 dispatch(removeOtherProfile());
                 dispatch(removeBookmarks());
+                dispatch(removeLikes());
             }
         });
     }, [navigate, dispatch]);

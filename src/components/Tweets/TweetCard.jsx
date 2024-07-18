@@ -19,6 +19,7 @@ import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 import PostModal from "../Modals/PostModal";
 import { Query } from "appwrite";
 import { addBookmarks } from "../../features/bookmark/bookmarkSlice";
+import { addLikes } from "../../features/like/likeSlice";
 
 function TweetCard({
     tweetId,
@@ -37,6 +38,7 @@ function TweetCard({
     const authData = useSelector((state) => state.auth.userData);
     const otherProfile = useSelector((state) => state.otherProfile);
     const bookmarksData = useSelector((state) => state.bookmarks);
+    const likesData = useSelector((state) => state.likes);
 
     // options box handling
     const [isOpen, setisOpen] = useState(false);
@@ -379,6 +381,17 @@ function TweetCard({
                             likesCount: currentLikesCount,
                         }));
                     }
+
+                    const currentUserLikes = await likeService.getLikes([
+                        Query.equal("userId", [authData.$id]),
+                    ]);
+
+                    dispatch(
+                        addLikes({
+                            ...likesData,
+                            likesCount: currentUserLikes.documents.length,
+                        })
+                    );
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
@@ -496,7 +509,7 @@ function TweetCard({
 
                     <div className="content w-[90%]">
                         {/* User details */}
-                        <div className="flex justify-between">
+                        <div className="flex justify-between flex-wrap">
                             <div className="user-details flex flex-wrap mx-0.5 text-base">
                                 <span className="mx-0.5 font-bold">
                                     {authorInfo?.name}
@@ -508,6 +521,17 @@ function TweetCard({
                                     &middot;
                                 </span>
                                 <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
+
+                                {createdAt !== updatedAt && (
+                                    <>
+                                        <span className="mx-0.5 font-light">
+                                            &middot;
+                                        </span>
+                                        <span className="mx-0.5 font-light">
+                                            Edited
+                                        </span>
+                                    </>
+                                )}
                             </div>
 
                             {/* options */}
