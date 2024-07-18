@@ -4,12 +4,9 @@ import { useForm } from "react-hook-form";
 import {
     tweetService,
     tweetMediaService,
-    profileService,
     profileMediaService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfileData } from "../../features/profile/profileSlice";
-import { addTweets } from "../../features/tweet/tweetSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 import { Query } from "appwrite";
 
@@ -25,7 +22,6 @@ function PostModal({ isOpen, onClose, post = false }) {
     const dispatch = useDispatch();
     const profileData = useSelector((state) => state.profile.profileData);
     const otherProfile = useSelector((state) => state.otherProfile);
-    const tweetsData = useSelector((state) => state.tweets.tweetsData);
     const authData = useSelector((state) => state.auth.userData);
 
     const submitPost = async (data) => {

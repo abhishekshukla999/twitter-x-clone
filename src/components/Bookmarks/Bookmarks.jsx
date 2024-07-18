@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import TweetCard from "../Tweets/TweetCard";
 import { useSelector } from "react-redux";
-import { bookmarksService, tweetService } from "../../appwrite";
+import { bookmarkService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 import Loader from "../Loader";
 
@@ -19,7 +19,7 @@ function Bookmarks() {
         async function fetchBookmarks() {
             try {
                 if (authData) {
-                    const myBookmarks = await bookmarksService.getBookmarks([
+                    const myBookmarks = await bookmarkService.getBookmarks([
                         Query.equal("userId", [authData.$id]),
                         Query.orderDesc("$createdAt"),
                     ]);

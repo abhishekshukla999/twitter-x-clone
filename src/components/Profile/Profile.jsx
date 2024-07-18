@@ -85,23 +85,11 @@ function Profile({ username }) {
                     Query.orderDesc("$createdAt"),
                 ]);
 
-                // console.log(tweetsCollection.documents);
+                // console.log("FOUND", tweetsCollectionData.documents);
 
                 if (tweetsCollectionData.documents.length !== 0) {
-                    const tweetsCollection = tweetsCollectionData.documents.map(
-                        (tweet) => {
-                            return {
-                                data: tweet,
-                                likes: 0,
-                                replies: 0,
-                                retweets: 0,
-                                bookmarks: 0,
-                            };
-                        }
-                    );
-
+                    const tweetsCollection = tweetsCollectionData.documents;
                     // console.log(tweetsCollection);
-
                     dispatch(addTweets(tweetsCollection));
                 } else {
                     dispatch(removeTweets());
@@ -454,21 +442,13 @@ function Profile({ username }) {
                                     ) : (
                                         tweetsData?.map((tweet) => (
                                             <TweetCard
-                                                key={tweet.data.$id}
-                                                tweetId={tweet.data.$id}
-                                                author={tweet.data.author}
-                                                content={tweet.data.content}
-                                                media={tweet.data.media}
-                                                likes={tweet.likes}
-                                                replies={tweet.replies}
-                                                retweets={tweet.retweets}
-                                                bookmarks={tweet.bookmarks}
-                                                createdAt={
-                                                    tweet.data.$createdAt
-                                                }
-                                                updatedAt={
-                                                    tweet.data.$updatedAt
-                                                }
+                                                key={tweet.$id}
+                                                tweetId={tweet.$id}
+                                                author={tweet.author}
+                                                content={tweet.content}
+                                                media={tweet.media}
+                                                createdAt={tweet.$createdAt}
+                                                updatedAt={tweet.$updatedAt}
                                             />
                                         ))
                                     )}
