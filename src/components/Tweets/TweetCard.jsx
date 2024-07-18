@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 import PostModal from "../Modals/PostModal";
 import { Query } from "appwrite";
+import { addBookmarks } from "../../features/bookmark/bookmarkSlice";
 
 function TweetCard({
     tweetId,
@@ -35,6 +36,8 @@ function TweetCard({
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.userData);
     const otherProfile = useSelector((state) => state.otherProfile);
+    const bookmarksData = useSelector((state) => state.bookmarks);
+
     // options box handling
     const [isOpen, setisOpen] = useState(false);
     //edit handling
@@ -297,6 +300,19 @@ function TweetCard({
                             bookmarksCount: currentBookCount,
                         }));
                     }
+
+                    const currentUserbookmarks =
+                        await bookmarkService.getBookmarks([
+                            Query.equal("userId", [authData.$id]),
+                        ]);
+
+                    dispatch(
+                        addBookmarks({
+                            ...bookmarksData,
+                            bookmarksCount:
+                                currentUserbookmarks.documents.length,
+                        })
+                    );
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,

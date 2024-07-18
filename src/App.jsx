@@ -10,6 +10,7 @@ import { Root, Header } from "./components";
 import { Outlet, useNavigate } from "react-router-dom";
 import { removeTweets } from "./features/tweet/tweetSlice";
 import { removeOtherProfile } from "./features/profile/otherProfileSlice";
+import { removeBookmarks } from "./features/bookmark/bookmarkSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -32,6 +33,7 @@ function App() {
                 dispatch(removeProfileData());
                 dispatch(removeTweets());
                 dispatch(removeOtherProfile());
+                dispatch(removeBookmarks());
             }
         });
     }, [navigate, dispatch]);

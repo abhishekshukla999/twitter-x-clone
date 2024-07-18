@@ -6,6 +6,7 @@ import { logout } from "../../features/auth/authSlice";
 import { removeProfileData } from "../../features/profile/profileSlice";
 import { removeTweets } from "../../features/tweet/tweetSlice";
 import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
+import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
 
 function NavigationMobile({ isOpen, onClose }) {
     const dispatch = useDispatch();
@@ -17,7 +18,8 @@ function NavigationMobile({ isOpen, onClose }) {
             dispatch(logout());
             dispatch(removeProfileData());
             dispatch(removeTweets());
-            dispatch(removeOtherProfile())
+            dispatch(removeOtherProfile());
+            dispatch(removeBookmarks());
         });
     };
 
