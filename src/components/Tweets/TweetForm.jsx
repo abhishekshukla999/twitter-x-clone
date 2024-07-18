@@ -3,56 +3,45 @@ import { useForm } from "react-hook-form";
 import {
     tweetService,
     tweetMediaService,
-    profileService,
     profileMediaService,
 } from "../../appwrite";
-import { useSelector, useDispatch } from "react-redux";
-import { addProfileData } from "../../features/profile/profileSlice";
+import { useSelector } from "react-redux";
 
 function TweetForm() {
     // preview and upload states
     const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
     const { register, handleSubmit, reset } = useForm();
-    const dispatch = useDispatch();
-    const userData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile.profileData);
+    const authData = useSelector((state) => state.auth.userData);
 
     const submitPost = async (data) => {
-        if (uploadImage) {
-            const file = await tweetMediaService.uploadFile(uploadImage);
+        try {
+            if (uploadImage) {
+                const file = await tweetMediaService.uploadFile(uploadImage);
 
-            if (file) {
-                const fileId = file.$id;
-                data.media = fileId;
+                if (file) {
+                    const fileId = file.$id;
+                    data.media = fileId;
+                }
             }
+
+            const tweetPost = await tweetService.createTweet({
+                author: authData.$id,
+                content: data.content,
+                media: data.media || "",
+            });
+
+            if (tweetPost) {
+                console.log("Tweet Created");
+            }
+        } catch (error) {
+            console.error("Error creating tweet :: ", error);
+        } finally {
+            reset();
+            setPrevImage(null);
+            setUploadImage(null);
         }
-
-        const tweetPost = await tweetService.createTweet({
-            name: userData.name,
-            username: userData.username,
-            author: userData.$id,
-            content: String(data.content),
-            media: data.media || "",
-        });
-
-        if (tweetPost) {
-            console.log("Tweet Created");
-
-            const tweets = userData.tweets || [];
-            const updatedTweets = [tweetPost?.$id, ...tweets];
-
-            profileService
-                .updateProfile(userData.$id, {
-                    tweets: updatedTweets,
-                })
-                .then((res) => {
-                    dispatch(addProfileData({ profileData: res }));
-                });
-        }
-
-        reset();
-        setPrevImage(null);
-        setUploadImage(null);
     };
 
     const openAndReadFile = (e) => {
@@ -67,20 +56,12 @@ function TweetForm() {
     };
 
     const imageUrl = () => {
-        if (userData?.avatar) {
-            return profileMediaService.getFilePreview(userData.avatar);
+        if (profileData?.avatar) {
+            return profileMediaService.getFilePreview(profileData.avatar);
         } else {
             return "/defaultAvatar.png";
         }
     };
-
-    // handling textarea change when input changes
-    // this conflicting with react-hook-form and useRef
-    // const handleTextareaChange = () => {
-    //     const textarea = textareaRef.current;
-    //     textarea.style.height = "auto";
-    //     textarea.style.height = `${textarea.scrollHeight}px`;
-    // };
 
     return (
         <>

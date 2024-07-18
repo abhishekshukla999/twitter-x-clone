@@ -48,6 +48,19 @@ class ProfileMediaService {
             console.log("Appwrite Service :: getFilePreview :: error ", error);
         }
     }
+
+    getCustomFilePreview(fileId, width, height) {
+        try {
+            return this.storage.getFilePreview(
+                config.appwriteProfileBucketId,
+                fileId,
+                width,
+                height
+            );
+        } catch (error) {
+            console.log("Appwrite Service :: getCustomFilePreview :: error ", error);
+        }
+    }
 }
 
 const profileMediaService = new ProfileMediaService();

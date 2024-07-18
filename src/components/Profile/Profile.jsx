@@ -25,27 +25,37 @@ import { Query } from "appwrite";
 function Profile({ username }) {
     const [tweetLoading, setTweetLoading] = useState(true);
     const [profileLoading, setProfileLoading] = useState(true);
-    const otherProfileData = useSelector(
-        (state) => state.otherProfile.otherProfile
-    );
-    const tweetsData = useSelector((state) => state.tweets.tweetsData);
+    const otherProfileData = useSelector((state) => state.otherProfile);
+    const tweetsData = useSelector((state) => state.tweets);
     const authId = useSelector((state) => state.auth.userData.$id);
     const dispatch = useDispatch();
     const [isProfileEdit, setIsProfileEdit] = useState(false);
     const [currProfileCompo, setCurrProfileCompo] = useState("posts");
+    const { tweets, followers, following } = otherProfileData;
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const currentProfile = await profileService.getProfiles([
+                const currentProfileData = await profileService.getProfiles([
                     Query.equal("username", [username]),
                 ]);
 
-                // console.log(currentProfile);
-                if (currentProfile.documents.length !== 0) {
+                // console.log(currentProfileData);
+                if (currentProfileData.documents.length !== 0) {
+                    const currentProfile = currentProfileData.documents["0"];
+
+                    // console.log(currentProfile);
+
+                    const postCount = await tweetService.getTweets([
+                        Query.equal("author", [currentProfile.$id]),
+                    ]);
+
                     dispatch(
                         addOtherProfile({
-                            currentProfile: currentProfile.documents["0"],
+                            data: currentProfile,
+                            tweets: postCount.documents.length,
+                            followers: 0,
+                            following: 0,
                         })
                     );
                 } else {
@@ -63,24 +73,24 @@ function Profile({ username }) {
         };
 
         fetchData();
-    }, [dispatch, username]);
+    }, [dispatch, username, tweets, followers, following]);
 
     useEffect(() => {
-        if (!otherProfileData?.$id) return;
+        if (!otherProfileData.data?.$id) return;
 
         const fetchTweets = async () => {
             try {
-                const tweetsCollection = await tweetService.getTweets([
-                    Query.equal("author", [otherProfileData?.$id]),
+                const tweetsCollectionData = await tweetService.getTweets([
+                    Query.equal("author", [otherProfileData.data?.$id]),
                     Query.orderDesc("$createdAt"),
                 ]);
 
-                // console.log(tweetsCollection.documents);
+                // console.log("FOUND", tweetsCollectionData.documents);
 
-                if (tweetsCollection.documents.length !== 0) {
-                    dispatch(
-                        addTweets({ tweetsData: tweetsCollection.documents })
-                    );
+                if (tweetsCollectionData.documents.length !== 0) {
+                    const tweetsCollection = tweetsCollectionData.documents;
+                    // console.log(tweetsCollection);
+                    dispatch(addTweets(tweetsCollection));
                 } else {
                     dispatch(removeTweets());
                 }
@@ -92,11 +102,19 @@ function Profile({ username }) {
         };
 
         fetchTweets();
-    }, [dispatch, username, otherProfileData?.$id, tweetsData.length]);
+    }, [
+        dispatch,
+        username,
+        otherProfileData.data?.$id,
+        tweetsData?.length,
+        tweets,
+    ]);
 
     const imageUrl = () => {
-        if (otherProfileData?.avatar) {
-            return profileMediaService.getFilePreview(otherProfileData.avatar);
+        if (otherProfileData.data?.avatar) {
+            return profileMediaService.getFilePreview(
+                otherProfileData.data.avatar
+            );
         } else {
             return "/defaultAvatar.png";
         }
@@ -132,12 +150,12 @@ function Profile({ username }) {
                 <Loader />
             ) : (
                 <div>
-                    <div className="top flex p-1 sticky top-0 backdrop-blur-3xl opacity-[100%] border-b border-b-zinc-200">
-                        <NavLink className="left w-[10%] m-auto p-1.5">
+                    <div className="top flex py-1 px-3 sticky top-0 backdrop-blur-3xl opacity-[100%] border-b border-b-zinc-200">
+                        <NavLink className="left my-auto p-1.5 hover:bg-gray-200 rounded-full">
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
-                                className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                                className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                             >
                                 <g>
                                     <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
@@ -145,12 +163,12 @@ function Profile({ username }) {
                             </svg>
                         </NavLink>
 
-                        <NavLink className="right w-[90%]">
+                        <NavLink className="right ml-4">
                             <p className="font-bold text-base">
-                                {otherProfileData?.name || ""}
+                                {otherProfileData.data?.name || ""}
                             </p>
                             <p className="text-sm font-light">
-                                {otherProfileData?.tweets.length || ""} posts
+                                {otherProfileData?.tweets || "0"} posts
                             </p>
                         </NavLink>
                     </div>
@@ -158,14 +176,14 @@ function Profile({ username }) {
                     <div className="border border-b-0">
                         {/* cover */}
                         <div>
-                            {!otherProfileData?.profileCover ? (
-                                <div className="h-[200px] w-[590px] bg-gray-300"></div>
+                            {!otherProfileData.data?.profileCover ? (
+                                <div className="h-[200px] w-full bg-gray-300"></div>
                             ) : (
                                 <img
-                                    className="h-[200px] w-[622px]"
+                                    className="h-[200px] w-full"
                                     src={
                                         profileMediaService.getFilePreview(
-                                            otherProfileData?.profileCover
+                                            otherProfileData.data.profileCover
                                         ) || ""
                                     }
                                     alt="Cover Image"
@@ -173,8 +191,8 @@ function Profile({ username }) {
                             )}
                         </div>
 
-                        {/* Avatar */}
                         <div className="flex justify-between relative">
+                            {/* Avatar */}
                             <div className="p-4 absolute -top-20">
                                 <img
                                     className="rounded-full h-[133.5px] w-[133.5px] p-1 bg-white"
@@ -184,7 +202,7 @@ function Profile({ username }) {
                             </div>
                             {/* Edit / Follow */}
                             <div className="absolute top-4 right-4">
-                                {authId === otherProfileData?.$id ? (
+                                {authId === otherProfileData.data?.$id ? (
                                     <button
                                         className="p-2 px-4 font-bold text-base border border-zinc-300 rounded-full"
                                         onClick={(e) => {
@@ -227,9 +245,9 @@ function Profile({ username }) {
                         <div className="mt-20 ml-4">
                             <div className="flex">
                                 <span className="font-bold text-xl">
-                                    {otherProfileData?.name || ""}
+                                    {otherProfileData.data?.name || ""}
                                 </span>
-                                {otherProfileData?.premiumMember && (
+                                {otherProfileData.data?.premiumMember && (
                                     <span>
                                         <svg
                                             viewBox="0 0 22 22"
@@ -247,7 +265,7 @@ function Profile({ username }) {
                             </div>
 
                             <p className="text-gray-500">
-                                @{otherProfileData?.username || ""}
+                                @{otherProfileData.data?.username || ""}
                             </p>
                         </div>
 
@@ -256,7 +274,7 @@ function Profile({ username }) {
                         </div>
 
                         <div className="social flex gap-2 flex-wrap mx-3 text-sm">
-                            {otherProfileData?.location && (
+                            {otherProfileData.data?.location && (
                                 <div className="flex">
                                     <span className="mx-1">
                                         <svg
@@ -270,11 +288,11 @@ function Profile({ username }) {
                                         </svg>
                                     </span>
                                     <span className="text-gray-500">
-                                        {otherProfileData?.location || ""}
+                                        {otherProfileData.data?.location || ""}
                                     </span>
                                 </div>
                             )}
-                            {otherProfileData?.website && (
+                            {otherProfileData.data?.website && (
                                 <div className="flex">
                                     <span className="mx-1">
                                         <svg
@@ -288,7 +306,7 @@ function Profile({ username }) {
                                         </svg>
                                     </span>
                                     <span className="text-blue-500">
-                                        {otherProfileData?.website || ""}
+                                        {otherProfileData.data?.website || ""}
                                     </span>
                                 </div>
                             )}
@@ -307,22 +325,23 @@ function Profile({ username }) {
                                 <span className="text-gray-500">
                                     Joined{" "}
                                     {toLocalDate(
-                                        otherProfileData?.$createdAt
+                                        otherProfileData.data?.$createdAt
                                     ) || ""}
                                 </span>
                             </div>
                         </div>
 
+                        {/* follow/ing */}
                         <div className="flex gap-4 text-sm px-4 py-3 text-gray-700">
                             <span className="hover:underline cursor-pointer">
                                 <strong>
-                                    {otherProfileData?.following.length || "0"}
+                                    {otherProfileData.following || "0"}
                                 </strong>{" "}
                                 Following
                             </span>
                             <span className="hover:underline cursor-pointer">
                                 <strong>
-                                    {otherProfileData?.followers.length || "0"}
+                                    {otherProfileData.followers || "0"}
                                 </strong>{" "}
                                 Followers
                             </span>
@@ -415,7 +434,9 @@ function Profile({ username }) {
                                 <Posts>
                                     {tweetsData?.length === 0 ? (
                                         <div className="text-3xl font-bold text-center">
-                                            @{otherProfileData?.username || ""}{" "}
+                                            @
+                                            {otherProfileData.data?.username ||
+                                                ""}{" "}
                                             don&apos;t have any posts
                                         </div>
                                     ) : (
@@ -423,16 +444,9 @@ function Profile({ username }) {
                                             <TweetCard
                                                 key={tweet.$id}
                                                 tweetId={tweet.$id}
-                                                name={tweet.name}
-                                                username={tweet.username}
+                                                author={tweet.author}
                                                 content={tweet.content}
                                                 media={tweet.media}
-                                                likes={tweet.likes}
-                                                replies={tweet.replies}
-                                                retweets={tweet.retweets}
-                                                author={tweet.author}
-                                                slug={tweet.slug}
-                                                bookmarks={tweet.bookmarks}
                                                 createdAt={tweet.$createdAt}
                                                 updatedAt={tweet.$updatedAt}
                                             />
