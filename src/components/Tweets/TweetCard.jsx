@@ -256,6 +256,73 @@ function TweetCard({
                     // console.log(updatedOtherProfile);
 
                     dispatch(addOtherProfile(updatedOtherProfile));
+
+                    // deleting associated docs
+
+                    // like
+                    const allLikes = await likeService.getLikes([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteLikePromises = allLikes.documents.map(
+                        (document) => likeService.deleteLike(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteLikePromises);
+                        console.log("All likes deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some likes:", error);
+                    }
+
+                    // replies
+                    const allReplies = await replyService.getReplies([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteReplyPromises = allReplies.documents.map(
+                        (document) => replyService.deleteReply(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteReplyPromises);
+                        console.log("All replies deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some replies:", error);
+                    }
+
+                    // retweets
+                    const allRetweets = await retweetService.getRetweets([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteReyweetPromises = allRetweets.documents.map(
+                        (document) => retweetService.deleteRetweet(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteReyweetPromises);
+                        console.log("All retweets deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some retweets:", error);
+                    }
+
+                    // bookmarks
+                    const allBookmarks = await bookmarkService.getBookmarks([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteBookmarkPromises = allBookmarks.documents.map(
+                        (document) =>
+                            bookmarkService.deleteBookmark(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteBookmarkPromises);
+                        console.log("All bookmarks deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some bookmark:", error);
+                    }
                 }
             }
         } catch (error) {
