@@ -44,6 +44,9 @@ import Media from "./Profile/Media";
 import Replies from "./Profile/Replies";
 import Posts from "./Profile/Posts";
 import PremiumModal from "./Modals/PremiumModal";
+import PostPageComponent from "./Post/PostPageComponent";
+import PostCard from "./Post/PostCard";
+import Comments from "./Post/Comments";
 
 export {
     Login1,
@@ -92,4 +95,7 @@ export {
     Replies,
     Posts,
     PremiumModal,
+    PostPageComponent,
+    Comments,
+    PostCard,
 };

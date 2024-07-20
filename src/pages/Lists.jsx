@@ -1,4 +1,3 @@
-import React from "react";
 import { Feed, Aside, UnderDev } from "../components";
 
 function Lists() {

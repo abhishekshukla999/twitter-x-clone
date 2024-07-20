@@ -1,4 +1,3 @@
-import React from "react";
 import { Feed, Aside, Notifications as UserNotifications } from "../components";
 
 function Notifications() {

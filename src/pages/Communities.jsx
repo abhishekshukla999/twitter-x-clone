@@ -1,4 +1,3 @@
-import React from "react";
 import { Aside, Feed, UnderDev } from "../components";
 
 function Communities() {

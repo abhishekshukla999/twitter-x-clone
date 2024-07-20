@@ -9,6 +9,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 import { Query } from "appwrite";
+import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
 
 function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
@@ -23,6 +24,7 @@ function PostModal({ isOpen, onClose, post = false }) {
     const profileData = useSelector((state) => state.profile.profileData);
     const otherProfile = useSelector((state) => state.otherProfile);
     const authData = useSelector((state) => state.auth.userData);
+    const tweetPageData = useSelector((state) => state.tweetPage);
 
     const submitPost = async (data) => {
         if (post) {
@@ -45,6 +47,12 @@ function PostModal({ isOpen, onClose, post = false }) {
 
                 if (updatedTweetPost) {
                     console.log("Tweet Updated");
+                    dispatch(
+                        addTweetPageData({
+                            ...tweetPageData,
+                            tweetData: updatedTweetPost,
+                        })
+                    );
                 }
             } catch (error) {
                 console.log("Error Updating tweets :: ", error);
@@ -94,6 +102,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                 console.error("Error creating tweet :: ", error);
             } finally {
                 reset();
+                onClose();
                 setPrevImage(null);
                 setUploadImage(null);
             }
@@ -123,7 +132,7 @@ function PostModal({ isOpen, onClose, post = false }) {
 
     return createPortal(
         <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white overflow-y-auto opacity-100 p-5 rounded-xl shadow-lg relative w-fit max-h-fit max-[702px]:h-screen max-[702px]:w-screen text-black">
+            <div className="bg-white overflow-y-auto opacity-100 p-5 rounded-xl shadow-lg relative 2xl:w-[50%] xl:w-[60%] lg:w-[50%] md:w-[60%] max-h-fit max-[702px]:h-screen max-[702px]:w-screen text-black">
                 <div className="">
                     <button
                         className="rounded-lg m-3 absolute top-2.5 left-2.5 bg-none border-none text-2xl cursor-pointer"
@@ -161,8 +170,8 @@ function PostModal({ isOpen, onClose, post = false }) {
 
                 {/* TweetForm implemented */}
                 <div>
-                    <div className="post-modal flex pt-3 w-full max-h-[60vh] border-zinc-200">
-                        <div className="mx-2 w-[7%]">
+                    <div className="post-modal flex justify-center pt-3 w-full max-h-[60vh] border-zinc-200">
+                        <div className="mx-2 w-[5%]">
                             <img
                                 className="w-full rounded-full"
                                 src={imageUrl()}
