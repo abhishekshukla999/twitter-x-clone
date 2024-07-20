@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { Loader, PostCard, Comments } from "../index";
+import { Loader, PostCard, Reply, ReplyForm } from "../index";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { profileService, tweetService } from "../../appwrite";
+import { profileService, replyService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
 
@@ -11,10 +11,10 @@ function PostPageComponent({ username, tweetId }) {
     const [author, setAuthor] = useState(null);
     const tweetPageData = useSelector((state) => state.tweetPage);
     const tweetData = useSelector((state) => state.tweetPage.tweetData);
-    const commentsData = useSelector((state) => state.tweetPage.commentsData);
-    const commentsCount = useSelector((state) => state.tweetPage.commentsCount);
+    const repliesData = useSelector((state) => state.tweetPage.repliesData);
+    const repliesCount = useSelector((state) => state.tweetPage.repliesCount);
     const [tweetLoading, setTweetLoading] = useState(true);
-    const [commentsLoading, setCommentsLoading] = useState(true);
+    const [repliesLoading, setRepliesLoading] = useState(true);
     const navigate = useNavigate();
 
     // author & tweet data
@@ -45,7 +45,36 @@ function PostPageComponent({ username, tweetId }) {
         };
 
         fetchPostData();
-    }, [username, tweetId]);
+    }, [dispatch, username, tweetId]);
+
+    // replies
+    useEffect(() => {
+        const fetchReplies = async () => {
+            try {
+                const allReplies = await replyService.getReplies([
+                    Query.equal("tweetId", [tweetId]),
+                    Query.orderDesc("$createdAt"),
+                ]);
+
+                if (allReplies.documents.length !== 0) {
+                    const oldData = tweetPageData;
+                    dispatch(
+                        addTweetPageData({
+                            ...oldData,
+                            repliesData: allReplies.documents,
+                            repliesCount: allReplies.documents.length,
+                        })
+                    );
+                }
+            } catch (error) {
+                console.log("Error fetching Replies data", error);
+            } finally {
+                setRepliesLoading(false);
+            }
+        };
+
+        fetchReplies();
+    }, [dispatch, repliesCount]);
 
     return (
         <div className="h-screen border-l border-r">
@@ -82,8 +111,24 @@ function PostPageComponent({ username, tweetId }) {
                     updatedAt={tweetData.$updatedAt}
                 />
             )}
-            <Comments />
-            <Comments />
+
+            <ReplyForm tweetId={tweetId} />
+
+            {repliesLoading ? (
+                <Loader />
+            ) : (
+                repliesData?.map((reply) => (
+                    <Reply
+                        key={reply.$id}
+                        replyId={reply.$id}
+                        userId={reply.userId}
+                        tweetAuthorId={author}
+                        content={reply.content}
+                        media={reply.media}
+                        createdAt={reply.$createdAt}
+                    />
+                ))
+            )}
         </div>
     );
 }

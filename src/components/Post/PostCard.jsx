@@ -13,6 +13,7 @@ import {
     retweetService,
     tweetMediaService,
     tweetService,
+    replyService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import PostModal from "../Modals/PostModal";
@@ -26,7 +27,6 @@ function PostCard({
     media = "",
     author = "",
     createdAt = "",
-    updatedAt = "",
 }) {
     const [mediaURL, setMediaURL] = useState("");
     const [avatarURL, setAvatarURL] = useState("/defaultAvatar.png");
@@ -35,6 +35,7 @@ function PostCard({
     const [date, setDate] = useState({});
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.userData);
+    const repliesCount = useSelector((state) => state.tweetPage.repliesCount);
 
     // options box handling
     const [isOpen, setisOpen] = useState(false);
@@ -182,6 +183,29 @@ function PostCard({
 
         fetchRetweetsData();
     }, []);
+
+    // replies
+    useEffect(() => {
+        const fetchRepliesData = async () => {
+            const allReplies = await replyService.getReplies([
+                Query.equal("tweetId", [tweetId]),
+            ]);
+
+            if (allReplies.documents.length !== 0) {
+                setInteractions((interactions) => ({
+                    ...interactions,
+                    repliesCount: allReplies.documents.length,
+                }));
+            } else {
+                setInteractions((interactions) => ({
+                    ...interactions,
+                    repliesCount: 0,
+                }));
+            }
+        };
+
+        fetchRepliesData();
+    }, [repliesCount]);
 
     // converting date to local
     const toLocalDate = (date) => {

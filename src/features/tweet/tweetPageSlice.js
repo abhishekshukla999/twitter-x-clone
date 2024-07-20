@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     tweetData: {},
-    commentsData: [],
-    commentsCount: 0,
+    repliesData: [],
+    repliesCount: 0,
 };
 
 const tweetPageSlice = createSlice({
@@ -12,13 +12,13 @@ const tweetPageSlice = createSlice({
     reducers: {
         addTweetPageData: (state, action) => {
             state.tweetData = action.payload.tweetData;
-            state.commentsData = action.payload.commentsData;
-            state.commentsCount = action.payload.commentsCount;
+            state.repliesData = action.payload.repliesData;
+            state.repliesCount = action.payload.repliesCount;
         },
         removeTweetPageData: (state) => {
             state.tweetData = {};
-            state.commentsData = [];
-            state.commentsCount = 0;
+            state.repliesData = [];
+            state.repliesCount = 0;
         },
     },
 });

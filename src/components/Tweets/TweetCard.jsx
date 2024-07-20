@@ -10,6 +10,7 @@ import {
     likeService,
     profileMediaService,
     profileService,
+    replyService,
     retweetService,
     tweetMediaService,
     tweetService,
@@ -92,7 +93,7 @@ function TweetCard({
     useEffect(() => {
         const fetchBookmarksData = async () => {
             const allBookmarks = await bookmarkService.getBookmarks([
-                Query.equal("tweetId", tweetId),
+                Query.equal("tweetId", [tweetId]),
             ]);
 
             if (allBookmarks.documents.length !== 0) {
@@ -103,7 +104,7 @@ function TweetCard({
 
                 const isMyBook = await bookmarkService.getBookmarks([
                     Query.and([
-                        Query.equal("tweetId", tweetId),
+                        Query.equal("tweetId", [tweetId]),
                         Query.equal("userId", [authData.$id]),
                     ]),
                 ]);
@@ -182,6 +183,24 @@ function TweetCard({
         };
 
         fetchRetweetsData();
+    }, []);
+
+    // replies
+    useEffect(() => {
+        const fetchRepliesData = async () => {
+            const allReplies = await replyService.getReplies([
+                Query.equal("tweetId", [tweetId]),
+            ]);
+
+            if (allReplies.documents.length !== 0) {
+                setInteractions((interactions) => ({
+                    ...interactions,
+                    repliesCount: allReplies.documents.length,
+                }));
+            }
+        };
+
+        fetchRepliesData();
     }, []);
 
     // converting date to local

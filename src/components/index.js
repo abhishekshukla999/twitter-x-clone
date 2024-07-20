@@ -46,7 +46,8 @@ import Posts from "./Profile/Posts";
 import PremiumModal from "./Modals/PremiumModal";
 import PostPageComponent from "./Post/PostPageComponent";
 import PostCard from "./Post/PostCard";
-import Comments from "./Post/Comments";
+import Reply from "./Post/Reply";
+import ReplyForm from "./Post/ReplyForm";
 
 export {
     Login1,
@@ -96,6 +97,7 @@ export {
     Posts,
     PremiumModal,
     PostPageComponent,
-    Comments,
+    Reply,
     PostCard,
+    ReplyForm,
 };
