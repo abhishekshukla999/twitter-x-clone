@@ -95,13 +95,13 @@ function Bookmarks() {
             {/* Tweet Card */}
             {loader ? (
                 <Loader />
-            ) : bookmarksData.bookmarksCount === 0 ? (
+            ) : bookmarksData?.bookmarksCount === 0 ? (
                 <div className="p-4 text-2xl font-bold text-center border-l border-r">
                     You don&apos;t have any bookmarks
                 </div>
             ) : (
                 <div>
-                    {bookmarksData.data.map((tweet) => (
+                    {bookmarksData?.data.map((tweet) => (
                         <TweetCard
                             key={tweet.$id}
                             tweetId={tweet.$id}

@@ -48,6 +48,8 @@ import PostPageComponent from "./Post/PostPageComponent";
 import PostCard from "./Post/PostCard";
 import Reply from "./Post/Reply";
 import ReplyForm from "./Post/ReplyForm";
+import PostEngagementsModal from "./Modals/PostEngagementsModal";
+import ReactionsCard from "./Post/ReactionsCard";
 
 export {
     Login1,
@@ -100,4 +102,6 @@ export {
     Reply,
     PostCard,
     ReplyForm,
+    PostEngagementsModal,
+    ReactionsCard,
 };

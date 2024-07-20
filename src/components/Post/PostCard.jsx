@@ -16,7 +16,7 @@ import {
     replyService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
-import PostModal from "../Modals/PostModal";
+import { PostEngagementsModal, PostModal } from "../index";
 import { Query } from "appwrite";
 import { useNavigate } from "react-router-dom";
 import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
@@ -41,6 +41,8 @@ function PostCard({
     const [isOpen, setisOpen] = useState(false);
     //edit handling
     const [isOpenEdit, setIsOpenEdit] = useState(false);
+
+    const [isOpenEngs, setIsOpenEngs] = useState(false);
 
     const [interactions, setInteractions] = useState({
         myBookmark: false,
@@ -509,7 +511,7 @@ function PostCard({
                             <div className="mx-0.5 font-bold hover:underline">
                                 {authorInfo?.name || ""}
                             </div>
-                            <div className="mx-0.5 text-zin font-light">
+                            <div className="mx-0.5 text-zinc-500 font-light">
                                 @{authorInfo?.username || ""}
                             </div>
                         </div>
@@ -658,7 +660,13 @@ function PostCard({
                         )}
                     </div>
 
-                    <div className="flex gap-1 p-3 border-t cursor-pointer hover:bg-[#F7F7F7]">
+                    <div
+                        className="flex gap-1 p-3 border-t cursor-pointer hover:bg-[#F7F7F7]"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsOpenEngs(true);
+                        }}
+                    >
                         <span>
                             <svg
                                 viewBox="0 0 24 24"
@@ -674,6 +682,12 @@ function PostCard({
                             View post engagements
                         </span>
                     </div>
+
+                    <PostEngagementsModal
+                        isOpen={isOpenEngs}
+                        onClose={() => setIsOpenEngs(false)}
+                        tweetId={tweetId}
+                    />
                 </div>
                 {/* Bottom Interactions */}
                 <div className="flex justify-between flex-wrap w-full border-t border-b">

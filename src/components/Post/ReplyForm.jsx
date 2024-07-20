@@ -90,7 +90,7 @@ function ReplyForm({ tweetId }) {
                         className="w-full max-h-[60vh] overflow-y-auto text-xl focus:outline-none  whitespace-normal p-2 resize-none"
                         type="text"
                         rows="4"
-                        placeholder="What is happening?!"
+                        placeholder="Post your reply"
                         maxLength="500"
                         {...register("content")}
                     />

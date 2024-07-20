@@ -94,9 +94,9 @@ function PostPageComponent({ username, tweetId }) {
                     </svg>
                 </NavLink>
 
-                <NavLink className="right my-auto ml-8">
+                <div className="right my-auto ml-8">
                     <p className="font-bold text-xl">Post</p>
-                </NavLink>
+                </div>
             </div>
 
             {tweetLoading ? (
