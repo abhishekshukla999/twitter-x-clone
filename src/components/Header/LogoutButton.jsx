@@ -6,6 +6,9 @@ import { removeProfileData } from "../../features/profile/profileSlice";
 import { removeTweets } from "../../features/tweet/tweetSlice";
 import LogoutModal from "../Modals/LogoutModal";
 import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
+import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
+import { removeLikes } from "../../features/like/likeSlice";
+import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
 
 function LogoutButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +21,9 @@ function LogoutButton() {
             dispatch(removeProfileData());
             dispatch(removeTweets());
             dispatch(removeOtherProfile());
+            dispatch(removeBookmarks());
+            dispatch(removeLikes());
+            dispatch(removeTweetPageData());
         });
     };
 

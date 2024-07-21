@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Aside, Feed, Explore as UserExplore } from "../components";
 
 function Explore() {

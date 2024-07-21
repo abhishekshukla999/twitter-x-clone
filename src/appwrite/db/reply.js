@@ -1,7 +1,7 @@
 import { config } from "../../config/config";
 import { Client, Databases, ID } from "appwrite";
 
-class TweetService {
+class ReplyService {
     client = new Client();
     databases;
 
@@ -13,76 +13,77 @@ class TweetService {
         this.databases = new Databases(this.client);
     }
 
-    async createTweet({ author, content, media }) {
+    async createReply({ userId, tweetId, content, media = "" }) {
         try {
             return await this.databases.createDocument(
                 config.appwriteDatabaseId,
-                config.appwriteTweetsCollectionId,
+                config.appwriteRepliesCollectionId,
                 ID.unique(),
                 {
-                    author,
+                    userId,
+                    tweetId,
                     content,
                     media,
                 }
             );
         } catch (error) {
-            console.log("Appwrite Service :: createTweet :: error ", error);
+            console.log("Appwrite Service :: createReply :: error ", error);
         }
     }
 
-    async getTweet(docId, queries = []) {
+    async getReply(docId, queries = []) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
-                config.appwriteTweetsCollectionId,
+                config.appwriteRepliesCollectionId,
                 docId,
                 queries
             );
         } catch (error) {
-            console.log("Appwrite Service :: getTweet :: error ", error);
+            console.log("Appwrite Service :: getReply :: error ", error);
         }
     }
 
-    async getTweets(queries = []) {
+    async getReplies(queries = []) {
         try {
             return this.databases.listDocuments(
                 config.appwriteDatabaseId,
-                config.appwriteTweetsCollectionId,
+                config.appwriteRepliesCollectionId,
                 queries
             );
         } catch (error) {
-            console.log("Appwrite Service :: getTweets :: error ", error);
+            console.log("Appwrite Service :: getReplies :: error ", error);
         }
     }
 
-    async updateTweet(docId, { ...data }) {
+    async updateReply(docId, { ...data }) {
         try {
             return await this.databases.updateDocument(
                 config.appwriteDatabaseId,
-                config.appwriteTweetsCollectionId,
+                config.appwriteRepliesCollectionId,
                 docId,
                 {
                     ...data,
                 }
             );
         } catch (error) {
-            console.log("Appwrite Service :: updateTweet :: error ", error);
+            console.log("Appwrite Service :: updateReply :: error ", error);
         }
     }
 
-    async deleteTweet(docId) {
+    async deleteReply(docId) {
         try {
             return await this.databases.deleteDocument(
                 config.appwriteDatabaseId,
-                config.appwriteTweetsCollectionId,
+                config.appwriteRepliesCollectionId,
                 docId
             );
         } catch (error) {
-            console.log("Appwrite Service :: deleteTweet :: error ", error);
+            console.log("Appwrite Service :: deleteReply :: error ", error);
         }
     }
 }
 
-const tweetService = new TweetService();
+const replyService = new ReplyService();
 
-export default tweetService;
+export default replyService;

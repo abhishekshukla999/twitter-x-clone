@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import TweetCard from "../Tweets/TweetCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { bookmarkService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 import Loader from "../Loader";
+import { addBookmarks } from "../../features/bookmark/bookmarkSlice";
 
 function Bookmarks() {
     const profileData = useSelector((state) => state.profile.profileData);
     const authData = useSelector((state) => state.auth.userData);
-    const [bookTweets, setBookTweets] = useState([]);
+    const bookmarksData = useSelector((state) => state.bookmarks);
     const [loader, setLoader] = useState(true);
-
-    // bookmark remove should update the value and remove from list
-    // list should be rendered based on creation, last in first out
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchBookmarks() {
@@ -28,10 +27,34 @@ function Bookmarks() {
                         const tweetIds = myBookmarks.documents.map(
                             (book) => book.tweetId
                         );
+
                         const bookMarkedTweets = await tweetService.getTweets([
                             Query.equal("$id", tweetIds),
                         ]);
-                        setBookTweets([...bookMarkedTweets.documents]);
+
+                        // map of tweetId to bookmark createdAt
+                        const bookmarkMap = myBookmarks.documents.reduce(
+                            (map, bookmark) => {
+                                map[bookmark.tweetId] = bookmark.$createdAt;
+                                return map;
+                            },
+                            {}
+                        );
+
+                        // Sorting the tweets based on bookmark creation date
+                        bookMarkedTweets.documents.sort((a, b) => {
+                            return (
+                                new Date(bookmarkMap[b.$id]) -
+                                new Date(bookmarkMap[a.$id])
+                            );
+                        });
+
+                        dispatch(
+                            addBookmarks({
+                                data: bookMarkedTweets.documents,
+                                bookmarksCount: myBookmarks.documents.length,
+                            })
+                        );
                     }
                 }
             } catch (error) {
@@ -42,7 +65,7 @@ function Bookmarks() {
         }
 
         fetchBookmarks();
-    }, [bookTweets.length]);
+    }, [dispatch, bookmarksData.bookmarksCount]);
 
     return (
         <div>
@@ -72,26 +95,19 @@ function Bookmarks() {
             {/* Tweet Card */}
             {loader ? (
                 <Loader />
-            ) : bookTweets.length === 0 ? (
+            ) : bookmarksData?.bookmarksCount === 0 ? (
                 <div className="p-4 text-2xl font-bold text-center border-l border-r">
                     You don&apos;t have any bookmarks
                 </div>
             ) : (
                 <div>
-                    {bookTweets.map((tweet) => (
+                    {bookmarksData?.data.map((tweet) => (
                         <TweetCard
                             key={tweet.$id}
                             tweetId={tweet.$id}
-                            name={tweet.name}
-                            username={tweet.username}
                             content={tweet.content}
                             media={tweet.media}
-                            likes={tweet.likes}
-                            replies={tweet.replies}
-                            retweets={tweet.retweets}
                             author={tweet.author}
-                            slug={tweet.slug}
-                            bookmarks={tweet.bookmarks}
                             createdAt={tweet.$createdAt}
                             updatedAt={tweet.$updatedAt}
                         />

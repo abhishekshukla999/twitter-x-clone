@@ -10,14 +10,17 @@ import {
     likeService,
     profileMediaService,
     profileService,
+    replyService,
     retweetService,
     tweetMediaService,
     tweetService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
-import PostModal from "../Modals/PostModal";
 import { Query } from "appwrite";
+import { addBookmarks } from "../../features/bookmark/bookmarkSlice";
+import { addLikes } from "../../features/like/likeSlice";
+import { useNavigate } from "react-router-dom";
 
 function TweetCard({
     tweetId,
@@ -35,10 +38,11 @@ function TweetCard({
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.userData);
     const otherProfile = useSelector((state) => state.otherProfile);
+    const bookmarksData = useSelector((state) => state.bookmarks);
+    const likesData = useSelector((state) => state.likes);
+
     // options box handling
     const [isOpen, setisOpen] = useState(false);
-    //edit handling
-    const [isOpenEdit, setIsOpenEdit] = useState(false);
 
     const [interactions, setInteractions] = useState({
         myBookmark: false,
@@ -50,6 +54,8 @@ function TweetCard({
         repliesCount: 0,
     });
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const avatarUrl = async () => {
             const authorData = await profileService.getProfile(author);
@@ -58,8 +64,9 @@ function TweetCard({
                 const url = profileMediaService.getFilePreview(
                     authorData.avatar
                 );
+                const URL = url ? url : "/defaultAvatar.png";
 
-                setAvatarURL(url);
+                setAvatarURL(URL);
 
                 setAuthorInfo({
                     name: authorData.name,
@@ -69,7 +76,7 @@ function TweetCard({
         };
 
         avatarUrl();
-    }, []);
+    }, [author]);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -80,13 +87,13 @@ function TweetCard({
 
         fetchMedia();
         setDate(toLocalDate(createdAt));
-    }, [media, content]);
+    }, [media]);
 
     // bookmarks
     useEffect(() => {
         const fetchBookmarksData = async () => {
             const allBookmarks = await bookmarkService.getBookmarks([
-                Query.equal("tweetId", tweetId),
+                Query.equal("tweetId", [tweetId]),
             ]);
 
             if (allBookmarks.documents.length !== 0) {
@@ -94,20 +101,20 @@ function TweetCard({
                     ...interactions,
                     bookmarksCount: allBookmarks.documents.length,
                 }));
-            }
 
-            const isMyBook = await bookmarkService.getBookmarks([
-                Query.and([
-                    Query.equal("tweetId", tweetId),
-                    Query.equal("userId", [authData.$id]),
-                ]),
-            ]);
+                const isMyBook = await bookmarkService.getBookmarks([
+                    Query.and([
+                        Query.equal("tweetId", [tweetId]),
+                        Query.equal("userId", [authData.$id]),
+                    ]),
+                ]);
 
-            if (isMyBook.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    myBookmark: true,
-                }));
+                if (isMyBook.documents.length !== 0) {
+                    setInteractions((interactions) => ({
+                        ...interactions,
+                        myBookmark: true,
+                    }));
+                }
             }
         };
 
@@ -126,20 +133,20 @@ function TweetCard({
                     ...interactions,
                     likesCount: allLikes.documents.length,
                 }));
-            }
 
-            const isMyLike = await likeService.getLikes([
-                Query.and([
-                    Query.equal("tweetId", tweetId),
-                    Query.equal("userId", [authData.$id]),
-                ]),
-            ]);
+                const isMyLike = await likeService.getLikes([
+                    Query.and([
+                        Query.equal("tweetId", tweetId),
+                        Query.equal("userId", [authData.$id]),
+                    ]),
+                ]);
 
-            if (isMyLike.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    myLike: true,
-                }));
+                if (isMyLike.documents.length !== 0) {
+                    setInteractions((interactions) => ({
+                        ...interactions,
+                        myLike: true,
+                    }));
+                }
             }
         };
 
@@ -158,24 +165,42 @@ function TweetCard({
                     ...interactions,
                     retweetsCount: allRetweets.documents.length,
                 }));
-            }
 
-            const isMyRetweet = await retweetService.getRetweets([
-                Query.and([
-                    Query.equal("tweetId", tweetId),
-                    Query.equal("userId", [authData.$id]),
-                ]),
-            ]);
+                const isMyRetweet = await retweetService.getRetweets([
+                    Query.and([
+                        Query.equal("tweetId", tweetId),
+                        Query.equal("userId", [authData.$id]),
+                    ]),
+                ]);
 
-            if (isMyRetweet.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    myRetweet: true,
-                }));
+                if (isMyRetweet.documents.length !== 0) {
+                    setInteractions((interactions) => ({
+                        ...interactions,
+                        myRetweet: true,
+                    }));
+                }
             }
         };
 
         fetchRetweetsData();
+    }, []);
+
+    // replies
+    useEffect(() => {
+        const fetchRepliesData = async () => {
+            const allReplies = await replyService.getReplies([
+                Query.equal("tweetId", [tweetId]),
+            ]);
+
+            if (allReplies.documents.length !== 0) {
+                setInteractions((interactions) => ({
+                    ...interactions,
+                    repliesCount: allReplies.documents.length,
+                }));
+            }
+        };
+
+        fetchRepliesData();
     }, []);
 
     // converting date to local
@@ -231,6 +256,73 @@ function TweetCard({
                     // console.log(updatedOtherProfile);
 
                     dispatch(addOtherProfile(updatedOtherProfile));
+
+                    // deleting associated docs
+
+                    // like
+                    const allLikes = await likeService.getLikes([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteLikePromises = allLikes.documents.map(
+                        (document) => likeService.deleteLike(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteLikePromises);
+                        console.log("All likes deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some likes:", error);
+                    }
+
+                    // replies
+                    const allReplies = await replyService.getReplies([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteReplyPromises = allReplies.documents.map(
+                        (document) => replyService.deleteReply(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteReplyPromises);
+                        console.log("All replies deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some replies:", error);
+                    }
+
+                    // retweets
+                    const allRetweets = await retweetService.getRetweets([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteReyweetPromises = allRetweets.documents.map(
+                        (document) => retweetService.deleteRetweet(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteReyweetPromises);
+                        console.log("All retweets deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some retweets:", error);
+                    }
+
+                    // bookmarks
+                    const allBookmarks = await bookmarkService.getBookmarks([
+                        Query.equal("tweetId", tweetId),
+                    ]);
+
+                    const deleteBookmarkPromises = allBookmarks.documents.map(
+                        (document) =>
+                            bookmarkService.deleteBookmark(document.$id)
+                    );
+
+                    try {
+                        await Promise.all(deleteBookmarkPromises);
+                        console.log("All bookmarks deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting some bookmark:", error);
+                    }
                 }
             }
         } catch (error) {
@@ -297,6 +389,19 @@ function TweetCard({
                             bookmarksCount: currentBookCount,
                         }));
                     }
+
+                    const currentUserbookmarks =
+                        await bookmarkService.getBookmarks([
+                            Query.equal("userId", [authData.$id]),
+                        ]);
+
+                    dispatch(
+                        addBookmarks({
+                            ...bookmarksData,
+                            bookmarksCount:
+                                currentUserbookmarks.documents.length,
+                        })
+                    );
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
@@ -363,6 +468,17 @@ function TweetCard({
                             likesCount: currentLikesCount,
                         }));
                     }
+
+                    const currentUserLikes = await likeService.getLikes([
+                        Query.equal("userId", [authData.$id]),
+                    ]);
+
+                    dispatch(
+                        addLikes({
+                            ...likesData,
+                            likesCount: currentUserLikes.documents.length,
+                        })
+                    );
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
@@ -444,9 +560,34 @@ function TweetCard({
         }
     };
 
+    const handleTweetNavigation = () => {
+        profileService
+            .getProfile(author)
+            .then((res) => {
+                // console.log("Handletweet", res);
+                navigate(`/${res.username}/status/${tweetId}`);
+            })
+            .catch((err) => console.log("Handletweet", err));
+    };
+
+    const handleProfileNavigation = (e) => {
+        e.stopPropagation();
+
+        profileService
+            .getProfile(author)
+            .then((res) => {
+                // console.log("HandleProfile", res);
+                navigate(`/${res.username}`);
+            })
+            .catch((err) => console.log("HandleProfile", err));
+    };
+
     return (
         <>
-            <div className="post px-2 border border-t-0 pt-2">
+            <div
+                className="parent post px-2 border border-t-0 pt-2 cursor-pointer hover:bg-[#F7F7F7]"
+                onClick={handleTweetNavigation}
+            >
                 {interactions.myRetweet && (
                     <div className="reposted flex flex-wrap">
                         <div className="w-[9%] my-auto py-1 px-2">
@@ -480,9 +621,12 @@ function TweetCard({
 
                     <div className="content w-[90%]">
                         {/* User details */}
-                        <div className="flex justify-between">
-                            <div className="user-details flex flex-wrap mx-0.5 text-base">
-                                <span className="mx-0.5 font-bold">
+                        <div className="flex justify-between flex-wrap">
+                            <div
+                                className="user-details flex flex-wrap mx-0.5 text-base"
+                                onClick={handleProfileNavigation}
+                            >
+                                <span className="mx-0.5 font-bold hover:underline">
                                     {authorInfo?.name}
                                 </span>
                                 <span className="mx-0.5 text-zin font-light">
@@ -492,25 +636,39 @@ function TweetCard({
                                     &middot;
                                 </span>
                                 <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
+
+                                {createdAt !== updatedAt && (
+                                    <>
+                                        <span className="mx-0.5 font-light">
+                                            &middot;
+                                        </span>
+                                        <span className="mx-0.5 font-light">
+                                            Edited
+                                        </span>
+                                    </>
+                                )}
                             </div>
 
                             {/* options */}
                             <div
-                                className="mx-0.5 cursor-pointer relative"
+                                className="w-9 cursor-pointer relative"
                                 title="Options"
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     setisOpen(true);
                                 }}
                             >
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                    className="w-5 m-1 fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
-                                >
-                                    <g>
-                                        <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
-                                    </g>
-                                </svg>
+                                <div className="">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                        className="w-9 p-2 hover:bg-blue-100 rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                    >
+                                        <g>
+                                            <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
+                                        </g>
+                                    </svg>
+                                </div>
 
                                 {/* options layover */}
                                 {isOpen && (
@@ -528,7 +686,10 @@ function TweetCard({
                                             {author === authData.$id && (
                                                 <div
                                                     className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
-                                                    onClick={handleDelete}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete();
+                                                    }}
                                                 >
                                                     <span>
                                                         <svg
@@ -544,46 +705,22 @@ function TweetCard({
                                                     <span>Delete</span>
                                                 </div>
                                             )}
-                                            {author === authData.$id && (
-                                                <div
-                                                    className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setIsOpenEdit(true);
-                                                        setisOpen(false);
-                                                    }}
-                                                >
-                                                    <span>
-                                                        <svg
-                                                            className="w-5"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="24"
-                                                            height="24"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <path d="M1.438 16.873l-1.438 7.127 7.127-1.437 16.874-16.872-5.69-5.69-16.873 16.872zm1.12 4.572l.722-3.584 2.86 2.861-3.582.723zm18.613-15.755l-13.617 13.617-2.86-2.861 13.617-13.617 2.86 2.861z" />
-                                                        </svg>
-                                                    </span>
-                                                    <span>Edit</span>
-                                                </div>
-                                            )}
                                             <div
                                                 className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    setIsOpenEdit(true);
                                                     setisOpen(false);
                                                 }}
                                             >
                                                 <span>
                                                     <svg
-                                                        className="w-5"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
-                                                        height="24"
                                                         viewBox="0 0 24 24"
+                                                        aria-hidden="true"
+                                                        className="w-5 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-1q142lx"
                                                     >
-                                                        <path d="M1.438 16.873l-1.438 7.127 7.127-1.437 16.874-16.872-5.69-5.69-16.873 16.872zm1.12 4.572l.722-3.584 2.86 2.861-3.582.723zm18.613-15.755l-13.617 13.617-2.86-2.861 13.617-13.617 2.86 2.861z" />
+                                                        <g>
+                                                            <path d="M10 4c-1.105 0-2 .9-2 2s.895 2 2 2 2-.9 2-2-.895-2-2-2zM6 6c0-2.21 1.791-4 4-4s4 1.79 4 4-1.791 4-4 4-4-1.79-4-4zm13 4v3h2v-3h3V8h-3V5h-2v3h-3v2h3zM3.651 19h12.698c-.337-1.8-1.023-3.21-1.945-4.19C13.318 13.65 11.838 13 10 13s-3.317.65-4.404 1.81c-.922.98-1.608 2.39-1.945 4.19zm.486-5.56C5.627 11.85 7.648 11 10 11s4.373.85 5.863 2.44c1.477 1.58 2.366 3.8 2.632 6.46l.11 1.1H1.395l.11-1.1c.266-2.66 1.155-4.88 2.632-6.46z"></path>
+                                                        </g>
                                                     </svg>
                                                 </span>
                                                 <span>Follow</span>
@@ -592,17 +729,10 @@ function TweetCard({
                                     </div>
                                 )}
                             </div>
-                            <PostModal
-                                isOpen={isOpenEdit}
-                                onClose={() => {
-                                    setIsOpenEdit(false);
-                                }}
-                                post={{ tweetId, content, media }}
-                            />
                         </div>
 
                         {/* User content */}
-                        <div className="text mx-1.5 my-1">{content}</div>
+                        <div className="text mx-1.5 mb-1 mt-0.5">{content}</div>
 
                         {media && (
                             <div className="image m-1.5">
@@ -635,7 +765,10 @@ function TweetCard({
                                 </div>
                                 <div
                                     className="flex mr-auto"
-                                    onClick={handleRetweet}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRetweet();
+                                    }}
                                 >
                                     <span className="my-auto p-2 rounded-full cursor-pointer">
                                         <svg
@@ -664,7 +797,10 @@ function TweetCard({
                                 </div>
                                 <div
                                     className="flex mr-auto"
-                                    onClick={handleLike}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleLike();
+                                    }}
                                 >
                                     <span className="my-1 rounded-full text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-red-100 hover:text-red-500">
                                         {interactions.myLike ? (
@@ -711,7 +847,10 @@ function TweetCard({
                             <div className="flex">
                                 <div
                                     className="rounded-full  my-auto text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-blue-100 hover:text-twitter-blue"
-                                    onClick={handleBookmark}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleBookmark();
+                                    }}
                                 >
                                     {interactions.myBookmark ? (
                                         <FontAwesomeIcon

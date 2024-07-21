@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
     EditProfileModal,
@@ -32,6 +32,7 @@ function Profile({ username }) {
     const [isProfileEdit, setIsProfileEdit] = useState(false);
     const [currProfileCompo, setCurrProfileCompo] = useState("posts");
     const { tweets, followers, following } = otherProfileData;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -146,33 +147,35 @@ function Profile({ username }) {
 
     return (
         <div>
+            <div className="top flex py-1 px-3 sticky top-0 backdrop-blur-[400px] opacity-[100%] border border-t-0 border-b-0">
+                <NavLink
+                    className="left my-auto p-1.5 hover:bg-gray-200 rounded-full"
+                    onClick={() => navigate(-3)}
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                    >
+                        <g>
+                            <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
+                        </g>
+                    </svg>
+                </NavLink>
+
+                <div className="right ml-4">
+                    <p className="font-bold text-xl">
+                        {otherProfileData.data?.name || ""}
+                    </p>
+                    <p className="text-[13px] font-light">
+                        {otherProfileData?.tweets || "0"} posts
+                    </p>
+                </div>
+            </div>
             {profileLoading ? (
                 <Loader />
             ) : (
                 <div>
-                    <div className="top flex py-1 px-3 sticky top-0 backdrop-blur-3xl opacity-[100%] border-b border-b-zinc-200">
-                        <NavLink className="left my-auto p-1.5 hover:bg-gray-200 rounded-full">
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                                className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                            >
-                                <g>
-                                    <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                                </g>
-                            </svg>
-                        </NavLink>
-
-                        <NavLink className="right ml-4">
-                            <p className="font-bold text-base">
-                                {otherProfileData.data?.name || ""}
-                            </p>
-                            <p className="text-sm font-light">
-                                {otherProfileData?.tweets || "0"} posts
-                            </p>
-                        </NavLink>
-                    </div>
-
                     <div className="border border-b-0">
                         {/* cover */}
                         <div>

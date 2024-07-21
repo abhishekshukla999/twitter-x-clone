@@ -1,4 +1,3 @@
-import React from "react";
 import { Aside, Feed } from "../components";
 import { Profile as UserProfile } from "../components";
 import { useParams } from "react-router-dom";

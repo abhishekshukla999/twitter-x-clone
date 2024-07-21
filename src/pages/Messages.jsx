@@ -1,4 +1,3 @@
-import React from "react";
 import { MessagesList, MessageBox, NavigationBottom } from "../components";
 
 function Messages() {

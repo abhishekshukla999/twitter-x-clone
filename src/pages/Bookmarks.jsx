@@ -1,4 +1,3 @@
-import React from "react";
 import { Aside, Feed, Bookmarks as UserBookmarks } from "../components";
 
 function Bookmarks() {

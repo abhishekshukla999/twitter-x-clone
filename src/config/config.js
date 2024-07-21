@@ -17,6 +17,9 @@ export const config = {
     appwriteRetweetsCollectionId: String(
         import.meta.env.VITE_APPWRITE_RETWEETS_COLLECTION_ID
     ),
+    appwriteRepliesCollectionId: String(
+        import.meta.env.VITE_APPWRITE_REPLIES_COLLECTION_ID
+    ),
     appwriteProfileBucketId: String(
         import.meta.env.VITE_APPWRITE_PROFILE_BUCKET_ID
     ),

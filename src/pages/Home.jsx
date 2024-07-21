@@ -1,4 +1,3 @@
-import React from "react";
 import { Aside, Feed, FeedContent } from "../components";
 
 function Home() {

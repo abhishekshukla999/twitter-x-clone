@@ -1,4 +1,3 @@
-import React from "react";
 import { SettingsList, SettingsBox, NavigationBottom } from "../components";
 
 function Settings() {
@@ -6,7 +5,7 @@ function Settings() {
         <>
             <SettingsList />
             <SettingsBox />
-            <NavigationBottom/>
+            <NavigationBottom />
         </>
     );
 }

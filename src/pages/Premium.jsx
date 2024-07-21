@@ -1,4 +1,3 @@
-import React from "react";
 import { Feed, Aside, Premium as PremiumBuy } from "../components";
 
 function Premium() {
