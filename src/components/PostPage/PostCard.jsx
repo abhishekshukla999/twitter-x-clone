@@ -20,6 +20,7 @@ import { PostEngagementsModal, PostModal } from "../index";
 import { Query } from "appwrite";
 import { useNavigate } from "react-router-dom";
 import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
+import { addProfileData } from "../../features/profile/profileSlice";
 
 function PostCard({
     tweetId = "",
@@ -35,6 +36,8 @@ function PostCard({
     const [date, setDate] = useState({});
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.userData);
+    const profileData = useSelector((state) => state.profile);
+
     const repliesCount = useSelector((state) => state.tweetPage.repliesCount);
 
     // options box handling
@@ -259,8 +262,18 @@ function PostCard({
 
             if (deletedTweet) {
                 console.log("Tweet Deleted");
+                const updatedTweetsCount = profileData?.tweets - 1;
+                const updatedProfileData = await profileService.updateProfile(
+                    authData?.$id,
+                    {
+                        tweets: updatedTweetsCount,
+                    }
+                );
+
+                dispatch(addProfileData({ ...updatedProfileData }))
+
                 dispatch(removeTweetPageData());
-                navigate(-2);
+                navigate(-1);
             }
 
             // deleting associated docs

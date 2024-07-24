@@ -9,10 +9,11 @@ import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
 import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
 import { removeLikes } from "../../features/like/likeSlice";
 import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
+import { removeFollowData } from "../../features/follow/follow";
 
 function NavigationMobile({ isOpen, onClose }) {
     const dispatch = useDispatch();
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
     const listStyle = "flex text-xl hover:bg-zinc-200 rounded-full w-fit";
 
     const handleLogout = () => {
@@ -24,6 +25,7 @@ function NavigationMobile({ isOpen, onClose }) {
             dispatch(removeBookmarks());
             dispatch(removeLikes());
             dispatch(removeTweetPageData());
+            dispatch(removeFollowData());
         });
     };
 
@@ -61,18 +63,18 @@ function NavigationMobile({ isOpen, onClose }) {
                             />
                         </div>
                         <div className="font-bold mt-0.5 text-[17px]">
-                            Abhishek Shukla
+                            {profileData.name}
                         </div>
-                        <div className="font-light text-[15px]">@username</div>
+                        <div className="font-light text-[15px]">@{profileData.username}</div>
                     </div>
 
                     {/* followers */}
                     <div className="flex gap-4 text-sm mx-3 my-3 text-gray-700">
                         <span className="">
-                            <strong>48</strong> Following
+                            <strong>{profileData.following}</strong> Following
                         </span>
                         <span className="">
-                            <strong>90M</strong> Followers
+                            <strong>{profileData.followers}</strong> Followers
                         </span>
                     </div>
 

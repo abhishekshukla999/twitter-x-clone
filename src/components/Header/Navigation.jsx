@@ -8,7 +8,7 @@ function Navigation() {
     const listStyle = "flex p-3 text-xl hover:bg-zinc-200 rounded-full w-fit";
 
     const [isOpen, setIsOpen] = useState(false);
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
 
     const handleClose = () => {
         setIsOpen(false);

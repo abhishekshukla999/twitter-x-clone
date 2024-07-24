@@ -1,6 +1,3 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-
 function UnderDev() {
     return (
         <div className="flex items-center justify-center xl:flex-[0_0_43%] h-[100%] border-r border-l my-auto">

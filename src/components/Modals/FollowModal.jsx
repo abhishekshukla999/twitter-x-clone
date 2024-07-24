@@ -1,80 +1,19 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-    bookmarkService,
-    likeService,
-    profileService,
-    retweetService,
-} from "../../appwrite";
-import { NavLink } from "react-router-dom";
-import { Query } from "appwrite";
-import { Loader, ActionsCard } from "../index";
 
-function PostEngagementsModal({ isOpen, onClose, tweetId }) {
-    const [retweetsList, setRetweetsList] = useState([]);
-    const [likesList, setLikesList] = useState([]);
-    const [bookmarksList, setBookmarksList] = useState([]);
-    const [currEngsCompo, setCurrEngsCompo] = useState("likes");
+import { NavLink } from "react-router-dom";
+import { Loader, ActionsCard } from "../index";
+import { useDispatch, useSelector } from "react-redux";
+
+function FollowModal({ isOpen, onClose }) {
+    const followersData = useSelector((state) => state.follows.followersData);
+    const followingData = useSelector((state) => state.follows.followingData);
+    const [currFollowCompo, setCurrFollowCompo] = useState("following");
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchEngsData = async () => {
-            try {
-                const allRetweets = await retweetService.getRetweets([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
-
-                if (allRetweets.total !== 0) {
-                    const usersId = allRetweets.documents.map(
-                        (retweet) => retweet.userId
-                    );
-
-                    const usersData = await profileService.getProfiles([
-                        Query.equal("$id", usersId),
-                    ]);
-
-                    setRetweetsList([...usersData.documents]);
-                }
-
-                const allLikes = await likeService.getLikes([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
-
-                if (allLikes.total !== 0) {
-                    const usersId = allLikes.documents.map(
-                        (like) => like.userId
-                    );
-
-                    const usersData = await profileService.getProfiles([
-                        Query.equal("$id", usersId),
-                    ]);
-
-                    setLikesList([...usersData.documents]);
-                }
-
-                const allBookmarks = await bookmarkService.getBookmarks([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
-
-                if (allBookmarks.documents.length !== 0) {
-                    const usersId = allBookmarks.documents.map(
-                        (book) => book.userId
-                    );
-
-                    const usersData = await profileService.getProfiles([
-                        Query.equal("$id", usersId),
-                    ]);
-
-                    setBookmarksList([...usersData.documents]);
-                }
-            } catch (error) {
-                console.log("Engagements list fetching falied :: ", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEngsData();
+        setLoading(false);
     }, []);
 
     if (!isOpen) return null;
@@ -119,64 +58,47 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                         className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            setCurrEngsCompo("likes");
+                            setCurrFollowCompo("following");
                         }}
                     >
                         <div
                             className={`py-4 ${
-                                currEngsCompo === "likes"
+                                currFollowCompo === "following"
                                     ? "text-black border-b-4 border-twitter-blue"
                                     : "text-gray-600"
                             }`}
                         >
-                            Likes
+                            Following
                         </div>
                     </NavLink>
                     <NavLink
                         className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            setCurrEngsCompo("retweets");
+                            setCurrFollowCompo("followers");
                         }}
                     >
                         <div
                             className={`py-4 ${
-                                currEngsCompo === "retweets"
+                                currFollowCompo === "followers"
                                     ? "text-black border-b-4 border-twitter-blue"
                                     : "text-gray-600"
                             }`}
                         >
-                            Retweets
-                        </div>
-                    </NavLink>
-                    <NavLink
-                        className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setCurrEngsCompo("bookmarks");
-                        }}
-                    >
-                        <div
-                            className={`py-4 ${
-                                currEngsCompo === "bookmarks"
-                                    ? "text-black border-b-4 border-twitter-blue"
-                                    : "text-gray-600"
-                            }`}
-                        >
-                            Bookmarks
+                            Followers
                         </div>
                     </NavLink>
                 </div>
 
-                {/* engagements list */}
+                {/* follow list */}
                 <div className="h-[50vh] max-[702px]:h-screen overflow-y-auto">
                     {loading ? (
                         <Loader />
                     ) : (
                         (() => {
-                            switch (currEngsCompo) {
-                                case "likes":
-                                    return likesList.map((user) => (
+                            switch (currFollowCompo) {
+                                case "following":
+                                    return followingData.map((user) => (
                                         <ActionsCard
                                             key={user.$id}
                                             name={user.name}
@@ -184,17 +106,8 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                                             media={user.avatar}
                                         />
                                     ));
-                                case "retweets":
-                                    return retweetsList.map((user) => (
-                                        <ActionsCard
-                                            key={user.$id}
-                                            name={user.name}
-                                            username={user.username}
-                                            media={user.avatar}
-                                        />
-                                    ));
-                                case "bookmarks":
-                                    return bookmarksList.map((user) => (
+                                case "followers":
+                                    return followersData.map((user) => (
                                         <ActionsCard
                                             key={user.$id}
                                             name={user.name}
@@ -214,4 +127,4 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
     );
 }
 
-export default PostEngagementsModal;
+export default FollowModal;

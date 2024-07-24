@@ -21,6 +21,8 @@ import { Query } from "appwrite";
 import { addBookmarks } from "../../features/bookmark/bookmarkSlice";
 import { addLikes } from "../../features/like/likeSlice";
 import { useNavigate } from "react-router-dom";
+import { addProfileData } from "../../features/profile/profileSlice";
+import { addTweets } from "../../features/tweet/tweetSlice";
 
 function TweetCard({
     tweetId,
@@ -37,7 +39,9 @@ function TweetCard({
     const [date, setDate] = useState({});
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.userData);
+    const profileData = useSelector((state) => state.profile);
     const otherProfile = useSelector((state) => state.otherProfile);
+    const tweetsData = useSelector((state) => state.tweets);
     const bookmarksData = useSelector((state) => state.bookmarks);
     const likesData = useSelector((state) => state.likes);
 
@@ -243,86 +247,90 @@ function TweetCard({
             if (deletedTweet) {
                 console.log("Tweet Deleted");
 
-                if (authData.$id === otherProfile.data?.$id) {
-                    const postCount = await tweetService.getTweets([
-                        Query.equal("author", [authData.$id]),
-                    ]);
+                const updatedTweetsCount = profileData?.tweets - 1;
+                const updatedProfileData = await profileService.updateProfile(
+                    authData?.$id,
+                    {
+                        tweets: updatedTweetsCount,
+                    }
+                );
 
-                    const updatedOtherProfile = {
-                        ...otherProfile,
-                        tweets: postCount.documents.length,
-                    };
+                dispatch(addProfileData({ ...updatedProfileData }));
 
-                    // console.log(updatedOtherProfile);
+                if (authData.$id === otherProfile?.$id) {
+                    dispatch(addOtherProfile({ ...updatedProfileData }));
 
-                    dispatch(addOtherProfile(updatedOtherProfile));
-
-                    // deleting associated docs
-
-                    // like
-                    const allLikes = await likeService.getLikes([
-                        Query.equal("tweetId", tweetId),
-                    ]);
-
-                    const deleteLikePromises = allLikes.documents.map(
-                        (document) => likeService.deleteLike(document.$id)
+                    const updatedTweetsData = tweetsData.filter(
+                        (tweet) => tweet.$id !== tweetId
                     );
 
-                    try {
-                        await Promise.all(deleteLikePromises);
-                        console.log("All likes deleted successfully.");
-                    } catch (error) {
-                        console.error("Error deleting some likes:", error);
-                    }
+                    dispatch(addTweets(updatedTweetsData));
+                }
 
-                    // replies
-                    const allReplies = await replyService.getReplies([
-                        Query.equal("tweetId", tweetId),
-                    ]);
+                // deleting associated docs
 
-                    const deleteReplyPromises = allReplies.documents.map(
-                        (document) => replyService.deleteReply(document.$id)
-                    );
+                // like
+                const allLikes = await likeService.getLikes([
+                    Query.equal("tweetId", tweetId),
+                ]);
 
-                    try {
-                        await Promise.all(deleteReplyPromises);
-                        console.log("All replies deleted successfully.");
-                    } catch (error) {
-                        console.error("Error deleting some replies:", error);
-                    }
+                const deleteLikePromises = allLikes.documents.map((document) =>
+                    likeService.deleteLike(document.$id)
+                );
 
-                    // retweets
-                    const allRetweets = await retweetService.getRetweets([
-                        Query.equal("tweetId", tweetId),
-                    ]);
+                try {
+                    await Promise.all(deleteLikePromises);
+                    console.log("All likes deleted successfully.");
+                } catch (error) {
+                    console.error("Error deleting some likes:", error);
+                }
 
-                    const deleteReyweetPromises = allRetweets.documents.map(
-                        (document) => retweetService.deleteRetweet(document.$id)
-                    );
+                // replies
+                const allReplies = await replyService.getReplies([
+                    Query.equal("tweetId", tweetId),
+                ]);
 
-                    try {
-                        await Promise.all(deleteReyweetPromises);
-                        console.log("All retweets deleted successfully.");
-                    } catch (error) {
-                        console.error("Error deleting some retweets:", error);
-                    }
+                const deleteReplyPromises = allReplies.documents.map(
+                    (document) => replyService.deleteReply(document.$id)
+                );
 
-                    // bookmarks
-                    const allBookmarks = await bookmarkService.getBookmarks([
-                        Query.equal("tweetId", tweetId),
-                    ]);
+                try {
+                    await Promise.all(deleteReplyPromises);
+                    console.log("All replies deleted successfully.");
+                } catch (error) {
+                    console.error("Error deleting some replies:", error);
+                }
 
-                    const deleteBookmarkPromises = allBookmarks.documents.map(
-                        (document) =>
-                            bookmarkService.deleteBookmark(document.$id)
-                    );
+                // retweets
+                const allRetweets = await retweetService.getRetweets([
+                    Query.equal("tweetId", tweetId),
+                ]);
 
-                    try {
-                        await Promise.all(deleteBookmarkPromises);
-                        console.log("All bookmarks deleted successfully.");
-                    } catch (error) {
-                        console.error("Error deleting some bookmark:", error);
-                    }
+                const deleteReyweetPromises = allRetweets.documents.map(
+                    (document) => retweetService.deleteRetweet(document.$id)
+                );
+
+                try {
+                    await Promise.all(deleteReyweetPromises);
+                    console.log("All retweets deleted successfully.");
+                } catch (error) {
+                    console.error("Error deleting some retweets:", error);
+                }
+
+                // bookmarks
+                const allBookmarks = await bookmarkService.getBookmarks([
+                    Query.equal("tweetId", tweetId),
+                ]);
+
+                const deleteBookmarkPromises = allBookmarks.documents.map(
+                    (document) => bookmarkService.deleteBookmark(document.$id)
+                );
+
+                try {
+                    await Promise.all(deleteBookmarkPromises);
+                    console.log("All bookmarks deleted successfully.");
+                } catch (error) {
+                    console.error("Error deleting some bookmark:", error);
                 }
             }
         } catch (error) {
@@ -567,7 +575,9 @@ function TweetCard({
                 // console.log("Handletweet", res);
                 navigate(`/${res.username}/status/${tweetId}`);
             })
-            .catch((err) => console.log("Handletweet", err));
+            .catch((err) =>
+                console.log("Error in handle tweet navigation :: ", err)
+            );
     };
 
     const handleProfileNavigation = (e) => {
@@ -576,10 +586,11 @@ function TweetCard({
         profileService
             .getProfile(author)
             .then((res) => {
-                // console.log("HandleProfile", res);
                 navigate(`/${res.username}`);
             })
-            .catch((err) => console.log("HandleProfile", err));
+            .catch((err) =>
+                console.log("Error in handle profile navigation :: ", err)
+            );
     };
 
     return (

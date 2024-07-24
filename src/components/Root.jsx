@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Login1, SignUp1, SignUp2, LogSignModal } from "./index";
+import { Login, SignUp1, SignUp2, LogSignModal } from "./index";
 import { useForm } from "react-hook-form";
 import { authService, profileService } from "../appwrite";
 import { useDispatch } from "react-redux";
@@ -210,7 +210,7 @@ function Entry() {
                                     isOpen={isOpenLogin}
                                     onClose={() => setIsOpenLogin(false)}
                                 >
-                                    <Login1 />
+                                    <Login />
                                 </LogSignModal>
                             </div>
                         </div>

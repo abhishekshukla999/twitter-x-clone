@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 function SideMenuMD() {
     const listStyle = "flex p-3 text-xl hover:bg-zinc-200 rounded-full w-fit";
 
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
 
     return (
         <div className="sidebar-sm hidden min-[500px]:max-[1279px]:block">

@@ -1,4 +1,4 @@
-import Login1 from "./LoginForm/Login1";
+import Login from "./LoginForm/Login";
 import Root from "./Root";
 import LogSignModal from "./Modals/LogSignModal";
 import SignUp1 from "./SignupForm/SignUp1";
@@ -44,15 +44,16 @@ import Media from "./Profile/Media";
 import Replies from "./Profile/Replies";
 import Posts from "./Profile/Posts";
 import PremiumModal from "./Modals/PremiumModal";
-import PostPageComponent from "./Post/PostPageComponent";
-import PostCard from "./Post/PostCard";
-import Reply from "./Post/Reply";
-import ReplyForm from "./Post/ReplyForm";
+import PostPageComponent from "./PostPage/PostPageComponent";
+import PostCard from "./PostPage/PostCard";
+import Reply from "./PostPage/Reply";
+import ReplyForm from "./PostPage/ReplyForm";
 import PostEngagementsModal from "./Modals/PostEngagementsModal";
-import ReactionsCard from "./Post/ReactionsCard";
+import ActionsCard from "./UserCards/ActionsCard";
+import FollowModal from "./Modals/FollowModal";
 
 export {
-    Login1,
+    Login,
     Root,
     LogSignModal,
     SignUp1,
@@ -103,5 +104,6 @@ export {
     PostCard,
     ReplyForm,
     PostEngagementsModal,
-    ReactionsCard,
+    ActionsCard,
+    FollowModal,
 };

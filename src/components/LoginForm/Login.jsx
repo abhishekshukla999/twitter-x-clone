@@ -6,7 +6,7 @@ import { login as authLogin } from "../../features/auth/authSlice";
 import { NavLink } from "react-router-dom";
 import { addProfileData } from "../../features/profile/profileSlice";
 
-function Login1() {
+function Login() {
     const { register, handleSubmit } = useForm();
     const dispatch = useDispatch();
 
@@ -120,4 +120,4 @@ function Login1() {
     );
 }
 
-export default Login1;
+export default Login;

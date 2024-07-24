@@ -7,6 +7,7 @@ import bookmarkService from "./db/bookmark";
 import likeService from "./db/likes";
 import retweetService from "./db/retweet";
 import replyService from "./db/reply";
+import followService from "./db/follow";
 
 export {
     authService,
@@ -18,4 +19,5 @@ export {
     likeService,
     retweetService,
     replyService,
+    followService,
 };

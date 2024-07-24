@@ -20,6 +20,9 @@ export const config = {
     appwriteRepliesCollectionId: String(
         import.meta.env.VITE_APPWRITE_REPLIES_COLLECTION_ID
     ),
+    appwriteFollowsCollectionId: String(
+        import.meta.env.VITE_APPWRITE_FOLLOWS_COLLECTION_ID
+    ),
     appwriteProfileBucketId: String(
         import.meta.env.VITE_APPWRITE_PROFILE_BUCKET_ID
     ),

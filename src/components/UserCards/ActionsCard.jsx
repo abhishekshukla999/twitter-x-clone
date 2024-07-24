@@ -2,7 +2,7 @@ import React from "react";
 import { profileMediaService } from "../../appwrite";
 import { NavLink, useNavigate } from "react-router-dom";
 
-function ReactionsCard({ name, username, media }) {
+function ActionsCard({ name, username, media }) {
     const navigate = useNavigate();
 
     return (
@@ -36,4 +36,4 @@ function ReactionsCard({ name, username, media }) {
     );
 }
 
-export default ReactionsCard;
+export default ActionsCard;
