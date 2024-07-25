@@ -8,7 +8,7 @@ import Loader from "../Loader";
 import { addBookmarks } from "../../features/bookmark/bookmarkSlice";
 
 function Bookmarks() {
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
     const bookmarksData = useSelector((state) => state.bookmarks);
     const [loader, setLoader] = useState(true);

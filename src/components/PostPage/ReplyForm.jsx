@@ -13,7 +13,7 @@ function ReplyForm({ tweetId }) {
     const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
     const { register, handleSubmit, reset } = useForm();
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
     const tweetPageData = useSelector((state) => state.tweetPage);
     const dispatch = useDispatch();

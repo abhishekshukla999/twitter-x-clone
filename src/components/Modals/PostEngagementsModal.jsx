@@ -8,7 +8,7 @@ import {
 } from "../../appwrite";
 import { NavLink } from "react-router-dom";
 import { Query } from "appwrite";
-import { Loader, ReactionsCard } from "../index";
+import { Loader, ActionsCard } from "../index";
 
 function PostEngagementsModal({ isOpen, onClose, tweetId }) {
     const [retweetsList, setRetweetsList] = useState([]);
@@ -177,7 +177,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                             switch (currEngsCompo) {
                                 case "likes":
                                     return likesList.map((user) => (
-                                        <ReactionsCard
+                                        <ActionsCard
                                             key={user.$id}
                                             name={user.name}
                                             username={user.username}
@@ -186,7 +186,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                                     ));
                                 case "retweets":
                                     return retweetsList.map((user) => (
-                                        <ReactionsCard
+                                        <ActionsCard
                                             key={user.$id}
                                             name={user.name}
                                             username={user.username}
@@ -195,7 +195,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                                     ));
                                 case "bookmarks":
                                     return bookmarksList.map((user) => (
-                                        <ReactionsCard
+                                        <ActionsCard
                                             key={user.$id}
                                             name={user.name}
                                             username={user.username}

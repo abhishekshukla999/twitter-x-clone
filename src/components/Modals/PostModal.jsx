@@ -5,11 +5,14 @@ import {
     tweetService,
     tweetMediaService,
     profileMediaService,
+    profileService,
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 import { Query } from "appwrite";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
+import { addTweets } from "../../features/tweet/tweetSlice";
+import { addProfileData } from "../../features/profile/profileSlice";
 
 function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
@@ -21,10 +24,11 @@ function PostModal({ isOpen, onClose, post = false }) {
         },
     });
     const dispatch = useDispatch();
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
     const otherProfile = useSelector((state) => state.otherProfile);
     const authData = useSelector((state) => state.auth.userData);
     const tweetPageData = useSelector((state) => state.tweetPage);
+    const tweetsData = useSelector((state) => state.tweets);
 
     const submitPost = async (data) => {
         if (post) {
@@ -82,20 +86,19 @@ function PostModal({ isOpen, onClose, post = false }) {
 
                 if (tweetPost) {
                     console.info("Tweet Created");
+                    const updatedTweetsCount = profileData?.tweets + 1;
+                    const updatedProfileData =
+                        await profileService.updateProfile(authData?.$id, {
+                            tweets: updatedTweetsCount,
+                        });
 
-                    if (authData.$id === otherProfile.data?.$id) {
-                        const postCount = await tweetService.getTweets([
-                            Query.equal("author", [authData.$id]),
-                        ]);
+                    dispatch(addProfileData({ ...updatedProfileData }));
 
-                        const updatedOtherProfile = {
-                            ...otherProfile,
-                            tweets: postCount.documents.length,
-                        };
+                    if (authData.$id === otherProfile?.$id) {
+                        dispatch(addOtherProfile({ ...updatedProfileData }));
 
-                        // console.log(updatedOtherProfile);
-
-                        dispatch(addOtherProfile(updatedOtherProfile));
+                        const updatedTweetsData = [tweetPost, ...tweetsData];
+                        dispatch(addTweets(updatedTweetsData));
                     }
                 }
             } catch (error) {

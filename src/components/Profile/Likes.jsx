@@ -6,7 +6,7 @@ import { Loader, TweetCard } from "../";
 import { addLikes } from "../../features/like/likeSlice";
 
 function Likes() {
-    const profileData = useSelector((state) => state.profile.profileData);
+    const otherProfileData = useSelector((state) => state.otherProfile);
     const authData = useSelector((state) => state.auth.userData);
     const likesData = useSelector((state) => state.likes);
     const [loader, setLoader] = useState(true);
@@ -71,7 +71,7 @@ function Likes() {
                 <Loader />
             ) : likesData.likesCount === 0 ? (
                 <div className="p-4 text-2xl font-bold text-center border-l border-r">
-                    @{profileData.username} don&apos;t have any likes
+                    @{otherProfileData.username} don&apos;t have any likes
                 </div>
             ) : (
                 <div>

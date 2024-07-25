@@ -2,8 +2,16 @@ import React from "react";
 import { profileMediaService } from "../../appwrite";
 import { NavLink, useNavigate } from "react-router-dom";
 
-function ReactionsCard({ name, username, media }) {
+function ActionsCard({ name, username, media }) {
     const navigate = useNavigate();
+
+    const avatarUrl = () => {
+        if (media) {
+            return profileMediaService.getFilePreview(media);
+        } else {
+            return "/defaultAvatar.png";
+        }
+    };
 
     return (
         <div className="flex justify-between cursor-pointer my-1">
@@ -12,7 +20,7 @@ function ReactionsCard({ name, username, media }) {
                 <div className="avatar m-1.5 w-[50px]">
                     <img
                         className="rounded-full"
-                        src={profileMediaService.getFilePreview(media)}
+                        src={avatarUrl()}
                         alt="avatar"
                     />
                 </div>
@@ -36,4 +44,4 @@ function ReactionsCard({ name, username, media }) {
     );
 }
 
-export default ReactionsCard;
+export default ActionsCard;

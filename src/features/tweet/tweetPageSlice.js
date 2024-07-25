@@ -15,10 +15,8 @@ const tweetPageSlice = createSlice({
             state.repliesData = action.payload.repliesData;
             state.repliesCount = action.payload.repliesCount;
         },
-        removeTweetPageData: (state) => {
-            state.tweetData = {};
-            state.repliesData = [];
-            state.repliesCount = 0;
+        removeTweetPageData: (state, action) => {
+            return initialState;
         },
     },
 });

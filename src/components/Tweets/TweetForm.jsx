@@ -4,16 +4,19 @@ import {
     tweetService,
     tweetMediaService,
     profileMediaService,
+    profileService,
 } from "../../appwrite";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addProfileData } from "../../features/profile/profileSlice";
 
 function TweetForm() {
     // preview and upload states
     const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
     const { register, handleSubmit, reset } = useForm();
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
+    const dispatch = useDispatch();
 
     const submitPost = async (data) => {
         try {
@@ -34,6 +37,16 @@ function TweetForm() {
 
             if (tweetPost) {
                 console.log("Tweet Created");
+                const updatedTweetsCount = profileData?.tweets + 1;
+
+                const updatedProfileData = await profileService.updateProfile(
+                    authData?.$id,
+                    {
+                        tweets: updatedTweetsCount,
+                    }
+                );
+
+                dispatch(addProfileData({ ...updatedProfileData }));
             }
         } catch (error) {
             console.error("Error creating tweet :: ", error);

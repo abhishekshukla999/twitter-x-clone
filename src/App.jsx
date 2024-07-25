@@ -13,6 +13,7 @@ import { removeOtherProfile } from "./features/profile/otherProfileSlice";
 import { removeBookmarks } from "./features/bookmark/bookmarkSlice";
 import { removeLikes } from "./features/like/likeSlice";
 import { removeTweetPageData } from "./features/tweet/tweetPageSlice";
+import { removeFollowData } from "./features/follow/follow";
 
 function App() {
     const dispatch = useDispatch();
@@ -26,7 +27,7 @@ function App() {
 
                 profileService.getProfile(userData.$id).then((profileData) => {
                     if (profileData) {
-                        dispatch(addProfileData({ profileData }));
+                        dispatch(addProfileData({...profileData}));
                     }
                     // navigate("/home")
                 });
@@ -38,6 +39,7 @@ function App() {
                 dispatch(removeBookmarks());
                 dispatch(removeLikes());
                 dispatch(removeTweetPageData());
+                dispatch(removeFollowData());
             }
         });
     }, [navigate, dispatch]);

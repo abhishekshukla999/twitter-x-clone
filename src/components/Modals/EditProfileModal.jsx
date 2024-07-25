@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +7,12 @@ import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 
 function EditProfileModal({ isOpen, onClose }) {
-    const profileData = useSelector((state) => state.profile.profileData);
+    const profileData = useSelector((state) => state.profile);
     const otherProfile = useSelector((state) => state.otherProfile);
     const dispatch = useDispatch();
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
-            name: profileData?.name,
+            name: profileData?.name || "",
             bio: profileData?.bio || "",
             location: profileData?.location || "",
             website: profileData?.website || "",
@@ -32,6 +32,21 @@ function EditProfileModal({ isOpen, onClose }) {
     const [uploadCoverImage, setUploadCoverImage] = useState(null);
 
     const [dob, setDob] = useState(profileData?.dob);
+
+    useEffect(() => {
+        reset({
+            name: profileData?.name || "",
+            bio: profileData?.bio || "",
+            location: profileData?.location || "",
+            website: profileData?.website || "",
+        });
+    }, [
+        reset,
+        profileData.name,
+        profileData.bio,
+        profileData.location,
+        profileData.website,
+    ]);
 
     const toLocalDate = (date) => {
         const toLocal = new Date(date);
@@ -59,50 +74,57 @@ function EditProfileModal({ isOpen, onClose }) {
     };
 
     const saveProfile = async (data) => {
-        if (uploadCoverImage) {
-            const file = await profileMediaService.uploadFile(uploadCoverImage);
+        try {
+            if (uploadCoverImage) {
+                const file = await profileMediaService.uploadFile(
+                    uploadCoverImage
+                );
 
-            if (profileData?.profileCover) {
-                await profileMediaService.deleteFile(profileData.profileCover);
-            }
-
-            if (file) {
-                data.profileCover = file.$id || "";
-            }
-        }
-
-        if (uploadProfileImage) {
-            const file = await profileMediaService.uploadFile(
-                uploadProfileImage
-            );
-
-            if (profileData?.avatar) {
-                await profileMediaService.deleteFile(profileData.avatar);
-            }
-
-            if (file) {
-                data.avatar = file.$id || "";
-            }
-        }
-
-        profileService
-            .updateProfile(profileData?.$id, {
-                ...data,
-            })
-            .then((res) => {
-                dispatch(addProfileData({ profileData: res }));
-
-                if (otherProfile.data.$id === profileData.$id) {
-                    const updatedOtherProfile = { ...otherProfile, data: res };
-                    dispatch(addOtherProfile(updatedOtherProfile));
+                if (profileData?.profileCover) {
+                    await profileMediaService.deleteFile(
+                        profileData.profileCover
+                    );
                 }
-            })
-            .catch((err) =>
-                console.log("Error updating user profile :: ", err)
+
+                if (file) {
+                    data.profileCover = file.$id || "";
+                }
+            }
+
+            if (uploadProfileImage) {
+                const file = await profileMediaService.uploadFile(
+                    uploadProfileImage
+                );
+
+                if (profileData?.avatar) {
+                    await profileMediaService.deleteFile(profileData.avatar);
+                }
+
+                if (file) {
+                    data.avatar = file.$id || "";
+                }
+            }
+
+            const updatedProfileData = await profileService.updateProfile(
+                profileData?.$id,
+                {
+                    ...data,
+                }
             );
 
-        reset();
-        onClose();
+            if (updatedProfileData) {
+                dispatch(addProfileData({ ...updatedProfileData }));
+
+                if (otherProfile?.$id === profileData?.$id) {
+                    dispatch(addOtherProfile({ ...updatedProfileData }));
+                }
+            }
+        } catch (error) {
+            console.log("Error updating user profile :: ", error);
+        } finally {
+            reset();
+            onClose();
+        }
     };
 
     const openAndReadProfile = (e) => {
@@ -122,22 +144,22 @@ function EditProfileModal({ isOpen, onClose }) {
         setUploadCoverImage(null);
     };
 
-    const formClose = () => {
-        onClose();
-    };
-
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+        <div
+            className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center"
+            onClick={onClose}
+        >
             <form
                 className="bg-white overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen text-black"
                 onSubmit={handleSubmit(saveProfile)}
+                onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex gap-5 py-1 sticky top-0 bg-white opacity-80">
                     <button
                         className="rounded-lg bg-none border-none text-2xl cursor-pointer my-auto px-3"
-                        onClick={formClose}
+                        onClick={onClose}
                     >
                         <svg
                             viewBox="0 0 24 24"

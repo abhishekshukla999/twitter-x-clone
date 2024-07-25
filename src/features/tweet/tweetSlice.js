@@ -9,8 +9,8 @@ const tweetSlice = createSlice({
         addTweets: (state, action) => {
             return action.payload;
         },
-        removeTweets: () => {
-            return [];
+        removeTweets: (state, action) => {
+            return initialState;
         },
     },
 });
