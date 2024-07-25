@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Query } from "appwrite";
-import { Loader, EditProfileModal } from "../index";
+import { Loader, EditProfileModal, Follow } from "../index";
 import {
     addOtherProfile,
     removeOtherProfile,
@@ -151,9 +151,10 @@ function UserInfo({ username, setStatus }) {
                                     Edit profile
                                 </button>
                             ) : (
-                                <button className="p-2 px-4 font-bold text-base border text-white bg-black border-zinc-300 rounded-full">
-                                    Follow
-                                </button>
+                                <Follow
+                                    followerId={authId}
+                                    followingId={otherProfileData.$id}
+                                />
                             )}
 
                             <EditProfileModal
@@ -164,7 +165,7 @@ function UserInfo({ username, setStatus }) {
                             />
                         </div>
                         {/* Message */}
-                        <div className="absolute top-5 right-36">
+                        <div className="absolute top-4 right-36">
                             <button className="p-2 font-bold text-base border border-zinc-300 rounded-full">
                                 <svg
                                     viewBox="0 0 24 24"
@@ -270,14 +271,14 @@ function UserInfo({ username, setStatus }) {
 
                     {/* follow/ing */}
                     <div className="flex gap-4 text-sm px-4 py-3 text-gray-700">
-                        <span className="hover:underline cursor-pointer">
+                        <NavLink to="following" className="hover:underline">
                             <strong>{otherProfileData.following || "0"}</strong>{" "}
                             Following
-                        </span>
-                        <span className="hover:underline cursor-pointer">
+                        </NavLink>
+                        <NavLink to="followers" className="hover:underline">
                             <strong>{otherProfileData.followers || "0"}</strong>{" "}
                             Followers
-                        </span>
+                        </NavLink>
                     </div>
                 </div>
 

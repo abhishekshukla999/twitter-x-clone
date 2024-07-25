@@ -13,9 +13,8 @@ const followSlice = createSlice({
             state.followersData = action.payload.followersData;
             state.followingData = action.payload.followingData;
         },
-        removeFollowData: (state) => {
-            state.followersData = [];
-            state.followingData = [];
+        removeFollowData: (state, action) => {
+            return initialState;
         },
     },
 });

@@ -50,7 +50,10 @@ import Reply from "./PostPage/Reply";
 import ReplyForm from "./PostPage/ReplyForm";
 import PostEngagementsModal from "./Modals/PostEngagementsModal";
 import ActionsCard from "./UserCards/ActionsCard";
-import FollowModal from "./Modals/FollowModal";
+import Follow from "./Buttons/Follow";
+import Followers from "./Follows/Followers";
+import Following from "./Follows/Following";
+import FollowTweet from "./Buttons/FollowTweet";
 
 export {
     Login,
@@ -105,5 +108,8 @@ export {
     ReplyForm,
     PostEngagementsModal,
     ActionsCard,
-    FollowModal,
+    Follow,
+    Followers,
+    Following,
+    FollowTweet,
 };

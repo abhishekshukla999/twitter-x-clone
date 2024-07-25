@@ -15,7 +15,14 @@ import {
     VerifiedOrgs,
     SignUp,
 } from "./pages";
-import { Likes, Media, Posts, Replies } from "./components";
+import {
+    Followers,
+    Following,
+    Likes,
+    Media,
+    Posts,
+    Replies,
+} from "./components";
 import Protected from "./components/Protected.jsx";
 import PostPage from "./pages/PostPage.jsx";
 
@@ -57,6 +64,14 @@ const router = createBrowserRouter([
                         element: <Likes />,
                     },
                 ],
+            },
+            {
+                path: "/:username/following",
+                element: <Following />,
+            },
+            {
+                path: "/:username/followers",
+                element: <Followers />,
             },
             {
                 path: "/explore",

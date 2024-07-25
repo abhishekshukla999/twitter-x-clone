@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { profileService, replyService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
-import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
+import {
+    addTweetPageData,
+    removeTweetPageData,
+} from "../../features/tweet/tweetPageSlice";
 
 function PostPageComponent({ username, tweetId }) {
     const dispatch = useDispatch();
@@ -65,6 +68,14 @@ function PostPageComponent({ username, tweetId }) {
                             repliesCount: allReplies.documents.length,
                         })
                     );
+                } else {
+                    dispatch(
+                        addTweetPageData({
+                            ...tweetPageData,
+                            repliesData: [],
+                            repliesCount: 0,
+                        })
+                    );
                 }
             } catch (error) {
                 console.log("Error fetching Replies data", error);
@@ -74,10 +85,10 @@ function PostPageComponent({ username, tweetId }) {
         };
 
         fetchReplies();
-    }, [dispatch, repliesCount]);
+    }, [dispatch, repliesCount, tweetId]);
 
     return (
-        <div className="h-screen border-l border-r">
+        <div className="border-l border-r">
             <div className="top flex py-1 px-3 h-[51px] sticky top-0 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
                     className="left my-auto rounded-full"

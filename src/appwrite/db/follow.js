@@ -18,7 +18,7 @@ class FollowService {
             return this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteFollowsCollectionId,
-                ID.unique,
+                ID.unique(),
                 {
                     followerId,
                     followingId,

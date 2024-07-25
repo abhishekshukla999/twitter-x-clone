@@ -5,6 +5,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 function ActionsCard({ name, username, media }) {
     const navigate = useNavigate();
 
+    const avatarUrl = () => {
+        if (media) {
+            return profileMediaService.getFilePreview(media);
+        } else {
+            return "/defaultAvatar.png";
+        }
+    };
+
     return (
         <div className="flex justify-between cursor-pointer my-1">
             <NavLink className="flex" onClick={() => navigate(`/${username}`)}>
@@ -12,7 +20,7 @@ function ActionsCard({ name, username, media }) {
                 <div className="avatar m-1.5 w-[50px]">
                     <img
                         className="rounded-full"
-                        src={profileMediaService.getFilePreview(media)}
+                        src={avatarUrl()}
                         alt="avatar"
                     />
                 </div>
