@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 
 function SettingsList() {
@@ -47,7 +46,16 @@ function SettingsList() {
 
             {/* setting items */}
             <div>
-                <NavLink className="flex justify-between p-3 hover:bg-gray-100">
+                <NavLink
+                    to="/settings/account"
+                    className={({ isActive }) =>
+                        `flex justify-between p-3 hover:bg-gray-100 ${
+                            isActive
+                                ? "border-r-2 border-twitter-blue bg-gray-100"
+                                : ""
+                        }`
+                    }
+                >
                     <span>Your account</span>
                     <span>
                         <svg
@@ -61,7 +69,16 @@ function SettingsList() {
                         </svg>
                     </span>
                 </NavLink>
-                <NavLink className="flex justify-between p-3 hover:bg-gray-100">
+                <NavLink
+                    to="/premium"
+                    className={({ isActive }) =>
+                        `flex justify-between p-3 hover:bg-gray-100 ${
+                            isActive
+                                ? "border-r-2 border-twitter-blue bg-gray-100"
+                                : ""
+                        }`
+                    }
+                >
                     <span>Premium</span>
                     <span>
                         <svg
@@ -75,7 +92,16 @@ function SettingsList() {
                         </svg>
                     </span>
                 </NavLink>
-                <NavLink className="flex justify-between p-3 hover:bg-gray-100">
+                <NavLink
+                    to="/settings/notifications"
+                    className={({ isActive }) =>
+                        `flex justify-between p-3 hover:bg-gray-100 ${
+                            isActive
+                                ? "border-r-2 border-twitter-blue bg-gray-100"
+                                : ""
+                        }`
+                    }
+                >
                     <span>Notifications</span>
                     <span>
                         <svg
@@ -89,8 +115,17 @@ function SettingsList() {
                         </svg>
                     </span>
                 </NavLink>
-                <NavLink className="flex justify-between p-3 hover:bg-gray-100">
-                    <span>Accessibility, display, and languages</span>
+                <NavLink
+                    to="/settings/accessibility_display_and_languages"
+                    className={({ isActive }) =>
+                        `flex justify-between p-3 hover:bg-gray-100 ${
+                            isActive
+                                ? "border-r-2 border-twitter-blue bg-gray-100"
+                                : ""
+                        }`
+                    }
+                >
+                    <span>Accessibility and display</span>
                     <span>
                         <svg
                             viewBox="0 0 24 24"

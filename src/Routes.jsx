@@ -16,23 +16,42 @@ import {
     SignUp,
 } from "./pages";
 import {
+    Accessibilities,
+    Accessibility,
+    AccountInformation,
+    Age,
+    ChangePassword,
+    CountryChange,
+    DeactivateAccount,
+    Display,
+    EmailChange,
+    EmailNotifications,
     Followers,
     Following,
+    Gender,
     Likes,
     Media,
+    MutedNotifications,
+    NotificationFilters,
+    NotificationPreferences,
+    NotificationSetting,
+    PhoneChange,
     Posts,
+    PushNotifications,
     Replies,
+    UsernameChange,
+    YourAccount,
 } from "./components";
 import Protected from "./components/Protected.jsx";
 import PostPage from "./pages/PostPage.jsx";
 
 const router = createBrowserRouter([
     {
-        path: "",
+        path: "/",
         element: <App />,
         children: [
             {
-                path: "/home",
+                path: "home",
                 element: (
                     <Protected authentication={false}>
                         <Home />
@@ -40,7 +59,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/:username",
+                path: ":username",
                 element: (
                     <Protected authentication={false}>
                         <Profile />
@@ -66,15 +85,15 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                path: "/:username/following",
+                path: ":username/following",
                 element: <Following />,
             },
             {
-                path: "/:username/followers",
+                path: ":username/followers",
                 element: <Followers />,
             },
             {
-                path: "/explore",
+                path: "explore",
                 element: (
                     <Protected authentication={false}>
                         <Explore />
@@ -82,7 +101,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/notifications",
+                path: "notifications",
                 element: (
                     <Protected authentication={false}>
                         <Notifications />
@@ -90,7 +109,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/messages",
+                path: "messages",
                 element: (
                     <Protected authentication={false}>
                         <Messages />
@@ -98,7 +117,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/grok",
+                path: "grok",
                 element: (
                     <Protected authentication={false}>
                         <Grok />
@@ -106,7 +125,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/lists",
+                path: "lists",
                 element: (
                     <Protected authentication={false}>
                         <Lists />
@@ -114,7 +133,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/bookmarks",
+                path: "bookmarks",
                 element: (
                     <Protected authentication={false}>
                         <Bookmarks />
@@ -122,7 +141,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/communities",
+                path: "communities",
                 element: (
                     <Protected authentication={false}>
                         <Communities />
@@ -130,7 +149,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/premium",
+                path: "premium",
                 element: (
                     <Protected authentication={false}>
                         <Premium />
@@ -138,7 +157,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/verified-orgs",
+                path: "verified-orgs",
                 element: (
                     <Protected authentication={false}>
                         <VerifiedOrgs />
@@ -146,15 +165,93 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/settings",
+                path: "settings",
                 element: (
                     <Protected authentication={false}>
                         <Settings />
                     </Protected>
                 ),
+                children: [
+                    {
+                        path: "account",
+                        element: <YourAccount />,
+                    },
+                    {
+                        path: "your_twitter_data/account",
+                        element: <AccountInformation />,
+                    },
+                    {
+                        path: "screen_name",
+                        element: <UsernameChange />,
+                    },
+                    {
+                        path: "phone",
+                        element: <PhoneChange />,
+                    },
+                    {
+                        path: "email",
+                        element: <EmailChange />,
+                    },
+                    {
+                        path: "country",
+                        element: <CountryChange />,
+                    },
+                    {
+                        path: "your_twitter_data/gender",
+                        element: <Gender />,
+                    },
+                    {
+                        path: "your_twitter_data/age",
+                        element: <Age />,
+                    },
+                    {
+                        path: "password",
+                        element: <ChangePassword />,
+                    },
+                    {
+                        path: "deactivate",
+                        element: <DeactivateAccount />,
+                    },
+                    {
+                        path: "notifications",
+                        element: <NotificationSetting />,
+                    },
+                    {
+                        path: "notifications/filters",
+                        element: <NotificationFilters />,
+                    },
+                    {
+                        path: "notifications/advanced_filters",
+                        element: <MutedNotifications />,
+                    },
+                    {
+                        path: "notifications/preferences",
+                        element: <NotificationPreferences />,
+                    },
+                    {
+                        path: "push_notifications",
+                        element: <PushNotifications />,
+                    },
+                    {
+                        path: "email_notifications",
+                        element: <EmailNotifications />,
+                    },
+                    {
+                        path: "accessibility_display_and_languages",
+                        element: <Accessibilities />,
+                    },
+                    {
+                        path: "accessibility",
+                        element: <Accessibility />,
+                    },
+                    {
+                        path: "display",
+                        element: <Display />,
+                    },
+                ],
             },
             {
-                path: "/:username/status/:tweetId",
+                path: ":username/status/:tweetId",
                 element: (
                     <Protected authentication={false}>
                         <PostPage />
@@ -165,7 +262,7 @@ const router = createBrowserRouter([
     },
 
     {
-        path: "/signup",
+        path: "signup",
         element: (
             <Protected authentication>
                 <SignUp />

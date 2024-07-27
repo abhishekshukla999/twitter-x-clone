@@ -54,6 +54,32 @@ import Follow from "./Buttons/Follow";
 import Followers from "./Follows/Followers";
 import Following from "./Follows/Following";
 import FollowTweet from "./Buttons/FollowTweet";
+import Input from "./Inputs/Input";
+import Select from "./Inputs/Select";
+
+import YourAccount from "./Settings/YourAccount/YourAccount";
+
+import AccountInformation from "./Settings/YourAccount/AccountInformation/AccountInformation";
+import UsernameChange from "./Settings/YourAccount/AccountInformation/UsernameChange";
+import PhoneChange from "./Settings/YourAccount/AccountInformation/PhoneChange";
+import EmailChange from "./Settings/YourAccount/AccountInformation/EmailChange";
+import CountryChange from "./Settings/YourAccount/AccountInformation/CountryChange";
+import Gender from "./Settings/YourAccount/AccountInformation/Gender";
+import Age from "./Settings/YourAccount/AccountInformation/Age";
+
+import ChangePassword from "./Settings/YourAccount/ChangePassword/ChangePassword";
+import DeactivateAccount from "./Settings/YourAccount/DeactivateAccount/DeactivateAccount";
+
+import NotificationSetting from "./Settings/Notifications/NotificationSetting";
+import NotificationFilters from "./Settings/Notifications/NotificationFilters";
+import MutedNotifications from "./Settings/Notifications/MutedNotifications";
+import NotificationPreferences from "./Settings/Notifications/NotificationPreferences";
+import PushNotifications from "./Settings/Notifications/PushNotifications";
+import EmailNotifications from "./Settings/Notifications/EmailNotifications";
+
+import Accessibilities from "./Settings/AccessibilityandDisplay/Accessibilities";
+import Accessibility from "./Settings/AccessibilityandDisplay/Accessibility";
+import Display from "./Settings/AccessibilityandDisplay/Display";
 
 export {
     Login,
@@ -112,4 +138,25 @@ export {
     Followers,
     Following,
     FollowTweet,
+    Input,
+    Select,
+    YourAccount,
+    NotificationSetting,
+    Accessibilities,
+    Accessibility,
+    AccountInformation,
+    ChangePassword,
+    DeactivateAccount,
+    Display,
+    NotificationFilters,
+    NotificationPreferences,
+    UsernameChange,
+    PhoneChange,
+    EmailChange,
+    CountryChange,
+    Gender,
+    Age,
+    MutedNotifications,
+    PushNotifications,
+    EmailNotifications,
 };

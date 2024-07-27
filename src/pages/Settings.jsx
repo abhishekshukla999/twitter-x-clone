@@ -1,10 +1,11 @@
-import { SettingsList, SettingsBox, NavigationBottom } from "../components";
+import { Outlet } from "react-router-dom";
+import { SettingsList, NavigationBottom } from "../components";
 
 function Settings() {
     return (
         <>
             <SettingsList />
-            <SettingsBox />
+            <Outlet />
             <NavigationBottom />
         </>
     );
