@@ -26,7 +26,7 @@ const Input = forwardRef(function Input(
             <div className="my-1">
                 <input
                     id={id}
-                    className={`text-[15px]  focus:outline-none ${className}`}
+                    className={`text-[15px] w-full focus:outline-none ${className}`}
                     placeholder={placeholder}
                     type={type}
                     ref={ref}
