@@ -1,10 +1,33 @@
-import { useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "../../../index";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { profileService } from "../../../../appwrite";
+import { addProfileData } from "../../../../features/profile/profileSlice";
 
 function EmailChange() {
+    const profileData = useSelector((state) => state.profile);
+    const authData = useSelector((state) => state.auth.userData);
+    const { register, handleSubmit } = useForm({
+        defaultValues: { email: profileData?.email || "" },
+    });
     const navigate = useNavigate();
-    const emailRef = useRef();
+    const dispatch = useDispatch();
+
+    const changeEmail = async (data) => {
+        if (authData) {
+            const updatedProfileData = await profileService.updateProfile(
+                profileData?.$id,
+                {
+                    email: data?.email || "",
+                }
+            );
+
+            if (updatedProfileData) {
+                dispatch(addProfileData(updatedProfileData));
+            }
+        }
+    };
 
     return (
         <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
@@ -27,9 +50,13 @@ function EmailChange() {
                     <div className="font-bold text-xl py-3">Change email</div>
                 </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(changeEmail)}>
                 <div className="border-b py-4 px-3">
-                    <Input label="Current" type="text" ref={emailRef} />
+                    <Input
+                        label="Current"
+                        type="text"
+                        {...register("email", { required: true })}
+                    />
                 </div>
                 <div className="my-1 box-border">
                     <button
