@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Input } from "../../../index";
 import { useSelector } from "react-redux";
 import { profileMediaService } from "../../../../appwrite";
@@ -81,24 +81,34 @@ function DeactivateAccount() {
                     <div className="border-b p-3 text-[13px] text-gray-500">
                         Some account information may still be available in
                         search engines, such as Google or Bing. {""}
-                        <span className="text-twitter-blue hover:underline cursor-pointer">
+                        <Link
+                            to="https://help.x.com/en/safety-and-security/remove-x-profile-from-google-search"
+                            target="_blank"
+                            className="text-twitter-blue hover:underline cursor-pointer"
+                        >
                             Learn more
-                        </span>
+                        </Link>
                     </div>
                     <div className="border-b p-3 text-[13px] text-gray-500">
                         If you just want to change your @username, you
                         don&apos;t need to deactivate your account — edit it in
                         your {""}
-                        <span className="text-twitter-blue hover:underline cursor-pointer">
+                        <Link
+                            to="/settings/your_twitter_data/account"
+                            className="text-twitter-blue hover:underline cursor-pointer"
+                        >
                             settings.
-                        </span>
+                        </Link>
                     </div>
                     <div className="border-b p-3 text-[13px] text-gray-500">
                         To use your current @username or email address with a
                         different X account,
-                        <span className="text-twitter-blue hover:underline cursor-pointer">
+                        <Link
+                            to="/settings/your_twitter_data/account"
+                            className="text-twitter-blue hover:underline cursor-pointer"
+                        >
                             {""} change{" "}
-                        </span>
+                        </Link>
                         them before you deactivate this account.
                     </div>
                     <div className="border-b p-3 text-[13px] text-gray-500">
