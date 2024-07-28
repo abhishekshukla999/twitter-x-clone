@@ -59,6 +59,7 @@ function PhoneChange() {
                     <Input
                         label="Current"
                         type="text"
+                        placeholder="Type phone number"
                         {...register("phone", { required: true })}
                     />
                 </div>

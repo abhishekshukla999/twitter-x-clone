@@ -1,10 +1,20 @@
-import { useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Select } from "../../../index";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { profileService } from "../../../../appwrite";
+import { addProfileData } from "../../../../features/profile/profileSlice";
 
 function CountryChange() {
+    const authData = useSelector((state) => state.auth.userData);
+    const profileData = useSelector((state) => state.profile);
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            country: profileData?.country || "",
+        },
+    });
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const countryRef = useRef();
     const countryList = [
         "Afghanistan",
         "Albania",
@@ -257,6 +267,25 @@ function CountryChange() {
         "Åland Islands",
     ];
 
+    const changeCountry = async (data) => {
+        if (authData) {
+            try {
+                const updatedProfileData = await profileService.updateProfile(
+                    profileData?.$id,
+                    {
+                        country: data?.country || "",
+                    }
+                );
+
+                if (updatedProfileData) {
+                    dispatch(addProfileData(updatedProfileData));
+                }
+            } catch (error) {
+                console.log("Error updating country :: ", error);
+            }
+        }
+    };
+
     return (
         <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
@@ -278,12 +307,12 @@ function CountryChange() {
                     <div className="font-bold text-xl py-3">Change country</div>
                 </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(changeCountry)}>
                 <div className="border-b py-4 px-3">
                     <Select
                         label="Country"
                         options={countryList}
-                        ref={countryRef}
+                        {...register("country")}
                     />
                 </div>
                 <div className="my-1 box-border">

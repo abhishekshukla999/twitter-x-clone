@@ -6,7 +6,6 @@ const Select = forwardRef(function Select(
 ) {
     const [isFocused, setIsFocused] = useState(false);
     const id = useId();
-    const [selectedOption, setSelectedOption] = useState("");
 
     return (
         <div
@@ -36,8 +35,6 @@ const Select = forwardRef(function Select(
                     {...props}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    value={selectedOption}
-                    onChange={(e) => setSelectedOption(e.target.value)}
                 >
                     <option value="" defaultChecked disabled>
                         Select

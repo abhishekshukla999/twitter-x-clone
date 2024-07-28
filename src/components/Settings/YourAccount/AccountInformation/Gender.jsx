@@ -1,11 +1,36 @@
-import { useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Input } from "../../../index";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { profileService } from "../../../../appwrite";
+import { addProfileData } from "../../../../features/profile/profileSlice";
 
 function Gender() {
+    const profileData = useSelector((state) => state.profile);
+    const authData = useSelector((state) => state.auth.userData);
+    const { register, handleSubmit } = useForm({
+        defaultValues: { gender: profileData?.gender || "" },
+    });
     const navigate = useNavigate();
-    const genderRef = useRef();
-    const [third, setThird] = useState(false);
+    const dispatch = useDispatch();
+
+    const changeGender = async (data) => {
+        if (authData) {
+            try {
+                const updatedProfileData = await profileService.updateProfile(
+                    profileData?.$id,
+                    {
+                        gender: data?.gender || "",
+                    }
+                );
+
+                if (updatedProfileData) {
+                    dispatch(addProfileData(updatedProfileData));
+                }
+            } catch (error) {
+                console.log("Error updating gender :: ", error);
+            }
+        }
+    };
 
     return (
         <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
@@ -28,7 +53,7 @@ function Gender() {
                     <div className="font-bold text-xl py-3">Gender</div>
                 </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(changeGender)}>
                 <div className="border-b py-4 px-3 text-gray-500 text-[15px]">
                     If you haven&apos;t already specified a gender, this is the
                     one associated with your account based on your profile and
@@ -42,7 +67,8 @@ function Gender() {
                             id="female"
                             name="gender"
                             className="w-5"
-                            onClick={() => setThird(false)}
+                            value="Female"
+                            {...register("gender", { required: true })}
                         />
                     </div>
                     <div className="flex justify-between my-1">
@@ -52,24 +78,21 @@ function Gender() {
                             id="male"
                             name="gender"
                             className="w-5"
-                            onClick={() => setThird(false)}
+                            value="Male"
+                            {...register("gender", { required: true })}
                         />
                     </div>
                     <div className="flex justify-between my-1">
-                        <label htmlFor="third">Add your gender</label>
+                        <label htmlFor="third">Other</label>
                         <input
                             type="radio"
-                            id="third"
+                            id="other"
                             name="gender"
                             className="w-5"
-                            onClick={() => setThird(true)}
+                            value="Other"
+                            {...register("gender", { required: true })}
                         />
                     </div>
-                    {third && (
-                        <div className="my-2">
-                            <Input label="Gender" ref={genderRef} />
-                        </div>
-                    )}
                 </div>
                 <div className="flex justify-end px-2 py-3">
                     <button

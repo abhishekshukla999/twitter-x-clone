@@ -55,6 +55,7 @@ function EmailChange() {
                     <Input
                         label="Current"
                         type="text"
+                        placeholder="Type email"
                         {...register("email", { required: true })}
                     />
                 </div>

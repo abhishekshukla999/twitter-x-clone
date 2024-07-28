@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 function AccountInformation() {
     const profileData = useSelector((state) => state.profile);
@@ -246,6 +246,15 @@ function AccountInformation() {
                             <div className="text-[15px]">Birth date</div>
                             <div className="text-[13px] text-gray-500">
                                 {`${birthDate.month} ${birthDate.date}, ${birthDate.year}`}
+                            </div>
+                            <div className="text-[13px] text-gray-500">
+                                Add your date of birth to your{" "}
+                                <Link
+                                    to={`/${profileData?.username}`}
+                                    className="text-twitter-blue hover:underline"
+                                >
+                                    profile.
+                                </Link>
                             </div>
                         </div>
                     </div>
