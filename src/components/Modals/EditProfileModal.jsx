@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { profileMediaService, profileService } from "../../appwrite";
+import { authService, profileMediaService, profileService } from "../../appwrite";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
 
@@ -104,6 +104,8 @@ function EditProfileModal({ isOpen, onClose }) {
                     data.avatar = file.$id || "";
                 }
             }
+
+            // const updateAuthData = await authService.
 
             const updatedProfileData = await profileService.updateProfile(
                 profileData?.$id,
