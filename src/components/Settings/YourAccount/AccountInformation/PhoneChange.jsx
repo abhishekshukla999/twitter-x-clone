@@ -1,10 +1,37 @@
-import { useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "../../../index";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { profileService } from "../../../../appwrite";
+import { addProfileData } from "../../../../features/profile/profileSlice";
 
 function PhoneChange() {
+    const profileData = useSelector((state) => state.profile);
+    const authData = useSelector((state) => state.auth.userData);
+    const { register, handleSubmit } = useForm({
+        defaultValues: { phone: profileData?.phone || "" },
+    });
     const navigate = useNavigate();
-    const phoneRef = useRef();
+    const dispatch = useDispatch();
+
+    const changePhone = async (data) => {
+        if (authData) {
+            try {
+                const updatedProfileData = await profileService.updateProfile(
+                    profileData?.$id,
+                    {
+                        phone: data?.phone || "",
+                    }
+                );
+
+                if (updatedProfileData) {
+                    dispatch(addProfileData(updatedProfileData));
+                }
+            } catch (error) {
+                console.log("Error updating phone :: ", error);
+            }
+        }
+    };
 
     return (
         <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
@@ -27,9 +54,13 @@ function PhoneChange() {
                     <div className="font-bold text-xl py-3">Change phone</div>
                 </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(changePhone)}>
                 <div className="border-b py-4 px-3">
-                    <Input label="Current" type="text" ref={phoneRef} />
+                    <Input
+                        label="Current"
+                        type="text"
+                        {...register("phone", { required: true })}
+                    />
                 </div>
                 <div className="my-1 box-border">
                     <button

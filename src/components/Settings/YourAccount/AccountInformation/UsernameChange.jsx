@@ -35,7 +35,7 @@ function UsernameChange() {
                 const updatedProfileData = await profileService.updateProfile(
                     profileData?.$id,
                     {
-                        username: data?.username,
+                        username: data?.username || "",
                     }
                 );
 
