@@ -1,12 +1,42 @@
-import { useRef } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { Input } from "../../../index";
+import { useDispatch, useSelector } from "react-redux";
+import { authService } from "../../../../appwrite";
+import { login } from "../../../../features/auth/authSlice";
+import { useForm } from "react-hook-form";
 
 function ChangePassword() {
+    const authData = useSelector((state) => state.auth.userData);
+    const { register, handleSubmit, watch } = useForm({
+        defaultValues: {
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+        },
+    });
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const currentPasswordRef = useRef();
-    const newPasswordRef = useRef();
-    const confirmPasswordRef = useRef();
+
+    const password = watch(["newPassword", "confirmPassword"]);
+
+    const changePassword = async (data) => {
+        if (authData && password["0"] === password["1"]) {
+            try {
+                const updatedAuthData = await authService.updatePassword({
+                    newPassword: data?.confirmPassword,
+                    currentPassword: data?.currentPassword,
+                });
+
+                dispatch(login({ userData: updatedAuthData }));
+                console.log("Password successfully updated!!");
+                navigate(-1);
+            } catch (error) {
+                console.log("Error updating password :: ", error);
+            }
+        } else {
+            console.log("Please enter same password");
+        }
+    };
 
     return (
         <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
@@ -31,12 +61,12 @@ function ChangePassword() {
                     </div>
                 </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(changePassword)}>
                 <div className="border-b py-4 px-3">
                     <Input
                         label="Current password"
                         type="text"
-                        ref={currentPasswordRef}
+                        {...register("currentPassword", { required: true })}
                     />
                     <button className="text-twitter-blue text-[13px] hover:underline">
                         Forgot password?
@@ -47,14 +77,14 @@ function ChangePassword() {
                         <Input
                             label="New password"
                             type="text"
-                            ref={newPasswordRef}
+                            {...register("newPassword", { required: true })}
                         />
                     </div>
                     <div className="py-4 px-3">
                         <Input
                             label="Confirm password"
                             type="text"
-                            ref={confirmPasswordRef}
+                            {...register("confirmPassword", { required: true })}
                         />
                     </div>
                 </div>
