@@ -134,7 +134,7 @@ function Reply({
     };
 
     return (
-        <div className="parent post px-2  border-b pt-2 py-2">
+        <div className="parent post px-2  border-b pt-2 py-2 hover:bg-[#F7F7F7]">
             <div className="flex">
                 {/* User avatar */}
                 <div className="avatar w-[9%]">

@@ -48,7 +48,7 @@ function Likes() {
                     );
                 }
             } catch (error) {
-                console.error("Error in fetching bookmarks :: ", error);
+                console.error("Error in fetching likes :: ", error);
             } finally {
                 setLoading(false);
             }

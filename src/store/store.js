@@ -17,6 +17,7 @@ import bookmarkSlice from "../features/bookmark/bookmarkSlice";
 import likeSlice from "../features/like/likeSlice";
 import tweetPageSlice from "../features/tweet/tweetPageSlice";
 import followSlice from "../features/follow/follow";
+import replySlice from "../features/replies/replySlice";
 
 const rootReducer = combineReducers({
     auth: authSlice,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     likes: likeSlice,
     tweetPage: tweetPageSlice,
     follows: followSlice,
+    replies: replySlice,
 });
 
 const persistConfig = {

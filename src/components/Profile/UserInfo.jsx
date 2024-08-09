@@ -50,7 +50,11 @@ function UserInfo({ username, setStatus }) {
 
     const imageUrl = () => {
         if (otherProfileData?.avatar) {
-            return profileMediaService.getFilePreview(otherProfileData.avatar);
+            return profileMediaService.getCustomFilePreview(
+                otherProfileData.avatar,
+                133,
+                133
+            );
         } else {
             return "/defaultAvatar.png";
         }
@@ -120,8 +124,10 @@ function UserInfo({ username, setStatus }) {
                             <img
                                 className="h-[200px] w-full"
                                 src={
-                                    profileMediaService.getFilePreview(
-                                        otherProfileData.profileCover
+                                    profileMediaService.getCustomFilePreview(
+                                        otherProfileData.profileCover,
+                                        598,
+                                        199
                                     ) || ""
                                 }
                                 alt="Cover Image"
@@ -164,20 +170,22 @@ function UserInfo({ username, setStatus }) {
                                 }}
                             />
                         </div>
-                        {/* Message */}
-                        <div className="absolute top-4 right-36">
-                            <button className="p-2 font-bold text-base border border-zinc-300 rounded-full">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                    className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
-                                >
-                                    <g>
-                                        <path d="M1.998 5.5c0-1.381 1.119-2.5 2.5-2.5h15c1.381 0 2.5 1.119 2.5 2.5v13c0 1.381-1.119 2.5-2.5 2.5h-15c-1.381 0-2.5-1.119-2.5-2.5v-13zm2.5-.5c-.276 0-.5.224-.5.5v2.764l8 3.638 8-3.636V5.5c0-.276-.224-.5-.5-.5h-15zm15.5 5.463l-8 3.636-8-3.638V18.5c0 .276.224.5.5.5h15c.276 0 .5-.224.5-.5v-8.037z"></path>
-                                    </g>
-                                </svg>
-                            </button>
-                        </div>
+                        {/* Message (not used for now) */}
+                        {false && (
+                            <div className="absolute top-4 right-36">
+                                <button className="p-2 font-bold text-base border border-zinc-300 rounded-full">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                        className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
+                                    >
+                                        <g>
+                                            <path d="M1.998 5.5c0-1.381 1.119-2.5 2.5-2.5h15c1.381 0 2.5 1.119 2.5 2.5v13c0 1.381-1.119 2.5-2.5 2.5h-15c-1.381 0-2.5-1.119-2.5-2.5v-13zm2.5-.5c-.276 0-.5.224-.5.5v2.764l8 3.638 8-3.636V5.5c0-.276-.224-.5-.5-.5h-15zm15.5 5.463l-8 3.636-8-3.638V18.5c0 .276.224.5.5.5h15c.276 0 .5-.224.5-.5v-8.037z"></path>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* blue tick */}
@@ -232,7 +240,12 @@ function UserInfo({ username, setStatus }) {
                             </div>
                         )}
                         {otherProfileData?.website && (
-                            <div className="flex">
+                            <a
+                                className="flex"
+                                href={`https://${otherProfileData?.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 <span className="mx-1">
                                     <svg
                                         viewBox="0 0 24 24"
@@ -247,7 +260,7 @@ function UserInfo({ username, setStatus }) {
                                 <span className="text-blue-500">
                                     {otherProfileData?.website || ""}
                                 </span>
-                            </div>
+                            </a>
                         )}
                         <div className="flex">
                             <span className="mx-1">
@@ -289,7 +302,6 @@ function UserInfo({ username, setStatus }) {
                             e.stopPropagation();
                             setCurrProfileCompo("posts");
                         }}
-                        to=""
                     >
                         <div
                             className={`py-4 ${
