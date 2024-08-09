@@ -25,7 +25,6 @@ function FeedContent() {
                         "databases.*.collections.*.documents.*.create"
                     )
                 ) {
-                    console.log(response.payload);
 
                     setTweetsList((prev) => [response.payload, ...prev]);
                 } else if (
@@ -54,7 +53,6 @@ function FeedContent() {
             Query.limit(10),
             Query.orderDesc("$createdAt"),
         ]);
-        console.log(tweets);
 
         setTweetsList(tweets.documents);
         setLoading(false);

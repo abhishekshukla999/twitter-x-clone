@@ -664,7 +664,7 @@ function TweetCard({
                                         <span className="mx-0.5 font-light">
                                             &middot;
                                         </span>
-                                        <span className="mx-0.5 font-light">
+                                        <span className="mx-0.5 text-[13px] font-light">
                                             Edited
                                         </span>
                                     </>

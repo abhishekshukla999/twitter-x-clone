@@ -55,6 +55,7 @@ import Following from "./Follows/Following";
 import FollowTweet from "./Buttons/FollowTweet";
 import Input from "./Inputs/Input";
 import Select from "./Inputs/Select";
+import LoadingModal from "./Modals/LoadingModal";
 
 import YourAccount from "./Settings/YourAccount/YourAccount";
 
@@ -157,4 +158,5 @@ export {
     MutedNotifications,
     PushNotifications,
     EmailNotifications,
+    LoadingModal,
 };
