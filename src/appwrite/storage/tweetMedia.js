@@ -1,5 +1,5 @@
 import { config } from "../../config/config";
-import { Client, Storage, ID } from "appwrite";
+import { Client, Storage, ID, ImageGravity } from "appwrite";
 
 class TweetMediaService {
     client = new Client();
@@ -38,9 +38,30 @@ class TweetMediaService {
 
     getFilePreview(fileId) {
         try {
-            return this.storage.getFilePreview(config.appwriteTweetsBucketId, fileId);
+            return this.storage.getFilePreview(
+                config.appwriteTweetsBucketId,
+                fileId
+            );
         } catch (error) {
             console.log("Appwrite Service :: getFilePreview :: error ", error);
+        }
+    }
+
+    getCustomFilePreview({ fileId, width, height, quality = "" }) {
+        try {
+            return this.storage.getFilePreview(
+                config.appwriteTweetsBucketId,
+                fileId,
+                width,
+                height,
+                ImageGravity.Center,
+                quality
+            );
+        } catch (error) {
+            console.log(
+                "Appwrite Service :: getCustomFilePreview :: error ",
+                error
+            );
         }
     }
 }

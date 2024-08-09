@@ -59,6 +59,7 @@ function TweetCard({
         repliesCount: 0,
     });
 
+    const [mediaLoader, setMediaLoader] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,8 +67,10 @@ function TweetCard({
             const authorData = await profileService.getProfile(author);
 
             if (authorData) {
-                const url = profileMediaService.getFilePreview(
-                    authorData.avatar
+                const url = profileMediaService.getCustomFilePreview(
+                    authorData.avatar,
+                    50,
+                    50
                 );
                 const URL = url ? url : "/defaultAvatar.png";
 
@@ -86,7 +89,14 @@ function TweetCard({
     useEffect(() => {
         const fetchMedia = async () => {
             if (media) {
-                setMediaURL(tweetMediaService.getFilePreview(media));
+                setMediaURL(
+                    tweetMediaService.getCustomFilePreview({
+                        fileId: media,
+                        quality: "70",
+                    })
+                );
+
+                setMediaLoader(false);
             }
         };
 
@@ -621,7 +631,7 @@ function TweetCard({
                 )}
                 <div className="flex">
                     {/* User avatar */}
-                    <div className="avatar w-[9%]">
+                    <div className="avatar w-[50px]">
                         <div className="m-1">
                             <img
                                 className="w-full rounded-full"
@@ -735,15 +745,119 @@ function TweetCard({
                         {/* User content */}
                         <div className="text mx-1.5 mb-1 mt-0.5">{content}</div>
 
-                        {media && (
-                            <div className="image m-1.5">
-                                <img
-                                    className="rounded-2xl w-full"
-                                    src={mediaURL}
-                                    alt=""
-                                />
-                            </div>
-                        )}
+                        {media &&
+                            (mediaLoader ? (
+                                <div>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 200 200"
+                                        className="w-10"
+                                    >
+                                        <circle
+                                            fill="#1D9BF0"
+                                            stroke="#1D9BF0"
+                                            strokeWidth="15"
+                                            r="15"
+                                            cx="35"
+                                            cy="100"
+                                        >
+                                            <animate
+                                                attributeName="cx"
+                                                calcMode="spline"
+                                                dur="2"
+                                                values="35;165;165;35;35"
+                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                                repeatCount="indefinite"
+                                                begin="0"
+                                            ></animate>
+                                        </circle>
+                                        <circle
+                                            fill="#1D9BF0"
+                                            stroke="#1D9BF0"
+                                            strokeWidth="15"
+                                            opacity=".8"
+                                            r="15"
+                                            cx="35"
+                                            cy="100"
+                                        >
+                                            <animate
+                                                attributeName="cx"
+                                                calcMode="spline"
+                                                dur="2"
+                                                values="35;165;165;35;35"
+                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                                repeatCount="indefinite"
+                                                begin="0.05"
+                                            ></animate>
+                                        </circle>
+                                        <circle
+                                            fill="#1D9BF0"
+                                            stroke="#1D9BF0"
+                                            strokeWidth="15"
+                                            opacity=".6"
+                                            r="15"
+                                            cx="35"
+                                            cy="100"
+                                        >
+                                            <animate
+                                                attributeName="cx"
+                                                calcMode="spline"
+                                                dur="2"
+                                                values="35;165;165;35;35"
+                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                                repeatCount="indefinite"
+                                                begin=".1"
+                                            ></animate>
+                                        </circle>
+                                        <circle
+                                            fill="#1D9BF0"
+                                            stroke="#1D9BF0"
+                                            strokeWidth="15"
+                                            opacity=".4"
+                                            r="15"
+                                            cx="35"
+                                            cy="100"
+                                        >
+                                            <animate
+                                                attributeName="cx"
+                                                calcMode="spline"
+                                                dur="2"
+                                                values="35;165;165;35;35"
+                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                                repeatCount="indefinite"
+                                                begin=".15"
+                                            ></animate>
+                                        </circle>
+                                        <circle
+                                            fill="#1D9BF0"
+                                            stroke="#1D9BF0"
+                                            strokeWidth="15"
+                                            opacity=".2"
+                                            r="15"
+                                            cx="35"
+                                            cy="100"
+                                        >
+                                            <animate
+                                                attributeName="cx"
+                                                calcMode="spline"
+                                                dur="2"
+                                                values="35;165;165;35;35"
+                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                                repeatCount="indefinite"
+                                                begin=".2"
+                                            ></animate>
+                                        </circle>
+                                    </svg>
+                                </div>
+                            ) : (
+                                <div className="image m-1.5">
+                                    <img
+                                        className="rounded-2xl w-full"
+                                        src={mediaURL}
+                                        alt=""
+                                    />
+                                </div>
+                            ))}
 
                         {/* Bottom Interactions */}
                         <div className="flex justify-between">
