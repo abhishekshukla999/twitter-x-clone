@@ -1,9 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { NavigationMobile, TweetCard, TweetForm } from "../index";
+import { Loader, NavigationMobile, TweetCard, TweetForm } from "../index";
+import { tweetService } from "../../appwrite";
+import { Client, Query } from "appwrite";
+import { config } from "../../config/config";
 
 function FeedContent() {
     const [isOpen, setIsOpen] = useState(false);
+    const [tweetsList, setTweetsList] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchTweets();
+
+        const client = new Client()
+            .setEndpoint(config.appwriteUrl)
+            .setProject(config.appwriteProjectId);
+
+        const unsubscribe = client.subscribe(
+            `databases.${config.appwriteDatabaseId}.collections.${config.appwriteTweetsCollectionId}.documents`,
+            (response) => {
+                if (
+                    response.events.includes(
+                        "databases.*.collections.*.documents.*.create"
+                    )
+                ) {
+                    console.log(response.payload);
+
+                    setTweetsList((prev) => [response.payload, ...prev]);
+                } else if (
+                    response.events.includes(
+                        "databases.*.collections.*.documents.*.delete"
+                    )
+                ) {
+                    setTweetsList((prev) =>
+                        prev.filter(
+                            (tweet) => tweet.$id !== response.payload.$id
+                        )
+                    );
+                }
+            }
+        );
+
+        tweetService.client.subscribe(``);
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
+    async function fetchTweets() {
+        const tweets = await tweetService.getTweets([
+            Query.limit(10),
+            Query.orderDesc("$createdAt"),
+        ]);
+        console.log(tweets);
+
+        setTweetsList(tweets.documents);
+        setLoading(false);
+    }
 
     function handleClose() {
         setIsOpen(false);
@@ -46,8 +101,21 @@ function FeedContent() {
             {/* TweetForm */}
             <TweetForm />
 
-            {/* TweetCard */}
-            
+            {loading ? (
+                <Loader />
+            ) : (
+                tweetsList.map((tweet) => (
+                    <TweetCard
+                        key={tweet.$id}
+                        tweetId={tweet.$id}
+                        content={tweet.content}
+                        media={tweet.media}
+                        author={tweet.author}
+                        createdAt={tweet.$createdAt}
+                        updatedAt={tweet.$updatedAt}
+                    />
+                ))
+            )}
         </div>
     );
 }
