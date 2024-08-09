@@ -643,7 +643,7 @@ function TweetCard({
 
                     <div className="content w-[90%]">
                         {/* User details */}
-                        <div className="flex justify-between flex-wrap">
+                        <div className="flex justify-between flex-wrap relative">
                             <div
                                 className="user-details flex flex-wrap mx-0.5 text-base"
                                 onClick={handleProfileNavigation}
@@ -692,9 +692,10 @@ function TweetCard({
                                     </svg>
                                 </div>
 
+                            </div>
                                 {/* options layover */}
                                 {isOpen && (
-                                    <div className="absolute bg-white right-full w-[340px] border rounded-xl shadow-2xl">
+                                    <div className="absolute bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
                                         <button
                                             className="font-bold mx-3 text-3xl"
                                             onClick={(e) => {
@@ -739,7 +740,6 @@ function TweetCard({
                                         </div>
                                     </div>
                                 )}
-                            </div>
                         </div>
 
                         {/* User content */}
