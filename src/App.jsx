@@ -14,6 +14,7 @@ import { removeBookmarks } from "./features/bookmark/bookmarkSlice";
 import { removeLikes } from "./features/like/likeSlice";
 import { removeTweetPageData } from "./features/tweet/tweetPageSlice";
 import { removeFollowData } from "./features/follow/follow";
+import { Toaster } from "sonner";
 
 function App() {
     const dispatch = useDispatch();
@@ -27,9 +28,8 @@ function App() {
 
                 profileService.getProfile(userData.$id).then((profileData) => {
                     if (profileData) {
-                        dispatch(addProfileData({...profileData}));
+                        dispatch(addProfileData({ ...profileData }));
                     }
-                    // navigate("/home")
                 });
             } else {
                 dispatch(logout());
@@ -53,6 +53,13 @@ function App() {
 
                 <main className="flex gap-8 w-full mx-auto overflow-y-auto">
                     <Outlet />
+
+                    <Toaster
+                        position="bottom-center"
+                        expand={true}
+                        closeButton={true}
+                        richColors
+                    />
                 </main>
             </div>
         </>

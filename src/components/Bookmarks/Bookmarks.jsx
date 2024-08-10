@@ -9,7 +9,7 @@ import {
     addBookmarks,
     removeBookmarks,
 } from "../../features/bookmark/bookmarkSlice";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
 function Bookmarks() {
     const profileData = useSelector((state) => state.profile);
@@ -85,7 +85,7 @@ function Bookmarks() {
                 }
 
                 dispatch(removeBookmarks());
-                setIsOptionOpen(false)
+                setIsOptionOpen(false);
                 toast.success("All bookmarks deleted successfully");
             } else {
                 throw new Error("No Bookmarks exists");
@@ -191,13 +191,6 @@ function Bookmarks() {
                     ))}
                 </div>
             )}
-
-            <Toaster
-                position="bottom-center"
-                expand={true}
-                closeButton={true}
-                richColors
-            />
         </div>
     );
 }

@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { authService, profileMediaService, profileService } from "../../appwrite";
+import { profileMediaService, profileService } from "../../appwrite";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
+import { LoadingModal } from "../";
+import { toast } from "sonner";
 
 function EditProfileModal({ isOpen, onClose }) {
     const profileData = useSelector((state) => state.profile);
     const otherProfile = useSelector((state) => state.otherProfile);
     const dispatch = useDispatch();
-    const { register, handleSubmit, reset } = useForm({
+    const { register, handleSubmit, reset, formState } = useForm({
         defaultValues: {
             name: profileData?.name || "",
             bio: profileData?.bio || "",
@@ -21,17 +23,27 @@ function EditProfileModal({ isOpen, onClose }) {
     const [isEditDob, setIsEditDob] = useState(false);
     // preview and upload states for profile
     const [prevProfileImage, setPrevProfileImage] = useState(
-        profileMediaService.getFilePreview(profileData?.avatar) ||
-            "/defaultAvatar.png"
+        profileMediaService.getCustomFilePreview(
+            profileData?.avatar,
+            133,
+            133
+        ) || "/defaultAvatar.png"
     );
     const [uploadProfileImage, setUploadProfileImage] = useState(null);
     // preview and upload states foCover
     const [prevCoverImage, setPrevCoverImage] = useState(
-        profileMediaService.getFilePreview(profileData?.profileCover) || ""
+        profileMediaService.getCustomFilePreview(
+            profileData?.profileCover,
+            598,
+            199
+        ) || ""
     );
     const [uploadCoverImage, setUploadCoverImage] = useState(null);
 
     const [dob, setDob] = useState(profileData?.dob);
+
+    const { errors } = formState;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         reset({
@@ -74,6 +86,7 @@ function EditProfileModal({ isOpen, onClose }) {
     };
 
     const saveProfile = async (data) => {
+        setLoading(true);
         try {
             if (uploadCoverImage) {
                 const file = await profileMediaService.uploadFile(
@@ -105,8 +118,6 @@ function EditProfileModal({ isOpen, onClose }) {
                 }
             }
 
-            // const updateAuthData = await authService.
-
             const updatedProfileData = await profileService.updateProfile(
                 profileData?.$id,
                 {
@@ -121,11 +132,15 @@ function EditProfileModal({ isOpen, onClose }) {
                     dispatch(addOtherProfile({ ...updatedProfileData }));
                 }
             }
+
+            toast.success("Profile updated successfully");
         } catch (error) {
             console.log("Error updating user profile :: ", error);
+            toast.error("Profile updating failed");
         } finally {
             reset();
             onClose();
+            setLoading(false);
         }
     };
 
@@ -153,12 +168,14 @@ function EditProfileModal({ isOpen, onClose }) {
             className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center"
             onClick={onClose}
         >
+            <LoadingModal isOpen={loading} />
+
             <form
                 className="bg-white overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen text-black"
                 onSubmit={handleSubmit(saveProfile)}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex gap-5 py-1 sticky top-0 bg-white opacity-80">
+                <div className="flex gap-5 py-1 sticky z-30 top-0 bg-white opacity-80">
                     <button
                         className="rounded-lg bg-none border-none text-2xl cursor-pointer my-auto px-3"
                         onClick={onClose}
@@ -287,9 +304,16 @@ function EditProfileModal({ isOpen, onClose }) {
                             id="name"
                             type="text"
                             className="focus:outline-none"
-                            {...register("name", { required: true })}
+                            {...register("name", {
+                                required: "Name can't be empty",
+                            })}
                         />
                     </div>
+                    {errors.name?.message && (
+                        <div className="mx-3 text-red-500">
+                            {errors.name?.message}
+                        </div>
+                    )}
                     <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
                         <label
                             htmlFor="bio"
@@ -353,12 +377,20 @@ function EditProfileModal({ isOpen, onClose }) {
                                     type="date"
                                     placeholder="DOB"
                                     className="focus:outline-none"
-                                    {...register("dob", { required: true })}
+                                    {...register("dob", {
+                                        required:
+                                            "Please enter correct birth date",
+                                    })}
                                     onChange={(e) => setDob(e.target.value)}
                                 />
                             </div>
                         )}
                     </div>
+                    {errors.dob?.message && (
+                        <div className="mx-3 my-3 text-red-500">
+                            {errors.dob?.message} !!
+                        </div>
+                    )}
                 </div>
             </form>
         </div>,

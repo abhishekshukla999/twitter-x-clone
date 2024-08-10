@@ -9,6 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { LoadingModal } from "..";
+import { toast } from "sonner";
 
 function TweetForm() {
     // preview and upload states
@@ -58,9 +59,12 @@ function TweetForm() {
 
                 dispatch(addProfileData({ ...updatedProfileData }));
             }
+
+            toast.success("Post created successfully");
         } catch (error) {
             console.error("Error creating tweet :: ", error);
             setAppwriteError(error.message);
+            toast.error("Post creation failed");
         } finally {
             reset();
             setPrevImage(null);

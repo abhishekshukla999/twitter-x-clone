@@ -9,11 +9,11 @@ import {
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
-import { Query } from "appwrite";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
 import { addTweets } from "../../features/tweet/tweetSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
-import LoadingModal from "./LoadingModal";
+import { LoadingModal } from "../";
+import { toast } from "sonner";
 
 function PostModal({ isOpen, onClose, post = false }) {
     // preview and upload states
@@ -59,7 +59,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                 );
 
                 if (updatedTweetPost) {
-                    console.log("Tweet Updated");
+                    // console.log("Tweet Updated");
                     dispatch(
                         addTweetPageData({
                             ...tweetPageData,
@@ -67,9 +67,12 @@ function PostModal({ isOpen, onClose, post = false }) {
                         })
                     );
                 }
+
+                toast.success("Tweet updated successfully");
             } catch (error) {
-                console.log("Error Updating tweets :: ", error);
+                // console.log("Error Updating tweets :: ", error);
                 setAppwriteError(error.message);
+                toast.error("Tweet updating failed");
             } finally {
                 onClose();
                 setPrevImage(null);
@@ -97,7 +100,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                 });
 
                 if (tweetPost) {
-                    console.info("Tweet Created");
+                    // console.info("Tweet Created");
                     const updatedTweetsCount = profileData?.tweets + 1;
                     const updatedProfileData =
                         await profileService.updateProfile(authData?.$id, {
@@ -113,8 +116,11 @@ function PostModal({ isOpen, onClose, post = false }) {
                         dispatch(addTweets(updatedTweetsData));
                     }
                 }
+
+                toast.success("Tweet created successfully");
             } catch (error) {
-                console.error("Error creating tweet :: ", error);
+                // console.error("Error creating tweet :: ", error);
+                toast.error("Tweet creation failed");
             } finally {
                 reset();
                 onClose();

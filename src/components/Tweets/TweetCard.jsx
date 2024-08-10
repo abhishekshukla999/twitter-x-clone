@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addTweets } from "../../features/tweet/tweetSlice";
 import FollowTweet from "../Buttons/FollowTweet";
+import { toast } from "sonner";
 
 function TweetCard({
     tweetId,
@@ -256,7 +257,7 @@ function TweetCard({
             const deletedTweet = await tweetService.deleteTweet(tweetId);
 
             if (deletedTweet) {
-                console.log("Tweet Deleted");
+                // console.log("Tweet Deleted");
 
                 const updatedTweetsCount = profileData?.tweets - 1;
                 const updatedProfileData = await profileService.updateProfile(
@@ -344,8 +345,11 @@ function TweetCard({
                     console.error("Error deleting some bookmark:", error);
                 }
             }
+
+            toast.success("Tweet deleted successfully");
         } catch (error) {
-            console.error("Error deleting tweet :: ", error);
+            // console.error("Error deleting tweet :: ", error);
+            toast.error("Tweet deletion failed");
         }
     };
 
@@ -380,12 +384,15 @@ function TweetCard({
                             bookmarksCount: currentBooksCount,
                         }));
                     }
+
+                    toast.success("Tweet added to bookmarks");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myBookmark: false,
                     }));
-                    console.error("Error adding bookmark :: ", error);
+                    // console.error("Error adding bookmark :: ", error);
+                    toast.error("Failed adding Tweet to bookmarks ");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -421,12 +428,15 @@ function TweetCard({
                                 currentUserbookmarks.documents.length,
                         })
                     );
+
+                    toast.success("Tweet removed from bookmarks");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myBookmark: true,
                     }));
                     console.error("Error deleting bookmark :: ", error);
+                    toast.error("Failed removing tweet from bookmarks");
                 }
             }
         }
@@ -540,12 +550,15 @@ function TweetCard({
                             retweetsCount: currentRetweetsCount,
                         }));
                     }
+
+                    toast.success("Tweet reposted");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: false,
                     }));
-                    console.log("Error adding retweet :: ", error);
+                    // console.log("Error adding retweet :: ", error);
+                    toast.error("Failed reposting tweet");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -568,12 +581,15 @@ function TweetCard({
                             retweetsCount: currentRetweetsCount,
                         }));
                     }
+
+                    toast.success("Tweet removed from repost");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: true,
                     }));
-                    console.log("Error deleting retweet :: ", error);
+                    // console.log("Error deleting retweet :: ", error);
+                    toast.error("Failed removing repost");
                 }
             }
         }
@@ -691,55 +707,52 @@ function TweetCard({
                                         </g>
                                     </svg>
                                 </div>
-
                             </div>
-                                {/* options layover */}
-                                {isOpen && (
-                                    <div className="absolute bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
-                                        <button
-                                            className="font-bold mx-3 text-3xl"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setisOpen(false);
-                                            }}
-                                        >
-                                            &times;
-                                        </button>
-                                        <div className="my-2 w-full">
-                                            {author === authData.$id && (
-                                                <div
-                                                    className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDelete();
-                                                    }}
-                                                >
-                                                    <span>
-                                                        <svg
-                                                            viewBox="0 0 24 24"
-                                                            aria-hidden="true"
-                                                            className="w-5 fill-red-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1q142lx r-9l7dzd"
-                                                        >
-                                                            <g>
-                                                                <path d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07zM9 17v-6h2v6H9zm4 0v-6h2v6h-2z"></path>
-                                                            </g>
-                                                        </svg>
-                                                    </span>
-                                                    <span>Delete</span>
-                                                </div>
-                                            )}
-                                            {author !== authData.$id && (
-                                                <FollowTweet
-                                                    followingId={author}
-                                                    followerId={authData.$id}
-                                                    username={
-                                                        authorInfo?.username
-                                                    }
-                                                />
-                                            )}
-                                        </div>
+                            {/* options layover */}
+                            {isOpen && (
+                                <div className="absolute bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
+                                    <button
+                                        className="font-bold mx-3 text-3xl"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setisOpen(false);
+                                        }}
+                                    >
+                                        &times;
+                                    </button>
+                                    <div className="my-2 w-full">
+                                        {author === authData.$id && (
+                                            <div
+                                                className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete();
+                                                }}
+                                            >
+                                                <span>
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        aria-hidden="true"
+                                                        className="w-5 fill-red-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1q142lx r-9l7dzd"
+                                                    >
+                                                        <g>
+                                                            <path d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07zM9 17v-6h2v6H9zm4 0v-6h2v6h-2z"></path>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                                <span>Delete</span>
+                                            </div>
+                                        )}
+                                        {author !== authData.$id && (
+                                            <FollowTweet
+                                                followingId={author}
+                                                followerId={authData.$id}
+                                                username={authorInfo?.username}
+                                            />
+                                        )}
                                     </div>
-                                )}
+                                </div>
+                            )}
                         </div>
 
                         {/* User content */}
