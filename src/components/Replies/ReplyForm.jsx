@@ -71,7 +71,11 @@ function ReplyForm({ tweetId }) {
 
     const imageUrl = () => {
         if (profileData?.avatar) {
-            return profileMediaService.getFilePreview(profileData.avatar);
+            return profileMediaService.getCustomFilePreview(
+                profileData.avatar,
+                50,
+                50
+            );
         } else {
             return "/defaultAvatar.png";
         }
@@ -79,7 +83,7 @@ function ReplyForm({ tweetId }) {
 
     return (
         <div className="tweet-form flex max-[499px]:hidden pt-3 w-full max-h-[70%] border-b border-zinc-200">
-            <div className="mx-2 w-[7%]">
+            <div className="mx-2 w-[43px]">
                 <img className="w-full rounded-full" src={imageUrl()} alt="" />
             </div>
             <form className="items w-[90%]" onSubmit={handleSubmit(submitPost)}>

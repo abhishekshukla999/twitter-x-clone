@@ -16,11 +16,12 @@ import {
     replyService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
-import { PostEngagementsModal, PostModal } from "../index";
+import { PostEngagementsModal, PostModal, FollowTweet } from "../index";
 import { Query } from "appwrite";
 import { useNavigate } from "react-router-dom";
 import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
+import { toast } from "sonner";
 
 function PostCard({
     tweetId = "",
@@ -59,13 +60,17 @@ function PostCard({
 
     const navigate = useNavigate();
 
+    const [mediaLoading, setMediaLoading] = useState(true);
+
     useEffect(() => {
         const avatarUrl = async () => {
             const authorData = await profileService.getProfile(author);
 
             if (authorData) {
-                const url = profileMediaService.getFilePreview(
-                    authorData.avatar
+                const url = profileMediaService.getCustomFilePreview(
+                    authorData.avatar,
+                    50,
+                    50
                 );
 
                 const URL = url ? url : "/defaultAvatar.png";
@@ -87,11 +92,12 @@ function PostCard({
         const fetchMedia = async () => {
             if (media) {
                 setMediaURL(tweetMediaService.getFilePreview(media));
+                setMediaLoading(false);
             }
         };
 
         fetchMedia();
-    }, [media, content]);
+    }, [media]);
 
     // bookmarks
     useEffect(() => {
@@ -270,7 +276,7 @@ function PostCard({
                     }
                 );
 
-                dispatch(addProfileData({ ...updatedProfileData }))
+                dispatch(addProfileData({ ...updatedProfileData }));
 
                 dispatch(removeTweetPageData());
                 navigate(-1);
@@ -341,8 +347,11 @@ function PostCard({
             } catch (error) {
                 console.error("Error deleting some bookmark:", error);
             }
+
+            toast.success("Tweet deleted successfully");
         } catch (error) {
-            console.error("Error deleting tweet :: ", error);
+            // console.error("Error deleting tweet :: ", error);
+            toast.error("Failed deleting tweet");
         }
     };
 
@@ -377,12 +386,15 @@ function PostCard({
                             bookmarksCount: currentBooksCount,
                         }));
                     }
+
+                    toast.success("Tweet added to bookmarks");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myBookmark: false,
                     }));
-                    console.error("Error adding bookmark :: ", error);
+                    // console.error("Error adding bookmark :: ", error);
+                    toast.error("Falied adding tweets to bookmarks");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -405,12 +417,15 @@ function PostCard({
                             bookmarksCount: currentBookCount,
                         }));
                     }
+
+                    toast.success("Tweet deleted from bookmarks");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myBookmark: true,
                     }));
-                    console.error("Error deleting bookmark :: ", error);
+                    // console.error("Error deleting bookmark :: ", error);
+                    toast.error("Tweet deleted from bookmarks");
                 }
             }
         }
@@ -513,12 +528,15 @@ function PostCard({
                             retweetsCount: currentRetweetsCount,
                         }));
                     }
+
+                    toast.success("Tweet reposted");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: false,
                     }));
-                    console.log("Error adding retweet :: ", error);
+                    // console.log("Error adding retweet :: ", error);
+                    toast.error("Tweet reposting failed");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -541,12 +559,15 @@ function PostCard({
                             retweetsCount: currentRetweetsCount,
                         }));
                     }
+
+                    toast.success("Tweet repost deleted");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: true,
                     }));
-                    console.log("Error deleting retweet :: ", error);
+                    // console.log("Error deleting retweet :: ", error);
+                    toast.error("Failed deleting repost tweet");
                 }
             }
         }
@@ -573,10 +594,10 @@ function PostCard({
                     </span>
                 </div>
             )}
-            <div className="flex justify-between">
+            <div className="flex justify-between relative">
                 <div className="flex cursor-pointer">
                     {/* User avatar */}
-                    <div className="avatar m-1.5 w-[8%]">
+                    <div className="avatar m-1.5 w-[45px]">
                         <img
                             className="w-full rounded-full"
                             src={avatarURL}
@@ -594,96 +615,83 @@ function PostCard({
                         </div>
                     </div>
                 </div>
-                {/* options */}
-                <div className="flex">
-                    <div
-                        className="w-9 cursor-pointer relative my-auto"
-                        title="Options"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setisOpen(true);
-                        }}
-                    >
-                        <div>
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                                className="w-9 p-2 hover:bg-blue-100 rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
-                            >
-                                <g>
-                                    <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
-                                </g>
-                            </svg>
-                        </div>
 
-                        {/* options layover */}
-                        {isOpen && (
-                            <div className="absolute bg-white right-full w-[240px] border rounded-xl shadow-2xl">
-                                <button
-                                    className="font-bold mx-3 text-3xl"
+                {/* options */}
+                <div
+                    className="w-9 cursor-pointer my-auto"
+                    title="Options"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setisOpen(true);
+                    }}
+                >
+                    <div>
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            className="w-9 p-2 hover:bg-blue-100 rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                        >
+                            <g>
+                                <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                {/* options layover */}
+                {isOpen && (
+                    <div className="absolute z-40 bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
+                        <button
+                            className="font-bold mx-3 text-3xl"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setisOpen(false);
+                            }}
+                        >
+                            &times;
+                        </button>
+                        <div className="my-2 w-full">
+                            {author === authData.$id && (
+                                <div
+                                    className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setisOpen(false);
+                                        handleDelete();
                                     }}
                                 >
-                                    &times;
-                                </button>
-                                <div className="my-2 w-full">
-                                    {author === authData.$id && (
-                                        <div
-                                            className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDelete();
-                                            }}
+                                    <span>
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                            className="w-5 fill-red-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1q142lx r-9l7dzd"
                                         >
-                                            <span>
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    aria-hidden="true"
-                                                    className="w-5 fill-red-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1q142lx r-9l7dzd"
-                                                >
-                                                    <g>
-                                                        <path d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07zM9 17v-6h2v6H9zm4 0v-6h2v6h-2z"></path>
-                                                    </g>
-                                                </svg>
-                                            </span>
-                                            <span>Delete</span>
-                                        </div>
-                                    )}
-                                    <div
-                                        className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setIsOpenEdit(true);
-                                            setisOpen(false);
-                                        }}
-                                    >
-                                        <span>
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                aria-hidden="true"
-                                                className="w-5 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-1q142lx"
-                                            >
-                                                <g>
-                                                    <path d="M10 4c-1.105 0-2 .9-2 2s.895 2 2 2 2-.9 2-2-.895-2-2-2zM6 6c0-2.21 1.791-4 4-4s4 1.79 4 4-1.791 4-4 4-4-1.79-4-4zm13 4v3h2v-3h3V8h-3V5h-2v3h-3v2h3zM3.651 19h12.698c-.337-1.8-1.023-3.21-1.945-4.19C13.318 13.65 11.838 13 10 13s-3.317.65-4.404 1.81c-.922.98-1.608 2.39-1.945 4.19zm.486-5.56C5.627 11.85 7.648 11 10 11s4.373.85 5.863 2.44c1.477 1.58 2.366 3.8 2.632 6.46l.11 1.1H1.395l.11-1.1c.266-2.66 1.155-4.88 2.632-6.46z"></path>
-                                                </g>
-                                            </svg>
-                                        </span>
-                                        <span>Follow</span>
-                                    </div>
+                                            <g>
+                                                <path d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07zM9 17v-6h2v6H9zm4 0v-6h2v6h-2z"></path>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    <span>Delete</span>
                                 </div>
-                            </div>
-                        )}
+                            )}
+
+                            {author !== authData.$id && (
+                                <FollowTweet
+                                    followingId={author}
+                                    followerId={authData.$id}
+                                    username={authorInfo?.username}
+                                />
+                            )}
+                        </div>
                     </div>
-                    <PostModal
-                        isOpen={isOpenEdit}
-                        onClose={() => {
-                            setIsOpenEdit(false);
-                        }}
-                        post={{ tweetId, content, media }}
-                    />
-                </div>
+                )}
+
+                <PostModal
+                    isOpen={isOpenEdit}
+                    onClose={() => {
+                        setIsOpenEdit(false);
+                    }}
+                    post={{ tweetId, content, media }}
+                />
             </div>
 
             <div>
@@ -692,14 +700,119 @@ function PostCard({
                     {content || "no content found"}
                 </div>
 
-                {media && (
-                    <div className="image m-1.5">
-                        <img
-                            className="rounded-2xl w-full"
-                            src={mediaURL}
-                            alt=""
-                        />
+                {mediaLoading && media ? (
+                    <div className="flex justify-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 200 200"
+                            className="w-20"
+                        >
+                            <circle
+                                fill="#1D9BF0"
+                                stroke="#1D9BF0"
+                                strokeWidth="15"
+                                r="15"
+                                cx="35"
+                                cy="100"
+                            >
+                                <animate
+                                    attributeName="cx"
+                                    calcMode="spline"
+                                    dur="1"
+                                    values="35;165;165;35;35"
+                                    keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                    repeatCount="indefinite"
+                                    begin="0"
+                                ></animate>
+                            </circle>
+                            <circle
+                                fill="#1D9BF0"
+                                stroke="#1D9BF0"
+                                strokeWidth="15"
+                                opacity=".8"
+                                r="15"
+                                cx="35"
+                                cy="100"
+                            >
+                                <animate
+                                    attributeName="cx"
+                                    calcMode="spline"
+                                    dur="2"
+                                    values="35;165;165;35;35"
+                                    keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                    repeatCount="indefinite"
+                                    begin="0.05"
+                                ></animate>
+                            </circle>
+                            <circle
+                                fill="#1D9BF0"
+                                stroke="#1D9BF0"
+                                strokeWidth="15"
+                                opacity=".6"
+                                r="15"
+                                cx="35"
+                                cy="100"
+                            >
+                                <animate
+                                    attributeName="cx"
+                                    calcMode="spline"
+                                    dur="2"
+                                    values="35;165;165;35;35"
+                                    keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                    repeatCount="indefinite"
+                                    begin=".1"
+                                ></animate>
+                            </circle>
+                            <circle
+                                fill="#1D9BF0"
+                                stroke="#1D9BF0"
+                                strokeWidth="15"
+                                opacity=".4"
+                                r="15"
+                                cx="35"
+                                cy="100"
+                            >
+                                <animate
+                                    attributeName="cx"
+                                    calcMode="spline"
+                                    dur="2"
+                                    values="35;165;165;35;35"
+                                    keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                    repeatCount="indefinite"
+                                    begin=".15"
+                                ></animate>
+                            </circle>
+                            <circle
+                                fill="#1D9BF0"
+                                stroke="#1D9BF0"
+                                strokeWidth="15"
+                                opacity=".2"
+                                r="15"
+                                cx="35"
+                                cy="100"
+                            >
+                                <animate
+                                    attributeName="cx"
+                                    calcMode="spline"
+                                    dur="2"
+                                    values="35;165;165;35;35"
+                                    keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
+                                    repeatCount="indefinite"
+                                    begin=".2"
+                                ></animate>
+                            </circle>
+                        </svg>
                     </div>
+                ) : (
+                    media && (
+                        <div className="image m-1.5">
+                            <img
+                                className="rounded-2xl w-full"
+                                src={mediaURL}
+                                alt="tweet image"
+                            />
+                        </div>
+                    )
                 )}
 
                 <div className="text-[15px] mx-1 my-4 flex flex-wrap">

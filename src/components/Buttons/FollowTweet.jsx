@@ -101,7 +101,7 @@ function FollowTweet({ followerId, followingId, username }) {
                 handleFollow();
             }}
         >
-            <span>
+            <span className="my-auto">
                 <svg
                     viewBox="0 0 24 24"
                     aria-hidden="true"

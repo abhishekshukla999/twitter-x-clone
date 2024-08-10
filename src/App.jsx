@@ -56,7 +56,6 @@ function App() {
 
                     <Toaster
                         position="bottom-center"
-                        expand={true}
                         closeButton={true}
                         richColors
                     />

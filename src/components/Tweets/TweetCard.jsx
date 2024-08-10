@@ -558,7 +558,7 @@ function TweetCard({
                         myRetweet: false,
                     }));
                     // console.log("Error adding retweet :: ", error);
-                    toast.error("Failed reposting tweet");
+                    toast.error("Tweet reposting failed");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -582,14 +582,14 @@ function TweetCard({
                         }));
                     }
 
-                    toast.success("Tweet removed from repost");
+                    toast.success("Tweet repost deleted");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: true,
                     }));
                     // console.log("Error deleting retweet :: ", error);
-                    toast.error("Failed removing repost");
+                    toast.error("Failed deleting repost tweet");
                 }
             }
         }
@@ -710,7 +710,7 @@ function TweetCard({
                             </div>
                             {/* options layover */}
                             {isOpen && (
-                                <div className="absolute bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
+                                <div className="absolute bg-white z-50 top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
                                     <button
                                         className="font-bold mx-3 text-3xl"
                                         onClick={(e) => {

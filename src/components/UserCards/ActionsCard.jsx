@@ -1,7 +1,10 @@
 import { profileMediaService } from "../../appwrite";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Follow } from "../";
+import { useSelector } from "react-redux";
 
-function ActionsCard({ name, username, media }) {
+function ActionsCard({ name, username, media, userId }) {
+    const authId = useSelector((state) => state.auth.userData.$id);
     const navigate = useNavigate();
 
     const avatarUrl = () => {
@@ -35,9 +38,7 @@ function ActionsCard({ name, username, media }) {
                 </div>
             </NavLink>
             <div className="cursor-pointer my-auto" title="Follow">
-                <button className="p-2 px-4 font-bold text-base border text-white bg-black border-zinc-300 rounded-full">
-                    Follow
-                </button>
+                <Follow followingId={userId} followerId={authId} />
             </div>
         </div>
     );

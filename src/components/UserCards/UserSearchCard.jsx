@@ -13,10 +13,16 @@ function UserSearchCard({ name, username, media }) {
     };
 
     return (
-        <div className="flex justify-between cursor-pointer my-1 mx-2">
-            <NavLink className="flex" onClick={() => navigate(`/${username}`)}>
+        <div
+            className="flex justify-between cursor-pointer my-1 mx-2 hover:bg-[#F7F7F7]"
+            onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/${username}`);
+            }}
+        >
+            <NavLink className="flex">
                 {/* User avatar */}
-                <div className="avatar m-1.5 w-[50px]">
+                <div className="avatar m-1.5 w-[43px]">
                     <img
                         className="rounded-full"
                         src={avatarUrl()}
