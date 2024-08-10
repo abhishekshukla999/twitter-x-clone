@@ -1,5 +1,6 @@
 import React from "react";
 import TrendingCard from "./TrendingCard";
+import { NavLink } from "react-router-dom";
 
 function WhatsHappening() {
     return (
@@ -9,11 +10,17 @@ function WhatsHappening() {
 
                 <div className="flex mx-3 my-4 max-w-[20rem]">
                     <span className="mx-2">
-                        <img className="w-[79px] h-[79px] rounded-xl" src="/Live.jpg" alt="live now image" />
+                        <img
+                            className="w-[79px] h-[79px] rounded-xl"
+                            src="/Live.jpg"
+                            alt="live now image"
+                        />
                     </span>
                     <span>
                         <p className="font-bold">England vs Switzerland</p>
-                        <p className="text-gray-500 text-sm">UEFA European Championship &middot; LIVE</p>
+                        <p className="text-gray-500 text-sm">
+                            UEFA European Championship &middot; LIVE
+                        </p>
                     </span>
                 </div>
 
@@ -39,7 +46,7 @@ function WhatsHappening() {
                 />
 
                 <div className="m-3 p-1 text-twitter-blue text-base">
-                    Show more
+                    <NavLink to="/explore">Show more</NavLink>
                 </div>
             </div>
         </>

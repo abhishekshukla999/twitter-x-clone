@@ -1,7 +1,7 @@
-import { profileMediaService } from "../../appwrite";
 import { NavLink, useNavigate } from "react-router-dom";
+import { profileMediaService } from "../../appwrite";
 
-function ActionsCard({ name, username, media }) {
+function UserSearchCard({ name, username, media }) {
     const navigate = useNavigate();
 
     const avatarUrl = () => {
@@ -13,7 +13,7 @@ function ActionsCard({ name, username, media }) {
     };
 
     return (
-        <div className="flex justify-between cursor-pointer my-1">
+        <div className="flex justify-between cursor-pointer my-1 mx-2">
             <NavLink className="flex" onClick={() => navigate(`/${username}`)}>
                 {/* User avatar */}
                 <div className="avatar m-1.5 w-[50px]">
@@ -34,13 +34,8 @@ function ActionsCard({ name, username, media }) {
                     </div>
                 </div>
             </NavLink>
-            <div className="cursor-pointer my-auto" title="Follow">
-                <button className="p-2 px-4 font-bold text-base border text-white bg-black border-zinc-300 rounded-full">
-                    Follow
-                </button>
-            </div>
         </div>
     );
 }
 
-export default ActionsCard;
+export default UserSearchCard;

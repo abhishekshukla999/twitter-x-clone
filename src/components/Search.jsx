@@ -1,9 +1,27 @@
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
+import { UserSearchCard } from "./";
+import { profileService } from "../appwrite";
+import { Query } from "appwrite";
 
 function Search() {
+    const [searchText, setSearchtext] = useState("");
+    const [usersList, setUsersList] = useState([]);
+
+    const handleSearch = useCallback(async () => {
+        const usersDocs = await profileService.getProfiles([
+            Query.search("username", searchText),
+        ]);
+
+        setUsersList(usersDocs.documents);
+    }, [searchText]);
+
+    useEffect(() => {
+        handleSearch();
+    }, [searchText, handleSearch]);
+
     return (
-        <div>
-            <form className="max-w-md mx-0.5 p-1">
+        <div className="relative">
+            <div className="max-w-md mx-0.5 p-1">
                 <label
                     htmlFor="default-search"
                     className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -33,10 +51,23 @@ function Search() {
                         id="default-search"
                         className="block w-full p-2 ps-10 text-base text-gray-900 border border-gray-300 rounded-full bg-gray-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search"
-                        required
+                        value={searchText}
+                        onChange={(e) => setSearchtext(e.target.value)}
                     />
                 </div>
-            </form>
+            </div>
+            {usersList.length !== 0 && (
+                <div className="absolute top-16 left-3 bg-white w-[90%] border shadow-2xl rounded-lg">
+                    {usersList.map((user) => (
+                        <UserSearchCard
+                            key={user.$id}
+                            name={user.name}
+                            username={user.username}
+                            media={user.avatar}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
