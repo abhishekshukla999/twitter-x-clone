@@ -1,3 +1,4 @@
+import WelcomeUser from "./WelcomeUser";
 import Login from "./LoginForm/Login";
 import Root from "./Root";
 import LogSignModal from "./Modals/LogSignModal";
@@ -83,6 +84,7 @@ import Accessibility from "./Settings/AccessibilityandDisplay/Accessibility";
 import Display from "./Settings/AccessibilityandDisplay/Display";
 
 export {
+    WelcomeUser,
     Login,
     Root,
     LogSignModal,
@@ -160,5 +162,5 @@ export {
     PushNotifications,
     EmailNotifications,
     LoadingModal,
-    UserSearchCard
+    UserSearchCard,
 };

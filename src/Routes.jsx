@@ -40,6 +40,7 @@ import {
     PushNotifications,
     Replies,
     UsernameChange,
+    WelcomeUser,
     YourAccount,
 } from "./components";
 import Protected from "./components/Protected.jsx";
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <App />,
         children: [
+            {
+                index: true,
+                element: <WelcomeUser />,
+            },
             {
                 path: "home",
                 element: (
