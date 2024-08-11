@@ -49,7 +49,6 @@ function Media() {
                             return { tweetId: data.tweetId, media: data.media };
                         });
 
-                        console.log("updated sortedData :: ", allMedia);
                         dispatch(addMedia(allMedia));
                     }
                 } else {
@@ -67,8 +66,6 @@ function Media() {
         <div>
             {mediaData.length !== 0
                 ? mediaData?.map((data) => {
-                      console.log(data);
-
                       return (
                           <MediaCard
                               key={ID.unique()}

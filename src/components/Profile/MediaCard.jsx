@@ -6,9 +6,6 @@ function MediaCard({ tweetId, media }) {
     const otherProfileData = useSelector((state) => state.otherProfile);
     const navigate = useNavigate();
 
-    // console.log(tweetId);
-    
-
     const fetchMediaUrl = () => {
         if (media) {
             return tweetMediaService.getCustomQualityFilePreview({
