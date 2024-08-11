@@ -13,7 +13,6 @@ import {
     Profile,
     Settings,
     VerifiedOrgs,
-    SignUp,
 } from "./pages";
 import {
     Accessibilities,
@@ -35,6 +34,7 @@ import {
     NotificationFilters,
     NotificationPreferences,
     NotificationSetting,
+    Payment,
     PhoneChange,
     Posts,
     PushNotifications,
@@ -162,6 +162,14 @@ const router = createBrowserRouter([
                 ),
             },
             {
+                path: "/checkout",
+                element: (
+                    <Protected authentication={false}>
+                        <Payment />
+                    </Protected>
+                ),
+            },
+            {
                 path: "verified-orgs",
                 element: (
                     <Protected authentication={false}>
@@ -264,15 +272,6 @@ const router = createBrowserRouter([
                 ),
             },
         ],
-    },
-
-    {
-        path: "signup",
-        element: (
-            <Protected authentication>
-                <SignUp />
-            </Protected>
-        ),
     },
 ]);
 

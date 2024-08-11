@@ -10,7 +10,6 @@ import Premium from "./Premium";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import VerifiedOrgs from "./VerifiedOrgs";
-import SignUp from "./SignUp";
 
 export {
     Bookmarks,
@@ -25,5 +24,4 @@ export {
     Profile,
     Settings,
     VerifiedOrgs,
-    SignUp,
 };
