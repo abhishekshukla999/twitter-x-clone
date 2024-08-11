@@ -18,6 +18,7 @@ import likeSlice from "../features/like/likeSlice";
 import tweetPageSlice from "../features/tweet/tweetPageSlice";
 import followSlice from "../features/follow/follow";
 import replySlice from "../features/replies/replySlice";
+import mediaSlice from "../features/media/mediaSlice";
 
 const rootReducer = combineReducers({
     auth: authSlice,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
     tweetPage: tweetPageSlice,
     follows: followSlice,
     replies: replySlice,
+    media: mediaSlice,
 });
 
 const persistConfig = {

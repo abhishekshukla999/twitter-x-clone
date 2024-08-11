@@ -325,7 +325,7 @@ function EditProfileModal({ isOpen, onClose }) {
                             name=""
                             id="bio"
                             rows="3"
-                            className="focus:outline-none"
+                            className="focus:outline-none resize-none"
                             {...register("bio")}
                         ></textarea>
                     </div>
