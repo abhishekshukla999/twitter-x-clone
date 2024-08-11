@@ -4,7 +4,7 @@ import {
     faBookmark as faBookmarkSolid,
     faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     bookmarkService,
     likeService,
@@ -25,6 +25,7 @@ import { addProfileData } from "../../features/profile/profileSlice";
 import { addTweets } from "../../features/tweet/tweetSlice";
 import FollowTweet from "../Buttons/FollowTweet";
 import { toast } from "sonner";
+import { LoadingModal } from "../";
 
 function TweetCard({
     tweetId,
@@ -62,6 +63,7 @@ function TweetCard({
 
     const [mediaLoader, setMediaLoader] = useState(true);
     const navigate = useNavigate();
+    const [navLoading, setNavLoading] = useState(false);
 
     useEffect(() => {
         const avatarUrl = async () => {
@@ -595,30 +597,42 @@ function TweetCard({
         }
     };
 
-    const handleTweetNavigation = () => {
-        profileService
-            .getProfile(author)
-            .then((res) => {
-                // console.log("Handletweet", res);
-                navigate(`/${res.username}/status/${tweetId}`);
-            })
-            .catch((err) =>
-                console.log("Error in handle tweet navigation :: ", err)
-            );
-    };
+    const handleTweetNavigation = useCallback(
+        (e) => {
+            e.stopPropagation();
+            setNavLoading(true);
 
-    const handleProfileNavigation = (e) => {
-        e.stopPropagation();
+            profileService
+                .getProfile(author)
+                .then((res) => {
+                    // console.log("Handletweet", res);
+                    navigate(`/${res.username}/status/${tweetId}`);
+                })
+                .catch((err) =>
+                    console.log("Error in handle tweet navigation :: ", err)
+                )
+                .finally(() => setNavLoading(false));
+        },
+        [navigate, tweetId, author]
+    );
 
-        profileService
-            .getProfile(author)
-            .then((res) => {
-                navigate(`/${res.username}`);
-            })
-            .catch((err) =>
-                console.log("Error in handle profile navigation :: ", err)
-            );
-    };
+    const handleProfileNavigation = useCallback(
+        (e) => {
+            e.stopPropagation();
+            setNavLoading(true);
+
+            profileService
+                .getProfile(author)
+                .then((res) => {
+                    navigate(`/${res.username}`);
+                })
+                .catch((err) =>
+                    console.log("Error in handle profile navigation :: ", err)
+                )
+                .finally(() => setNavLoading(false));
+        },
+        [navigate, author]
+    );
 
     return (
         <>
@@ -1013,6 +1027,8 @@ function TweetCard({
                     </div>
                 </div>
             </div>
+
+            <LoadingModal isOpen={navLoading} />
         </>
     );
 }
