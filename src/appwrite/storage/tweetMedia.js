@@ -47,7 +47,23 @@ class TweetMediaService {
         }
     }
 
-    getCustomFilePreview({ fileId, width, height, quality = "" }) {
+    getCustomSizeFilePreview({ fileId, width, height }) {
+        try {
+            return this.storage.getFilePreview(
+                config.appwriteTweetsBucketId,
+                fileId,
+                width,
+                height
+            );
+        } catch (error) {
+            console.log(
+                "Appwrite Service :: getCustomFilePreview :: error ",
+                error
+            );
+        }
+    }
+
+    getCustomQualityFilePreview({ fileId, width, height, quality = 100 }) {
         try {
             return this.storage.getFilePreview(
                 config.appwriteTweetsBucketId,

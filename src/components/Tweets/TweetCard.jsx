@@ -91,9 +91,9 @@ function TweetCard({
         const fetchMedia = async () => {
             if (media) {
                 setMediaURL(
-                    tweetMediaService.getCustomFilePreview({
+                    tweetMediaService.getCustomQualityFilePreview({
                         fileId: media,
-                        quality: "70",
+                        quality: 70,
                     })
                 );
 
@@ -760,11 +760,11 @@ function TweetCard({
 
                         {media &&
                             (mediaLoader ? (
-                                <div>
+                                <div className="flex justify-center">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 200 200"
-                                        className="w-10"
+                                        className="w-20"
                                     >
                                         <circle
                                             fill="#1D9BF0"
