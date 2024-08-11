@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
 import { FollowTweet } from "../";
+import { toast } from "sonner";
 
 function Reply({
     replyId,
@@ -103,7 +104,7 @@ function Reply({
             const deletedReply = await replyService.deleteReply(replyId);
 
             if (deletedReply) {
-                console.log("Reply Deleted");
+                // console.log("Reply Deleted");
 
                 const oldData = tweetPageData;
                 const newCount = tweetPageData.repliesCount - 1;
@@ -120,7 +121,8 @@ function Reply({
                 );
             }
         } catch (error) {
-            console.error("Error deleting tweet :: ", error);
+            // console.error("Error deleting reply :: ", error);
+            toast.error("Failed deleting reply");
         }
     };
 

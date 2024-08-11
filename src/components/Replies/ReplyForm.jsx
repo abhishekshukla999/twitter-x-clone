@@ -7,18 +7,24 @@ import {
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
+import { LoadingModal } from "../";
+import { toast } from "sonner";
 
 function ReplyForm({ tweetId }) {
     // preview and upload states
     const [prevImage, setPrevImage] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit, reset, formState } = useForm();
     const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
     const tweetPageData = useSelector((state) => state.tweetPage);
     const dispatch = useDispatch();
+    const { errors } = formState;
+    const [loading, setLoading] = useState(false);
 
     const submitPost = async (data) => {
+        setLoading(true);
+
         try {
             if (uploadImage) {
                 const file = await tweetMediaService.uploadFile(uploadImage);
@@ -29,15 +35,15 @@ function ReplyForm({ tweetId }) {
                 }
             }
 
-            const tweetPost = await replyService.createReply({
+            const replyPost = await replyService.createReply({
                 userId: authData.$id,
                 tweetId,
                 content: data.content,
                 media: data.media || "",
             });
 
-            if (tweetPost) {
-                console.log("Reply Created");
+            if (replyPost) {
+                // console.log("Reply Created");
 
                 const oldData = tweetPageData;
                 const newCount = tweetPageData.repliesCount + 1;
@@ -50,11 +56,13 @@ function ReplyForm({ tweetId }) {
                 );
             }
         } catch (error) {
-            console.error("Error creating reply :: ", error);
+            // console.error("Error creating reply :: ", error);
+            toast.error("Error posting reply");
         } finally {
             reset();
             setPrevImage(null);
             setUploadImage(null);
+            setLoading(false);
         }
     };
 
@@ -96,8 +104,16 @@ function ReplyForm({ tweetId }) {
                         rows="4"
                         placeholder="Post your reply"
                         maxLength="500"
-                        {...register("content")}
+                        {...register("content", {
+                            required: "Please write something !!",
+                        })}
                     />
+
+                    {errors.content?.message && (
+                        <p className="text-red-500">
+                            {errors.content?.message}
+                        </p>
+                    )}
 
                     {prevImage && (
                         <div className="preview w-28">
@@ -227,6 +243,8 @@ function ReplyForm({ tweetId }) {
                     </div>
                 </div>
             </form>
+
+            <LoadingModal isOpen={loading} />
         </div>
     );
 }
