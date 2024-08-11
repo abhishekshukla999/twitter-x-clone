@@ -59,6 +59,7 @@ import Select from "./Inputs/Select";
 import LoadingModal from "./Modals/LoadingModal";
 import UserSearchCard from "./UserCards/UserSearchCard";
 import MediaCard from "./Profile/MediaCard";
+import MobileNavIcon from "./Buttons/MobileNavIcon";
 
 import YourAccount from "./Settings/YourAccount/YourAccount";
 
@@ -165,4 +166,5 @@ export {
     LoadingModal,
     UserSearchCard,
     MediaCard,
+    MobileNavIcon,
 };

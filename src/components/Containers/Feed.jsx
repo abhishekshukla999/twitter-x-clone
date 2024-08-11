@@ -10,7 +10,7 @@ function Feed({ children }) {
     };
 
     return (
-        <section className="xl:flex-[0_0_46%] lg:flex-[0_0_50%]  md:flex-[0_0_70%] 200 w-full max-w-full border-r border-l">
+        <section className="xl:flex-[0_0_46%] lg:flex-[0_0_50%] md:flex-[0_0_70%] w-full max-w-full border-r border-l">
             {children}
 
             <NavigationBottom />
@@ -34,6 +34,7 @@ function Feed({ children }) {
 
                 <PostModal isOpen={isOpen} onClose={handleClose} />
             </div>
+            <div className="py-40"></div>
         </section>
     );
 }

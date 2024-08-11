@@ -1,17 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { TweetCard, UserSearchCard } from "../";
-import NavigationMobile from "../Header/NavigationMobile";
-import { useSelector } from "react-redux";
-import {
-    profileMediaService,
-    profileService,
-    tweetService,
-} from "../../appwrite";
+import { MobileNavIcon, TweetCard, UserSearchCard } from "../";
+import { profileService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 
 function Explore() {
-    const [isOpen, setIsOpen] = useState(false);
-    const profileData = useSelector((state) => state.profile);
     const [searchText, setSearchtext] = useState("");
     const [usersList, setUsersList] = useState([]);
     const [tweetsList, setTweetsList] = useState([]);
@@ -33,35 +25,12 @@ function Explore() {
         handleSearch();
     }, [searchText, handleSearch]);
 
-    const handleClose = () => {
-        setIsOpen(false);
-    };
-
-    function fetchAvatarUrl() {
-        if (profileData.avatar) {
-            return profileMediaService.getCustomFilePreview(
-                profileData.avatar,
-                50,
-                50
-            );
-        } else {
-            return "/defaultAvatar.png";
-        }
-    }
-
     return (
         <div>
             <div className="flex p-2">
                 {/* Navigation Mobile */}
-                <div className="my-3 hidden max-[499px]:block">
-                    <div className="w-1/2" onClick={() => setIsOpen(true)}>
-                        <img
-                            className="w-[60px] rounded-full mx-3"
-                            src={fetchAvatarUrl()}
-                            alt="navigation menu"
-                        />
-                    </div>
-                    <NavigationMobile isOpen={isOpen} onClose={handleClose} />
+                <div className="mr-2">
+                    <MobileNavIcon />
                 </div>
 
                 <div className="max-w-md p-1 mx-auto my-auto w-full">

@@ -1,32 +1,21 @@
-import { useState } from "react";
-import NotificationsCard from "./NotificationsCard";
-import NavigationMobile from "../Header/NavigationMobile";
+import { MobileNavIcon, NotificationsCard } from "../";
 import { NavLink } from "react-router-dom";
 
 function Notifications() {
-    const [isOpen, setIsOpen] = useState(false);
-
-    function handleClose() {
-        setIsOpen(false);
-    }
-
     return (
         <div className="border-r border-l h-screen">
             <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                {/* Navigation Mobile */}
-                <div className="my-3 hidden max-[499px]:flex">
-                    <div className="w-1/2 " onClick={() => setIsOpen(true)}>
-                        <img
-                            className="w-8 rounded-full mx-3"
-                            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
-                            alt="navigation menu"
-                        />
+                <div className="flex">
+                    <div className="w-16">
+                        {/* Navigation Mobile */}
+                        <MobileNavIcon />
                     </div>
-                    <NavigationMobile isOpen={isOpen} onClose={handleClose} />
+                    <div className="my-auto">
+                        <NavLink className="px-1.5 font-bold text-xl">
+                            Notifications
+                        </NavLink>
+                    </div>
                 </div>
-                <NavLink className="px-1.5 my-auto font-bold text-xl">
-                    Notifications
-                </NavLink>
 
                 <div className="flex gap-4">
                     <NavLink className="mx-0.5 my-auto">
@@ -45,13 +34,10 @@ function Notifications() {
             <NotificationsCard />
             <NotificationsCard />
             <NotificationsCard />
-            <NotificationsCard />
-            <NotificationsCard />
-            <NotificationsCard />
-            <NotificationsCard />
-            <NotificationsCard />
-            <NotificationsCard />
-            <NotificationsCard />
+            <div className="font-[500] text-lg text-center p-2">
+                This feature is under development and will be released in future
+                updates.
+            </div>
         </div>
     );
 }

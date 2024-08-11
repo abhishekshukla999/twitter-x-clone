@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
-import { authService } from "../../appwrite";
+import { authService, profileMediaService } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import { removeProfileData } from "../../features/profile/profileSlice";
@@ -10,10 +10,12 @@ import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
 import { removeLikes } from "../../features/like/likeSlice";
 import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
 import { removeFollowData } from "../../features/follow/follow";
+import { useEffect, useState } from "react";
 
 function NavigationMobile({ isOpen, onClose }) {
     const dispatch = useDispatch();
     const profileData = useSelector((state) => state.profile);
+    const [avatarURL, setAvatarURL] = useState("");
     const listStyle = "flex text-xl hover:bg-zinc-200 rounded-full w-fit";
 
     const handleLogout = () => {
@@ -29,11 +31,29 @@ function NavigationMobile({ isOpen, onClose }) {
         });
     };
 
+    useEffect(() => {
+        function fetchAvatarUrl() {
+            if (profileData.avatar) {
+                setAvatarURL(
+                    profileMediaService.getCustomFilePreview(
+                        profileData.avatar,
+                        50,
+                        50
+                    )
+                );
+            } else {
+                setAvatarURL("/defaultAvatar.png");
+            }
+        }
+
+        fetchAvatarUrl();
+    }, [profileData.avatar]);
+
     if (!isOpen) return null;
 
     return createPortal(
         <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-zinc-900 bg-opacity-50 flex">
-            <div className="bg-white opacity-100 p-2 shadow-lg relative w-[57%] text-black">
+            <div className="bg-white opacity-100 p-2 z-50 shadow-lg relative w-[57%] text-black">
                 <div className="m-2">
                     <button
                         className="rounded-lg absolute top-2.5 right-2.5 bg-none border-none text-2xl cursor-pointer"
@@ -58,14 +78,16 @@ function NavigationMobile({ isOpen, onClose }) {
                         <div className="">
                             <img
                                 className="w-8 rounded-full"
-                                src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                                src={avatarURL}
                                 alt="navigation menu"
                             />
                         </div>
                         <div className="font-bold mt-0.5 text-[17px]">
                             {profileData.name}
                         </div>
-                        <div className="font-light text-[15px]">@{profileData.username}</div>
+                        <div className="font-light text-[15px]">
+                            @{profileData.username}
+                        </div>
                     </div>
 
                     {/* followers */}

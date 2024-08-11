@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import ChatItem from "./ChatItem";
 import NavigationMobile from "../Header/NavigationMobile";
+import { MobileNavIcon } from "..";
 
 function MessagesList() {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,16 +17,7 @@ function MessagesList() {
         <div className="flex flex-col xl:flex-[0_0_34%] max-[1553px]:flex-[0_0_55%] border-b-0 border-t-0 h-screen">
             <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%] border-r border-l">
                 {/* Navigation Mobile */}
-                <div className="my-3 hidden max-[499px]:flex">
-                    <div className="w-1/2 " onClick={() => setIsOpen(true)}>
-                        <img
-                            className="w-8 rounded-full mx-3"
-                            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
-                            alt="navigation menu"
-                        />
-                    </div>
-                    <NavigationMobile isOpen={isOpen} onClose={handleClose} />
-                </div>
+                <MobileNavIcon />
                 <NavLink className="px-1.5 my-auto font-bold text-xl">
                     Messages
                 </NavLink>

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Loader, NavigationMobile, TweetCard, TweetForm } from "../index";
+import { Loader, MobileNavIcon, TweetCard, TweetForm } from "../index";
 import { tweetService } from "../../appwrite";
 import { Client, Query } from "appwrite";
 import { config } from "../../config/config";
 
 function FeedContent() {
-    const [isOpen, setIsOpen] = useState(false);
     const [tweetsList, setTweetsList] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -25,7 +24,6 @@ function FeedContent() {
                         "databases.*.collections.*.documents.*.create"
                     )
                 ) {
-
                     setTweetsList((prev) => [response.payload, ...prev]);
                 } else if (
                     response.events.includes(
@@ -58,24 +56,14 @@ function FeedContent() {
         setLoading(false);
     }
 
-    function handleClose() {
-        setIsOpen(false);
-    }
-
     return (
-        <div>
+        <div className="relative">
             {/* Navigation Mobile */}
-            <div className="my-3 hidden max-[499px]:flex">
-                <div className="w-1/2 " onClick={() => setIsOpen(true)}>
-                    <img
-                        className="w-8 rounded-full mx-3"
-                        src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
-                        alt="navigation menu"
-                    />
-                </div>
-                <NavigationMobile isOpen={isOpen} onClose={handleClose} />
-
+            <div className="flex sticky top-0 z-1 bg-white opacity-95">
                 <div className="w-1/2">
+                    <MobileNavIcon />
+                </div>
+                <div className="w-1/2 my-auto">
                     <svg
                         viewBox="0 0 24 24"
                         aria-hidden="true"
@@ -87,6 +75,7 @@ function FeedContent() {
                     </svg>
                 </div>
             </div>
+
             <div className="top flex p-3 min-[500px]:sticky top-0 backdrop-blur-3xl opacity-[100%] border-b border-l border-r border-b-zinc-200">
                 <NavLink className="left w-1/2 flex justify-center font-bold text-base">
                     For You
