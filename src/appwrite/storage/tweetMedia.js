@@ -80,6 +80,17 @@ class TweetMediaService {
             );
         }
     }
+
+    downloadFile(fileId) {
+        try {
+            return this.storage.getFileDownload(
+                config.appwriteTweetsBucketId,
+                fileId
+            );
+        } catch (error) {
+            console.log("Appwrite Service :: downloadFile :: error ", error);
+        }
+    }
 }
 
 const tweetMediaService = new TweetMediaService();
