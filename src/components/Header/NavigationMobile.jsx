@@ -3,13 +3,6 @@ import { NavLink } from "react-router-dom";
 import { authService, profileMediaService } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
-import { removeProfileData } from "../../features/profile/profileSlice";
-import { removeTweets } from "../../features/tweet/tweetSlice";
-import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
-import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
-import { removeLikes } from "../../features/like/likeSlice";
-import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { removeFollowData } from "../../features/follow/follow";
 import { useEffect, useState } from "react";
 
 function NavigationMobile({ isOpen, onClose }) {
@@ -21,13 +14,6 @@ function NavigationMobile({ isOpen, onClose }) {
     const handleLogout = () => {
         authService.logout().then(() => {
             dispatch(logout());
-            dispatch(removeProfileData());
-            dispatch(removeTweets());
-            dispatch(removeOtherProfile());
-            dispatch(removeBookmarks());
-            dispatch(removeLikes());
-            dispatch(removeTweetPageData());
-            dispatch(removeFollowData());
         });
     };
 

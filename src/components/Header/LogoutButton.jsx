@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authService, profileMediaService } from "../../appwrite";
 import { logout } from "../../features/auth/authSlice";
-import { removeProfileData } from "../../features/profile/profileSlice";
-import { removeTweets } from "../../features/tweet/tweetSlice";
 import LogoutModal from "../Modals/LogoutModal";
-import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
-import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
-import { removeLikes } from "../../features/like/likeSlice";
-import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { removeFollowData } from "../../features/follow/follow";
 
 function LogoutButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,13 +12,6 @@ function LogoutButton() {
     const authLogout = () => {
         authService.logout().then(() => {
             dispatch(logout());
-            dispatch(removeProfileData());
-            dispatch(removeTweets());
-            dispatch(removeOtherProfile());
-            dispatch(removeBookmarks());
-            dispatch(removeLikes());
-            dispatch(removeTweetPageData());
-            dispatch(removeFollowData());
         });
     };
 
