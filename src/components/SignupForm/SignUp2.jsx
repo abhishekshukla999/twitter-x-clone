@@ -1,3 +1,5 @@
+import { Input } from "../";
+
 function Step2({ register, onBack, formState }) {
     const { errors } = formState;
 
@@ -8,10 +10,10 @@ function Step2({ register, onBack, formState }) {
             </div>
             <div className="flex flex-col justify-center items-center">
                 <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
-                    <input
-                        className="bg-black border border-gray-500 p-4 rounded-lg text-white w-full"
+                    <Input
+                        className="bg-black text-white"
                         type="password"
-                        placeholder="Password"
+                        label="Password"
                         {...register("password", {
                             required: "Password is required",
                             minLength: {
@@ -26,6 +28,7 @@ function Step2({ register, onBack, formState }) {
                             },
                         })}
                     />
+
                     {errors.password?.message && (
                         <small className="text-red-500 p-1">
                             {errors.password?.message}
@@ -33,10 +36,9 @@ function Step2({ register, onBack, formState }) {
                     )}
                 </div>
                 <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
-                    <input
-                        className="bg-black border border-gray-500 p-4 rounded-lg text-white w-full"
-                        type="text"
-                        placeholder="Username"
+                    <Input
+                        className="bg-black text-white"
+                        label="Username"
                         {...register("username", {
                             required: "Username is required",
                             minLength: {
@@ -82,5 +84,3 @@ function Step2({ register, onBack, formState }) {
 }
 
 export default Step2;
-
-// username & password

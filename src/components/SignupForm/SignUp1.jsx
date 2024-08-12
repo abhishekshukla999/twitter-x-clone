@@ -1,3 +1,5 @@
+import { Input } from "../";
+
 function Step1({ register, onNext, formState }) {
     const { isValid } = formState;
 
@@ -8,21 +10,20 @@ function Step1({ register, onNext, formState }) {
             </div>
             <div className="flex flex-col justify-center items-center">
                 <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
-                    <input
-                        className="bg-black border border-gray-500 p-4 rounded-lg text-white w-full"
-                        type="text"
+                    <Input
+                        className="bg-black text-white"
                         maxLength="50"
-                        placeholder="Name"
+                        label="Name"
                         {...register("name", {
                             required: true,
                         })}
                     />
                 </div>
                 <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
-                    <input
-                        className="bg-black border border-gray-500 p-4 rounded-lg text-white w-full"
+                    <Input
+                        className="bg-black text-white"
                         type="email"
-                        placeholder="Email"
+                        label="Email"
                         {...register("email", {
                             required: "Please enter email address",
                             validate: {
@@ -50,7 +51,7 @@ function Step1({ register, onNext, formState }) {
                         something else.
                     </p>
                     <input
-                        className="bg-transparent text-black border invert text-center border-gray-500 p-4 rounded-lg w-full"
+                        className="bg-transparent text-black border invert text-center border-gray-500 p-4 rounded-sm w-full"
                         type="date"
                         id="dob"
                         placeholder="DOB"

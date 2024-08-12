@@ -1,23 +1,26 @@
+import { useState } from "react";
 import { SignUp1, SignUp2 } from "../";
 import { useForm } from "react-hook-form";
 import { authService, profileService } from "../../appwrite";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
+import { LoadingModal } from "../";
 
 function SignupForm({ step, setStep }) {
     const { register, handleSubmit, formState } = useForm();
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const handleBack = () => setStep(step - 1);
 
     const handleNext = () => setStep(step + 1);
 
     const submitForm = async (data) => {
+        setLoading(true);
+
         try {
             const { name, email, password, username, dob } = data;
-
-            console.log(data);
 
             const userData = await authService.createAccount({
                 name,
@@ -44,6 +47,8 @@ function SignupForm({ step, setStep }) {
             }
         } catch (error) {
             console.log("Error in singup :: ", error);
+        } finally {
+            setLoading(false);
         }
     };
     return (
@@ -65,6 +70,7 @@ function SignupForm({ step, setStep }) {
                     />
                 )}
             </form>
+            <LoadingModal isOpen={loading} />
         </div>
     );
 }
