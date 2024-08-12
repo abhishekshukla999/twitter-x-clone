@@ -8,7 +8,7 @@ function Entry() {
     const [step, setStep] = useState(1);
 
     return (
-        <div className="flex flex-col bg-black text-white min-h-screen">
+        <div className="flex flex-col bg-black overflow-auto text-white min-h-screen">
             <div className="flex w-full min-h-svh max-lg:flex-col">
                 <div className="logo flex flex-col items-center justify-center xl:flex-[0_0_45%] lg:flex-[0_0_30%] lg:ml-auto">
                     <div className="logo p-8">
