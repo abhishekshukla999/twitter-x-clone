@@ -9,6 +9,7 @@ import {
     Lists,
     Messages,
     Notifications,
+    PostPage,
     Premium,
     Profile,
     Settings,
@@ -44,7 +45,6 @@ import {
     YourAccount,
 } from "./components";
 import Protected from "./components/Protected.jsx";
-import PostPage from "./pages/PostPage.jsx";
 
 const router = createBrowserRouter([
     {

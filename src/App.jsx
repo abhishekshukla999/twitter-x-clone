@@ -15,6 +15,8 @@ import { removeLikes } from "./features/like/likeSlice";
 import { removeTweetPageData } from "./features/tweet/tweetPageSlice";
 import { removeFollowData } from "./features/follow/follow";
 import { Toaster } from "sonner";
+import { removeMedia } from "./features/media/mediaSlice";
+import { removeReplies } from "./features/replies/replySlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -22,27 +24,42 @@ function App() {
     const status = useSelector((state) => state.auth.status);
 
     useEffect(() => {
-        authService.getCurrentUser().then((userData) => {
-            if (userData) {
-                dispatch(login({ userData }));
+        authService
+            .getCurrentUser()
+            .then((userData) => {
+                if (userData) {
+                    dispatch(login({ userData }));
 
-                profileService.getProfile(userData.$id).then((profileData) => {
-                    if (profileData) {
-                        dispatch(addProfileData({ ...profileData }));
-                    }
-                });
-            } else {
-                dispatch(logout());
-                dispatch(removeProfileData());
-                dispatch(removeTweets());
-                dispatch(removeOtherProfile());
-                dispatch(removeBookmarks());
-                dispatch(removeLikes());
-                dispatch(removeTweetPageData());
-                dispatch(removeFollowData());
-            }
-        });
-    }, [navigate, dispatch]);
+                    profileService
+                        .getProfile(userData.$id)
+                        .then((profileData) => {
+                            if (profileData) {
+                                dispatch(addProfileData({ ...profileData }));
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(
+                                "Error fetching profile data :: ",
+                                error
+                            );
+                        });
+                } else {
+                    dispatch(logout());
+                    dispatch(removeProfileData());
+                    dispatch(removeTweets());
+                    dispatch(removeOtherProfile());
+                    dispatch(removeBookmarks());
+                    dispatch(removeLikes());
+                    dispatch(removeTweetPageData());
+                    dispatch(removeFollowData());
+                    dispatch(removeMedia());
+                    dispatch(removeReplies());
+                }
+            })
+            .catch((error) => {
+                console.log("Error fetching authentication data :: ", error);
+            });
+    }, [navigate, dispatch, status]);
 
     if (!status) return <Root />;
 

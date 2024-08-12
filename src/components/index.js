@@ -61,6 +61,7 @@ import UserSearchCard from "./UserCards/UserSearchCard";
 import MediaCard from "./Profile/MediaCard";
 import MobileNavIcon from "./Buttons/MobileNavIcon";
 import Payment from "./Payment/Payment";
+import SignupForm from "./SignupForm/SignupForm";
 
 import YourAccount from "./Settings/YourAccount/YourAccount";
 
@@ -168,5 +169,6 @@ export {
     UserSearchCard,
     MediaCard,
     MobileNavIcon,
-    Payment
+    Payment,
+    SignupForm,
 };

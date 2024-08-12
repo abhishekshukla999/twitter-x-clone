@@ -1,6 +1,6 @@
-import React from "react";
+function Step2({ register, onBack, formState }) {
+    const { errors } = formState;
 
-function Step2({ register, onBack }) {
     return (
         <div>
             <div className="text-[26px] font-bold my-3 mx-7 text-white">
@@ -12,16 +12,54 @@ function Step2({ register, onBack }) {
                         className="bg-black border border-gray-500 p-4 rounded-lg text-white w-full"
                         type="password"
                         placeholder="Password"
-                        {...register("password")}
+                        {...register("password", {
+                            required: "Password is required",
+                            minLength: {
+                                value: 8,
+                                message:
+                                    "Password must be at least 8 characters long",
+                            },
+                            pattern: {
+                                value: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                message:
+                                    "Password must contain at least 1 uppercase letter, 1 number, and 1 special character",
+                            },
+                        })}
                     />
+                    {errors.password?.message && (
+                        <small className="text-red-500 p-1">
+                            {errors.password?.message}
+                        </small>
+                    )}
                 </div>
                 <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
                     <input
                         className="bg-black border border-gray-500 p-4 rounded-lg text-white w-full"
                         type="text"
                         placeholder="Username"
-                        {...register("username")}
+                        {...register("username", {
+                            required: "Username is required",
+                            minLength: {
+                                value: 3,
+                                message:
+                                    "Username must be at least 3 characters long",
+                            },
+                            maxLength: {
+                                value: 15,
+                                message: "Username cannot exceed 15 characters",
+                            },
+                            pattern: {
+                                value: /^[a-zA-Z0-9_]+$/,
+                                message:
+                                    "Username can only contain letters, numbers, and underscores",
+                            },
+                        })}
                     />
+                    {errors.username?.message && (
+                        <small className="text-red-500 p-1">
+                            {errors.username?.message}
+                        </small>
+                    )}
                 </div>
 
                 <div className="mx-7 my-4  text-black font-bold  sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full w-full">

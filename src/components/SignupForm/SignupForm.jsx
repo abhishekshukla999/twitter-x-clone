@@ -1,0 +1,72 @@
+import { SignUp1, SignUp2 } from "../";
+import { useForm } from "react-hook-form";
+import { authService, profileService } from "../../appwrite";
+import { useDispatch } from "react-redux";
+import { login } from "../../features/auth/authSlice";
+import { addProfileData } from "../../features/profile/profileSlice";
+
+function SignupForm({ step, setStep }) {
+    const { register, handleSubmit, formState } = useForm();
+    const dispatch = useDispatch();
+
+    const handleBack = () => setStep(step - 1);
+
+    const handleNext = () => setStep(step + 1);
+
+    const submitForm = async (data) => {
+        try {
+            const { name, email, password, username, dob } = data;
+
+            console.log(data);
+
+            const userData = await authService.createAccount({
+                name,
+                email,
+                password,
+            });
+
+            const [loginData, userId] = userData;
+
+            if (loginData) {
+                dispatch(login({ userData: loginData }));
+
+                const profileData = await profileService.createProfile({
+                    userId,
+                    username,
+                    email,
+                    name,
+                    dob,
+                });
+
+                if (profileData) {
+                    dispatch(addProfileData(profileData));
+                }
+            }
+        } catch (error) {
+            console.log("Error in singup :: ", error);
+        }
+    };
+    return (
+        <div>
+            <form onSubmit={handleSubmit(submitForm)}>
+                {step === 1 && (
+                    <SignUp1
+                        register={register}
+                        onNext={handleNext}
+                        formState={formState}
+                    />
+                )}
+
+                {step === 2 && (
+                    <SignUp2
+                        register={register}
+                        onBack={handleBack}
+                        formState={formState}
+                    />
+                )}
+            </form>
+        </div>
+    );
+}
+
+export default SignupForm;

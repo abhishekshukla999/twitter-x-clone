@@ -6,6 +6,7 @@ import Home from "./Home";
 import Lists from "./Lists";
 import Messages from "./Messages";
 import Notifications from "./Notifications";
+import PostPage from "./PostPage";
 import Premium from "./Premium";
 import Profile from "./Profile";
 import Settings from "./Settings";
@@ -20,6 +21,7 @@ export {
     Lists,
     Messages,
     Notifications,
+    PostPage,
     Premium,
     Profile,
     Settings,
