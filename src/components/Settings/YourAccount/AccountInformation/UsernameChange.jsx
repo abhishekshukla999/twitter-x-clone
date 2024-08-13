@@ -5,15 +5,23 @@ import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Query } from "appwrite";
 
 function UsernameChange() {
     const navigate = useNavigate();
     const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
-    const { register, handleSubmit, watch } = useForm({
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { isValid },
+    } = useForm({
         defaultValues: { username: profileData?.username || "" },
     });
     const [isSave, setIsSave] = useState(true);
+    const [usernameAvailable, setUsernameAvailable] = useState(true);
     const dispatch = useDispatch();
 
     const currentUsername = watch("username");
@@ -29,6 +37,24 @@ function UsernameChange() {
         }
     }, [currentUsername, profileData?.username]);
 
+    useEffect(() => {
+        async function fetchUsername() {
+            const profileDocs = await profileService.getProfiles([
+                Query.equal("username", [currentUsername]),
+            ]);
+
+            console.log(profileDocs.documents);
+
+            if (profileDocs.documents.length !== 0) {
+                setUsernameAvailable(false);
+            } else {
+                setUsernameAvailable(true);
+            }
+        }
+
+        fetchUsername();
+    }, [currentUsername, profileData?.username]);
+
     const changeUsername = async (data) => {
         if (authData) {
             try {
@@ -42,8 +68,11 @@ function UsernameChange() {
                 if (updatedProfileData) {
                     dispatch(addProfileData(updatedProfileData));
                 }
+
+                toast.success("Username changed successfully !!");
             } catch (error) {
-                console.log("Error updating username :: ", error);
+                // console.log("Error updating username :: ", error);
+                toast.success("Error changing username !!");
             }
         }
     };
@@ -77,8 +106,28 @@ function UsernameChange() {
                         label="Username"
                         type="text"
                         placeholder="Type username"
-                        {...register("username", { required: true })}
+                        {...register("username", {
+                            required: true,
+                        })}
                     />
+                    {profileData?.username !== currentUsername &&
+                    currentUsername.length !== 0 ? (
+                        usernameAvailable ? (
+                            <p className="text-green-500">
+                                @{currentUsername} is available
+                            </p>
+                        ) : (
+                            <p className="text-red-500">
+                                @{currentUsername} is already taken
+                            </p>
+                        )
+                    ) : (
+                        !isValid && (
+                            <p className="text-red-500">
+                                Please write username
+                            </p>
+                        )
+                    )}
                 </div>
                 <div className="flex justify-end px-2 py-3">
                     <button
