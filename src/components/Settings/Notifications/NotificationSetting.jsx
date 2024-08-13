@@ -12,8 +12,8 @@ function NotificationSetting() {
                     activities, interests, and recommendations.
                 </div>
                 <div className="mx-1 text-sm underline text-red-400">
-                    Note: This is dummy page and it won&apos;t deactivate your
-                    account. This feature will be enabled in future updates.
+                    Note: This is dummy page and it won&apos;t change your
+                    notification settings. This feature will be enabled in future updates.
                 </div>
                 <div>
                     <NavLink
