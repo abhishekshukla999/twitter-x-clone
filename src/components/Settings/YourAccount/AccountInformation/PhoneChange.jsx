@@ -4,19 +4,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
+import { toast } from "sonner";
 
 function PhoneChange() {
     const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
-    const { register, handleSubmit } = useForm({
+    const {
+        register,
+        handleSubmit,
+        formState: { isValid },
+        reset,
+        getValues,
+    } = useForm({
         defaultValues: { phone: profileData?.phone || "" },
     });
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const changePhone = async (data) => {
+    const changePhone = async (data, action) => {
+        if (data.phone === profileData?.phone && action === "update") return;
+
         if (authData) {
             try {
+                if (action === "delete") {
+                    data.phone = "";
+                }
+
                 const updatedProfileData = await profileService.updateProfile(
                     profileData?.$id,
                     {
@@ -27,10 +40,22 @@ function PhoneChange() {
                 if (updatedProfileData) {
                     dispatch(addProfileData(updatedProfileData));
                 }
+
+                toast.success("Phone number updated successfully !!");
             } catch (error) {
-                console.log("Error updating phone :: ", error);
+                toast.error("Phone number updating failed");
+            } finally {
+                reset({ phone: data?.phone });
             }
         }
+    };
+
+    const handleUpdate = () => {
+        changePhone(getValues(), "update");
+    };
+
+    const handleDelete = () => {
+        changePhone(getValues(), "delete");
     };
 
     return (
@@ -54,24 +79,39 @@ function PhoneChange() {
                     <div className="font-bold text-xl py-3">Change phone</div>
                 </div>
             </div>
-            <form onSubmit={handleSubmit(changePhone)}>
+            <form onSubmit={handleSubmit(() => {})}>
                 <div className="border-b py-4 px-3">
                     <Input
                         label="Current"
                         type="text"
+                        inputMode="numeric"
                         placeholder="Type phone number"
-                        {...register("phone", { required: true })}
+                        {...register("phone", {
+                            required: true,
+                            pattern: /^[0-9]*$/,
+                        })}
+                        onInput={(e) =>
+                            (e.target.value = e.target.value.replace(/\D/g, ""))
+                        }
                     />
+
+                    {!isValid && (
+                        <p className="text-red-500">
+                            Please write a valid phone number
+                        </p>
+                    )}
                 </div>
                 <div className="my-1 box-border">
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleUpdate}
                         className="py-3 px-4 text-center w-full text-twitter-blue hover:bg-blue-100"
                     >
                         Update phone number
                     </button>
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleDelete}
                         className="py-3 px-4 text-center w-full text-red-500 hover:bg-red-100"
                     >
                         Delete phone number
