@@ -122,6 +122,10 @@ function DeactivateAccount() {
                         accounts.
                     </div>
                 </div>
+                <div className="p-3 border-b text-base underline text-red-400">
+                    Note: This is dummy page and it won&apos;t deactivate your
+                    account. This feature will be enabled in future updates.
+                </div>
                 <div className="my-1 box-border">
                     <button
                         type="submit"

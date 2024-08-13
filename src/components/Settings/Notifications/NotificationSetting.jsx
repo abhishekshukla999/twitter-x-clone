@@ -11,6 +11,10 @@ function NotificationSetting() {
                     Select the kinds of notifications you get about your
                     activities, interests, and recommendations.
                 </div>
+                <div className="mx-1 text-sm underline text-red-400">
+                    Note: This is dummy page and it won&apos;t deactivate your
+                    account. This feature will be enabled in future updates.
+                </div>
                 <div>
                     <NavLink
                         to="/settings/notifications/filters"
