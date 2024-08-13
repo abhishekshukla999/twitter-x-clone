@@ -1,47 +1,38 @@
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 
 function SettingsList() {
-    return (
-        <div className="flex flex-col xl:flex-[0_0_34%] max-[1553px]:flex-[0_0_55%] border-b-0 border-t-0 border-l border-r h-screen">
-            <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                <NavLink className="px-1.5 font-bold text-xl">Settings</NavLink>
-            </div>
+    const profileData = useSelector((state) => state.profile);
+    const navigate = useNavigate();
 
-            <div className="p-2">
-                <form className="max-w-md mx-0.5 p-1">
-                    <label
-                        htmlFor="default-search"
-                        className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+    return (
+        <div className="flex flex-col xl:flex-[0_0_35%] lg:flex-[0_0_37%] max-[1004px]:flex-[0_0_80%] max-[704px]:flex-[0_0_100%] border-b-0 border-t-0 border-l border-r h-screen">
+            <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%]">
+                <div className="hidden max-[499px]:flex">
+                    <NavLink
+                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full hidden max-[499px]:block"
+                        onClick={() => navigate(-1)}
                     >
-                        Search
-                    </label>
-                    <div className="relative">
-                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <svg
-                                className="w-5 h-4 text-gray-500 dark:text-gray-400"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                                />
-                            </svg>
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                        >
+                            <g>
+                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
+                            </g>
+                        </svg>
+                    </NavLink>
+                    <div className="px-1.5 font-bold text-xl">
+                        <div>Settings</div>
+                        <div className="text-sm font-light text-gray-600">
+                            @{profileData?.username}
                         </div>
-                        <input
-                            type="search"
-                            id="default-search"
-                            className="block w-full p-2 ps-10 text-base text-gray-900 border border-gray-300 rounded-full  focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search Settings"
-                            required
-                        />
                     </div>
-                </form>
+                </div>
+                <div className="px-1.5 font-bold text-xl hidden min-[500px]:block">
+                    Settings
+                </div>
             </div>
 
             {/* setting items */}

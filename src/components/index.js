@@ -87,6 +87,11 @@ import Accessibilities from "./Settings/AccessibilityandDisplay/Accessibilities"
 import Accessibility from "./Settings/AccessibilityandDisplay/Accessibility";
 import Display from "./Settings/AccessibilityandDisplay/Display";
 
+import MobileBackButton from "./Buttons/MobileBackButton";
+import SettingItemsContainer from "./Settings/SettingItemsContainer";
+
+import BackButton from "./Buttons/BackButton";
+
 export {
     WelcomeUser,
     Login,
@@ -171,4 +176,7 @@ export {
     MobileNavIcon,
     Payment,
     SignupForm,
+    MobileBackButton,
+    SettingItemsContainer,
+    BackButton,
 };

@@ -4,7 +4,7 @@ import TweetCard from "../Tweets/TweetCard";
 import { useDispatch, useSelector } from "react-redux";
 import { bookmarkService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
-import Loader from "../Loader";
+import { Loader, BackButton } from "../";
 import {
     addBookmarks,
     removeBookmarks,
@@ -101,13 +101,13 @@ function Bookmarks() {
             <div className="top flex justify-between p-3 pt-1 sticky top-0 backdrop-blur-3xl opacity-[100%] border-l border-r">
                 <div className="flex">
                     <NavLink
-                        className="left my-auto p-3 hover:bg-gray-200 rounded-full"
+                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full hidden max-[499px]:block"
                         onClick={() => navigate(-1)}
                     >
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"
-                            className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                         >
                             <g>
                                 <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>

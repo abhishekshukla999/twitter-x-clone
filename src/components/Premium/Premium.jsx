@@ -71,7 +71,7 @@ function Premium() {
                 <h1 className="text-4xl font-bold p-4 text-center">
                     You&apos;re already subscribed !!
                 </h1>
-                <p className="text-gray-400 text-center">
+                <p className="text-gray-400 text-center mx-2">
                     Enjoy an enhanced experience, exclusive creator tools,
                     top-tier verification and security.
                 </p>

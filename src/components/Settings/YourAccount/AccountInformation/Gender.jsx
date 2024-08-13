@@ -1,4 +1,3 @@
-import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
@@ -6,6 +5,7 @@ import { addProfileData } from "../../../../features/profile/profileSlice";
 import { useState } from "react";
 import { LoadingModal } from "../../../";
 import { toast } from "sonner";
+import { SettingItemsContainer, BackButton } from "../../../";
 
 function Gender() {
     const profileData = useSelector((state) => state.profile);
@@ -13,7 +13,6 @@ function Gender() {
     const { register, handleSubmit } = useForm({
         defaultValues: { gender: profileData?.gender || "" },
     });
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
 
@@ -45,23 +44,10 @@ function Gender() {
 
     return (
         <>
-            <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+            <SettingItemsContainer>
                 <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                     <div className="flex gap-5">
-                        <NavLink
-                            className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                            onClick={() => navigate(-1)}
-                        >
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                                className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                            >
-                                <g>
-                                    <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                                </g>
-                            </svg>
-                        </NavLink>
+                        <BackButton />
                         <div className="font-bold text-xl py-3">Gender</div>
                     </div>
                 </div>
@@ -116,7 +102,7 @@ function Gender() {
                         </button>
                     </div>
                 </form>
-            </div>
+            </SettingItemsContainer>
 
             <LoadingModal isOpen={loading} />
         </>
