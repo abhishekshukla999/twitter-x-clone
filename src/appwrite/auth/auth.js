@@ -75,6 +75,14 @@ class AuthService {
             console.log("Appwrite Service :: updatePassword :: error ", error);
         }
     }
+
+    async updateEmail(email, password) {
+        try {
+            return this.account.updateEmail(email, password);
+        } catch (error) {
+            console.log("Appwrite Service :: updateEmail :: error ", error);
+        }
+    }
 }
 
 const authService = new AuthService();
