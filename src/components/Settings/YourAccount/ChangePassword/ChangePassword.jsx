@@ -67,7 +67,7 @@ function ChangePassword() {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit(changePassword)}>
-                    <div className="border-b py-4 px-3">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3">
                         <Input
                             label="Current password"
                             type="password"
@@ -90,11 +90,11 @@ function ChangePassword() {
                                 {errors.currentPassword?.message}
                             </small>
                         )}
-                        <button className="text-twitter-blue text-[13px] hover:underline">
+                        <button className="text-[13px] hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                             Forgot password?
                         </button>
                     </div>
-                    <div className="border-b">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800">
                         <div className="py-4 px-3">
                             <Input
                                 label="New password"
@@ -150,7 +150,7 @@ function ChangePassword() {
                             </small>
                         )}
                     </div>
-                    <div className="border-b py-4 px-3 text-[15px] text-gray-500">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3 text-[15px] text-gray-500">
                         Changing your password will log you out of all your
                         active X sessions except the one you&apos;re using at
                         this time. The
@@ -165,7 +165,7 @@ function ChangePassword() {
                     <div className="flex justify-end px-2 py-3">
                         <button
                             type="submit"
-                            className="py-1.5 px-4 text-white font-bold bg-twitter-blue rounded-full hover:bg-blue-500"
+                            className="py-1.5 px-4 text-white font-bold rounded-full bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
                         >
                             Save
                         </button>

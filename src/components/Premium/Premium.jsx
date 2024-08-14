@@ -47,15 +47,15 @@ function Premium() {
 
     return profileData?.premiumMember ? (
         <div className="overflow-y-auto h-screen w-full">
-            <div className="top flex p-2 sticky z-50 border-b top-0 backdrop-blur-[400px] opacity-[100%]">
+            <div className="top flex p-2 sticky z-50 border-b dark:border-gray-800 dim:border-gray-800 top-0 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
-                    className="left my-auto p-3 hover:bg-gray-200 rounded-full"
+                    className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
                     onClick={() => navigate(-1)}
                 >
                     <svg
                         viewBox="0 0 24 24"
                         aria-hidden="true"
-                        className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                        className="w-5 dark:fill-white dim:fill-white m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                     >
                         <g>
                             <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
@@ -79,15 +79,15 @@ function Premium() {
         </div>
     ) : (
         <div className="overflow-y-auto h-screen w-full">
-            <div className="top flex p-2 sticky z-50 border-b top-0 backdrop-blur-[400px] opacity-[100%]">
+            <div className="top flex p-2 sticky z-50 border-b top-0 dark:border-gray-800 dim:border-gray-800 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
-                    className="left my-auto p-3 hover:bg-gray-200 rounded-full"
+                    className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
                     onClick={() => navigate(-1)}
                 >
                     <svg
                         viewBox="0 0 24 24"
                         aria-hidden="true"
-                        className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                        className="w-5 dark:fill-white dim:fill-white m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                     >
                         <g>
                             <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>

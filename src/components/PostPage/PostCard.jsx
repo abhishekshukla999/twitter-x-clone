@@ -661,7 +661,7 @@ function PostCard({
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
-                                className="w-9 p-2 hover:bg-blue-100 rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                className="w-9 p-2 hover:bg-blue-100 dark:hover:bg-slate-800 dim:hover:bg-slate-700 fill-gray-500 dark:fill-white dim:fill-white rounded-full  r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
                             >
                                 <g>
                                     <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
@@ -672,7 +672,7 @@ function PostCard({
 
                     {/* options layover */}
                     {isOpen && (
-                        <div className="absolute z-40 bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
+                        <div className="absolute z-40 bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg top-1 left-1/2 transform -translate-x-1/3 w-2/3 border dark:border-gray-600 dim:border-gray-600 dark:shadow-inner dim:shadow-inner rounded-xl shadow-2xl">
                             <button
                                 className="font-bold mx-3 text-3xl"
                                 onClick={(e) => {
@@ -685,7 +685,7 @@ function PostCard({
                             <div className="my-2 w-full">
                                 {author === authData.$id && (
                                     <div
-                                        className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
+                                        className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 dark:hover:bg-gray-800 dim:hover:bg-gray-700 w-full cursor-pointer"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleDelete();
@@ -862,7 +862,7 @@ function PostCard({
                             profileData.premiumMember && (
                                 <span>
                                     <div
-                                        className="flex gap-2 mx-1 text-twitter-blue font-bold text-[15px] px-2 hover:bg-sky-100 rounded-full w-full cursor-pointer"
+                                        className="flex gap-2 mx-1 text-twitter-blue yellow:text-twitter-yellow crimson:text-twitter-crimson purple:text-twitter-purple orange:text-twitter-orange green:text-twitter-green font-bold text-[15px] px-2 hover:bg-sky-100 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full w-full cursor-pointer"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setIsOpenEdit(true);
@@ -871,7 +871,7 @@ function PostCard({
                                     >
                                         <span className="my-auto">
                                             <svg
-                                                className="w-4"
+                                                className="w-4 dark:fill-white dim:fill-white"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
                                             >
@@ -885,7 +885,7 @@ function PostCard({
                     </div>
 
                     <div
-                        className="flex gap-1 p-3 border-t cursor-pointer hover:bg-[#F7F7F7]"
+                        className="flex gap-1 p-3 border-t dark:border-gray-800 dim:border-gray-800 cursor-pointer hover:bg-[#F7F7F7] dark:hover:bg-slate-800 dim:hover:bg-slate-700"
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsOpenEngs(true);
@@ -895,14 +895,14 @@ function PostCard({
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
-                                className="w-5 my-auto fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-14j79pv r-trst2h"
+                                className="w-5 my-auto fill-gray-500 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-14j79pv r-trst2h"
                             >
                                 <g>
                                     <path d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21l.004-10h2L6 21H4zm9.248 0v-7h2v7h-2z"></path>
                                 </g>
                             </svg>
                         </span>
-                        <span className="text-gray-500">
+                        <span className="text-gray-500 dark:text-white dim:text-white">
                             View post engagements
                         </span>
                     </div>
@@ -914,13 +914,13 @@ function PostCard({
                     />
                 </div>
                 {/* Bottom Interactions */}
-                <div className="flex justify-between flex-wrap w-full border-t border-b">
-                    <div className="flex">
+                <div className="flex justify-between flex-wrap w-full border-t border-b dark:border-gray-800 dim:border-gray-800">
+                    <div className="flex ">
                         <span className="my-auto rounded-full hover:bg-blue-100 cursor-pointer">
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
-                                className="w-10 p-2 fill-gray-500 hover:fill-twitter-blue r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1xvli5t r-1hdv0qi"
+                                className="w-10 p-2 fill-gray-500 hover:fill-twitter-blue dark:hover:fill-gray-500 dim:hover:fill-gray-500 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1xvli5t r-1hdv0qi"
                             >
                                 <g>
                                     <path d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.96-1.607 5.68-4.196 7.11l-8.054 4.46v-3.69h-.067c-4.49.1-8.183-3.51-8.183-8.01zm8.005-6c-3.317 0-6.005 2.69-6.005 6 0 3.37 2.77 6.08 6.138 6.01l.351-.01h1.761v2.3l5.087-2.81c1.951-1.08 3.163-3.13 3.163-5.36 0-3.39-2.744-6.13-6.129-6.13H9.756z"></path>
@@ -942,11 +942,11 @@ function PostCard({
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
-                                className={`w-6 ${
+                                className={`w-6 hover:fill-green-500  ${
                                     interactions.myRetweet
                                         ? "fill-green-500"
                                         : "fill-gray-500"
-                                } hover:fill-green-500 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1xvli5t r-1hdv0qi`}
+                                } r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1xvli5t r-1hdv0qi`}
                             >
                                 <g>
                                     <path d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.37c0 .97.784 1.75 1.75 1.75H13V20H7.75c-2.347 0-4.25-1.9-4.25-4.25V8.38L1.853 9.91.147 8.09l4.603-4.3zm11.5 2.71H11V4h5.25c2.347 0 4.25 1.9 4.25 4.25v7.37l1.647-1.53 1.706 1.82-4.603 4.3-4.603-4.3 1.706-1.82L18 15.62V8.25c0-.97-.784-1.75-1.75-1.75z"></path>
@@ -979,7 +979,7 @@ function PostCard({
                             ) : (
                                 <FontAwesomeIcon
                                     icon={faHeart}
-                                    className="w-5 text-xl"
+                                    className="w-5 text-xl dark:hover:text-gray-500 dim:hover:text-gray-500"
                                 />
                             )}
                         </span>
@@ -1009,13 +1009,16 @@ function PostCard({
                             ) : (
                                 <FontAwesomeIcon
                                     icon={faBookmark}
-                                    className="w-5 text-xl"
+                                    className="w-5 text-xl dark:hover:text-gray-500 dim:hover:text-gray-500"
                                 />
                             )}
                         </div>
-                        <span className="text-gray-500 m-auto">
-                            {interactions.bookmarksCount}
-                        </span>
+
+                        {authData?.$id === author && (
+                            <span className="text-gray-500 m-auto">
+                                {interactions.bookmarksCount}
+                            </span>
+                        )}
                     </div>
                     {profileData.premiumMember && (
                         <div
@@ -1027,7 +1030,7 @@ function PostCard({
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="w-10 p-2 fill-[#6b7280] hover:fill-twitter-blue"
+                                className="w-10 p-2 fill-[#6b7280] hover:fill-twitter-blue dark:hover:fill-gray-500 dim:hover:fill-gray-500 "
                             >
                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                                 <g

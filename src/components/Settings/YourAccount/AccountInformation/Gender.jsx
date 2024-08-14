@@ -52,13 +52,13 @@ function Gender() {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit(changeGender)}>
-                    <div className="border-b py-4 px-3 text-gray-500 text-[15px]">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3 text-gray-500 text-[15px]">
                         If you haven&apos;t already specified a gender, this is
                         the one associated with your account based on your
                         profile and activity. This information won&apos;t be
                         displayed publicly.
                     </div>
-                    <div className="px-2 py-3 border-b">
+                    <div className="px-2 py-3 border-b dark:border-gray-800 dim:border-gray-800">
                         <div className="flex justify-between my-1">
                             <label htmlFor="female">Female</label>
                             <input
@@ -96,7 +96,7 @@ function Gender() {
                     <div className="flex justify-end px-2 py-3">
                         <button
                             type="submit"
-                            className="py-1.5 px-4 text-white font-bold bg-twitter-blue rounded-full hover:bg-blue-500"
+                            className="py-1.5 px-4 text-white font-bold rounded-full bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
                         >
                             Save
                         </button>

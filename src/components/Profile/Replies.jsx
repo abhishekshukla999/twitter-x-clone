@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    profileMediaService,
-    profileService,
-    replyService,
-    tweetService,
-} from "../../appwrite";
+import { profileService, replyService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 import { Loader, Reply } from "../";
 import { addReplies, removeReplies } from "../../features/replies/replySlice";

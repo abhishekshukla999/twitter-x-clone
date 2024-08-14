@@ -29,6 +29,8 @@ function Accessibility() {
                         text and background colors.
                     </div>
                 </div>
+
+                <small className="py-3 px-2 text-red-400">This feature will be available soon</small>
             </div>
         </SettingItemsContainer>
     );

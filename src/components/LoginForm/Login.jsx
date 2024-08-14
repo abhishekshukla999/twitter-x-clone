@@ -55,7 +55,7 @@ function Login() {
                     >
                         <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
                             <Input
-                                className="bg-black text-white"
+                                className="bg-black text-white dim:bg-black"
                                 type="email"
                                 label="Email"
                                 {...register("email", {
@@ -78,7 +78,7 @@ function Login() {
                         </div>
                         <div className="mx-7 my-5 sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
                             <Input
-                                className="bg-black text-white"
+                                className="bg-black text-white dim:bg-black"
                                 type="password"
                                 label="Password"
                                 {...register("password", {

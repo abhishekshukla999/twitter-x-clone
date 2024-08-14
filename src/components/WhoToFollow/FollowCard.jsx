@@ -1,4 +1,4 @@
-import React from "react";
+import { Follow } from "../";
 
 function FollowCard() {
     return (
@@ -17,10 +17,8 @@ function FollowCard() {
                         <span>@username</span>
                     </div>
                 </div>
-                <div>
-                    <button className="w-20 mx-2 text-base text-white bg-black hover:bg-gray-800 rounded-full">
-                        <div className="p-2">Follow</div>
-                    </button>
+                <div className="mx-2">
+                    <Follow />
                 </div>
             </div>
         </div>

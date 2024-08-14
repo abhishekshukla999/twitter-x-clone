@@ -19,7 +19,7 @@ function Accessibilities() {
                 <div>
                     <NavLink
                         to="/settings/accessibility"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -55,7 +55,7 @@ function Accessibilities() {
                     </NavLink>
                     <NavLink
                         to="/settings/display"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg

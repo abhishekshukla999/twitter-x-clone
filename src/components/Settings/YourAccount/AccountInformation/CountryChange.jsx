@@ -308,7 +308,7 @@ function CountryChange() {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit(changeCountry)}>
-                    <div className="border-b py-4 px-3">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3">
                         <Select
                             label="Country"
                             options={countryList}
@@ -320,7 +320,7 @@ function CountryChange() {
                             This is the primary country associated with your
                             account. Your country helps us to customize your X
                             experience.{" "}
-                            <span className="text-twitter-blue hover:underline cursor-pointer">
+                            <span className="hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600 cursor-pointer">
                                 Learn more
                             </span>
                         </div>
@@ -328,7 +328,7 @@ function CountryChange() {
                     <div className="flex justify-end px-2 py-3">
                         <button
                             type="submit"
-                            className="py-1.5 px-4 text-white font-bold bg-twitter-blue rounded-full hover:bg-blue-500"
+                            className="py-1.5 px-4 text-white font-bold rounded-full bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
                         >
                             Save
                         </button>

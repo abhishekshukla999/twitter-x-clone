@@ -52,7 +52,7 @@ function MessageBox() {
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                            className="w-5 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                         >
                             <g>
                                 <path d="M13.5 8.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5S11.17 7 12 7s1.5.67 1.5 1.5zM13 17v-5h-2v5h2zm-1 5.25c5.66 0 10.25-4.59 10.25-10.25S17.66 1.75 12 1.75 1.75 6.34 1.75 12 6.34 22.25 12 22.25zM20.25 12c0 4.56-3.69 8.25-8.25 8.25S3.75 16.56 3.75 12 7.44 3.75 12 3.75s8.25 3.69 8.25 8.25z"></path>
@@ -61,13 +61,13 @@ function MessageBox() {
                     </NavLink>
                 </div>
             </div>
-            
+
             {/* Chatting with */}
-            <div className="p-4 flex flex-col items-center justify-center h-[30%] hover:bg-gray-100 cursor-pointer">
-                <div>
+            <div className="p-4 flex flex-col items-center justify-center h-[30%] hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 cursor-pointer">
+                <div className="flex flex-col justify-center">
                     <div>
                         <img
-                            className="w-14 rounded-full"
+                            className="w-14 rounded-full mx-auto my-2"
                             src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
                             alt=""
                         />
@@ -90,7 +90,7 @@ function MessageBox() {
                     </div>
                     <div>@elonmusk</div>
                 </div>
-                <div className="text-center text-gray-900 text-[15px]">
+                <div className="text-center text-gray-900 text-[15px] dark:text-white dim:text-white">
                     Sharing things I&apos;m learning through my foundation work
                     and other interests.
                 </div>
@@ -100,7 +100,7 @@ function MessageBox() {
             </div>
 
             {/* Convo */}
-            <div className="border-t min-h-[59%]">
+            <div className="border-t dark:border-gray-700 dim:border-gray-700 min-h-[59%]">
                 <MessageEntity />
                 <MessageEntity sender={false} />
                 <MessageEntity />
@@ -114,7 +114,7 @@ function MessageBox() {
             </div>
 
             {/* typebox */}
-            <div className="sticky bottom-0 bg-white">
+            <div className="sticky bottom-0 dark:bg-gray-800 dim:bg-gray-700 bg-white">
                 <TypeBox />
             </div>
         </div>

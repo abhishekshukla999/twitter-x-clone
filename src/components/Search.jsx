@@ -49,7 +49,7 @@ function Search() {
                     <input
                         type="search"
                         id="default-search"
-                        className="block w-full p-2 ps-10 text-base text-gray-900 border border-gray-300 rounded-full bg-gray-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="block w-full p-2 ps-10 text-base text-gray-900 border border-gray-300 rounded-full bg-gray-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dim:bg-gray-700 dim:border-gray-600 dim:placeholder-gray-400 dim:text-white dim:focus:ring-blue-500 dim:focus:border-blue-500"
                         placeholder="Search"
                         value={searchText}
                         onChange={(e) => setSearchtext(e.target.value)}
@@ -57,7 +57,7 @@ function Search() {
                 </div>
             </div>
             {usersList.length !== 0 && (
-                <div className="absolute top-16 left-3 bg-white w-[90%] border shadow-2xl rounded-lg">
+                <div className="absolute top-16 left-3 bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg w-[90%] border shadow-2xl rounded-lg dark:border-gray-500 dim:border-gray-500 py-1 px-2">
                     {usersList.map((user) => (
                         <UserSearchCard
                             key={user.$id}

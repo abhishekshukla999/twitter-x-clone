@@ -36,7 +36,7 @@ function Explore() {
                 <div className="max-w-md p-1 mx-auto my-auto w-full">
                     <label
                         htmlFor="default-search"
-                        className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                        className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white dim:text-white"
                     >
                         Search
                     </label>
@@ -61,7 +61,7 @@ function Explore() {
                         <input
                             type="search"
                             id="default-search"
-                            className="block w-full p-2 ps-10 text-base text-gray-900 border border-gray-300 rounded-full  focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="block w-full p-2 ps-10 text-base text-gray-900 border border-gray-300 rounded-full  focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dim:bg-gray-700 dim:border-gray-600 dim:placeholder-gray-400 dim:text-white dim:focus:ring-blue-500 dim:focus:border-blue-500"
                             placeholder="Search a user or post"
                             value={searchText}
                             onChange={(e) => setSearchtext(e.target.value)}

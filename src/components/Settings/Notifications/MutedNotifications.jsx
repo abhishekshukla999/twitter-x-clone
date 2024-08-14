@@ -44,7 +44,7 @@ function MutedNotifications() {
                 <div className="py-3 px-2 w-full text-[13px] text-gray-500">
                     These filters won&apos;t affect notifications from people
                     you follow.
-                    <span className="text-twitter-blue hover:underline">
+                    <span className="hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                         {""} Learn more
                     </span>
                 </div>

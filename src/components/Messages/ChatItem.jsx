@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 function ChatItem() {
     return (
-        <NavLink className="flex py-3 px-3 hover:bg-gray-100 border-l border-r">
+        <NavLink className="flex py-3 px-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 border-l border-r dark:border-gray-800 dim:border-gray-800">
             <div className="flex-[0_0_12%] mr-2 p-0.5">
                 <img
                     className="w-full rounded-full"

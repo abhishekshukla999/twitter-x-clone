@@ -87,7 +87,7 @@ function UserInfo({ username, setStatus }) {
         <Loader />
     ) : (
         <div>
-            <div className="border border-b-0">
+            <div className="border border-b-0 dark:border-gray-800 dim:border-gray-800">
                 {/* cover */}
                 <div>
                     {!otherProfileData?.profileCover ? (
@@ -120,7 +120,7 @@ function UserInfo({ username, setStatus }) {
                     <div className="absolute top-4 right-4">
                         {authId === otherProfileData?.$id ? (
                             <button
-                                className="p-2 px-4 font-bold text-base border border-zinc-300 rounded-full"
+                                className="p-2 px-4 font-bold text-base border border-zinc-300 dark:border-gray-800 dim:border-gray-800 rounded-full"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setIsProfileEdit(true);
@@ -254,21 +254,25 @@ function UserInfo({ username, setStatus }) {
                 </div>
 
                 {/* follow/ing */}
-                <div className="flex gap-4 text-sm px-4 py-3 text-gray-700">
+                <div className="flex gap-4 text-sm px-4 py-3 text-gray-700 dark:text-gray-400 dim:text-gray-400">
                     <NavLink to="following" className="hover:underline">
-                        <strong>{otherProfileData.following || "0"}</strong>{" "}
+                        <strong className="dark:text-white dim:text-white">
+                            {otherProfileData.following || "0"}
+                        </strong>{" "}
                         Following
                     </NavLink>
                     <NavLink to="followers" className="hover:underline">
-                        <strong>{otherProfileData.followers || "0"}</strong>{" "}
+                        <strong className="dark:text-white dim:text-white">
+                            {otherProfileData.followers || "0"}
+                        </strong>{" "}
                         Followers
                     </NavLink>
                 </div>
             </div>
 
-            <div className="top flex top-0 backdrop-blur-3xl opacity-80 border-b border-l border-r border-b-zinc-200">
+            <div className="top flex top-0 backdrop-blur-3xl opacity-80 border border-t-0 border-b-zinc-200 dark:border-gray-800 dim:border-gray-800">
                 <NavLink
-                    className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                     onClick={(e) => {
                         e.stopPropagation();
                         setCurrProfileCompo("posts");
@@ -277,8 +281,8 @@ function UserInfo({ username, setStatus }) {
                     <div
                         className={`py-4 ${
                             currProfileCompo === "posts"
-                                ? "text-black border-b-4 border-twitter-blue"
-                                : "text-gray-600"
+                                ? "text-black border-b-4 border-twitter-blue yellow:border-twitter-yellow crimson:border-twitter-crimson purple:border-twitter-purple orange:border-twitter-orange green:border-twitter-green dark:text-white dim:text-white"
+                                : "text-gray-600 dark:text-gray-400 dim:text-gray-400"
                         }`}
                     >
                         Posts
@@ -286,7 +290,7 @@ function UserInfo({ username, setStatus }) {
                 </NavLink>
 
                 <NavLink
-                    className={`right w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    className={`right w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                     onClick={(e) => {
                         e.stopPropagation();
                         setCurrProfileCompo("replies");
@@ -296,15 +300,15 @@ function UserInfo({ username, setStatus }) {
                     <div
                         className={`py-4 ${
                             currProfileCompo === "replies"
-                                ? "text-black border-b-4 border-twitter-blue"
-                                : "text-gray-600"
+                                ? "text-black border-b-4 border-twitter-blue yellow:border-twitter-yellow crimson:border-twitter-crimson purple:border-twitter-purple orange:border-twitter-orange green:border-twitter-green dark:text-white dim:text-white"
+                                : "text-gray-600 dark:text-gray-400 dim:text-gray-400"
                         }`}
                     >
                         Replies
                     </div>
                 </NavLink>
                 <NavLink
-                    className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                     onClick={(e) => {
                         e.stopPropagation();
                         setCurrProfileCompo("media");
@@ -314,8 +318,8 @@ function UserInfo({ username, setStatus }) {
                     <div
                         className={`py-4 ${
                             currProfileCompo === "media"
-                                ? "text-black border-b-4 border-twitter-blue"
-                                : "text-gray-600"
+                                ? "text-black border-b-4 border-twitter-blue yellow:border-twitter-yellow crimson:border-twitter-crimson purple:border-twitter-purple orange:border-twitter-orange green:border-twitter-green dark:text-white dim:text-white"
+                                : "text-gray-600 dark:text-gray-400 dim:text-gray-400"
                         }`}
                     >
                         Media
@@ -323,7 +327,7 @@ function UserInfo({ username, setStatus }) {
                 </NavLink>
 
                 <NavLink
-                    className={`right w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                    className={`right w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                     onClick={(e) => {
                         e.stopPropagation();
                         setCurrProfileCompo("likes");
@@ -333,8 +337,8 @@ function UserInfo({ username, setStatus }) {
                     <div
                         className={`py-4 ${
                             currProfileCompo === "likes"
-                                ? "text-black border-b-4 border-twitter-blue"
-                                : "text-gray-600"
+                                ? "text-black border-b-4 border-twitter-blue yellow:border-twitter-yellow crimson:border-twitter-crimson purple:border-twitter-purple orange:border-twitter-orange green:border-twitter-green dark:text-white dim:text-white"
+                                : "text-gray-600 dark:text-gray-400 dim:text-gray-400"
                         }`}
                     >
                         Likes

@@ -18,13 +18,15 @@ const Input = forwardRef(function Input(
     return (
         <div
             className={`py-1 px-2 leading-5 rounded-sm ${
-                isFocused ? "ring-2 ring-twitter-blue" : "ring-1 ring-gray-300"
+                isFocused
+                    ? "ring-2 ring-twitter-blue yellow:ring-twitter-yellow crimson:ring-twitter-crimson purple:ring-twitter-purple orange:ring-twitter-orange green:ring-twitter-green"
+                    : "ring-1 ring-gray-300 dark:ring-gray-800 dim: dim:ring-gray-700"
             }`}
         >
             <div>
                 <label
                     className={`text-[13px] ${
-                        isFocused ? "text-twitter-blue" : "text-gray-500"
+                        isFocused ? "text-twitter-blue yellow:text-twitter-yellow crimson:text-twitter-crimson purple:text-twitter-purple orange:text-twitter-orange green:text-twitter-green" : "text-gray-500"
                     }`}
                     htmlFor={id}
                 >
@@ -34,7 +36,7 @@ const Input = forwardRef(function Input(
             <div className="my-1 flex">
                 <input
                     id={id}
-                    className={`text-[15px] w-full focus:outline-none ${className}`}
+                    className={`text-[15px] w-full focus:outline-none dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg ${className}`}
                     placeholder={placeholder}
                     type={inputType}
                     ref={ref}

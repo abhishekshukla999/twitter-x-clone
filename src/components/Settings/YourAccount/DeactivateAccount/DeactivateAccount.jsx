@@ -28,9 +28,9 @@ function DeactivateAccount() {
             </div>
 
             <div>
-                <div className="border-b">
+                <div className="border-b dark:border-gray-800 dim:border-gray-800">
                     <NavLink
-                        className="p-3 flex hover:bg-gray-100"
+                        className="p-3 flex hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                         to={`/${profileData.username}`}
                     >
                         <div className="w-10 my-auto">
@@ -66,42 +66,42 @@ function DeactivateAccount() {
                     </div>
                 </div>
                 <div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b p-3 dark:border-gray-800 dim:border-gray-800 text-[13px] text-gray-500">
                         Some account information may still be available in
                         search engines, such as Google or Bing. {""}
                         <Link
                             to="https://help.x.com/en/safety-and-security/remove-x-profile-from-google-search"
                             target="_blank"
-                            className="text-twitter-blue hover:underline cursor-pointer"
+                            className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                         >
                             Learn more
                         </Link>
                     </div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b p-3 dark:border-gray-800 dim:border-gray-800 text-[13px] text-gray-500">
                         If you just want to change your @username, you
                         don&apos;t need to deactivate your account — edit it in
                         your {""}
                         <Link
                             to="/settings/your_twitter_data/account"
-                            className="text-twitter-blue hover:underline cursor-pointer"
+                            className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                         >
                             settings.
                         </Link>
                     </div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 p-3 text-[13px] text-gray-500">
                         To use your current @username or email address with a
                         different X account,
                         <Link
                             to="/settings/your_twitter_data/account"
-                            className="text-twitter-blue hover:underline cursor-pointer"
+                            className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                         >
                             {""} change{" "}
                         </Link>
                         them before you deactivate this account.
                     </div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 p-3 text-[13px] text-gray-500">
                         If you want to download
-                        <span className="text-twitter-blue hover:underline cursor-pointer">
+                        <span className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                             {""} your X data{" "}
                         </span>
                         , you&apos;ll need to complete both the request and
@@ -110,7 +110,7 @@ function DeactivateAccount() {
                         accounts.
                     </div>
                 </div>
-                <div className="p-3 border-b text-base underline text-red-400">
+                <div className="p-3 border-b dark:border-gray-800 dim:border-gray-800 text-base underline text-red-400">
                     Note: This is dummy page and it won&apos;t deactivate your
                     account. This feature will be enabled in future updates.
                 </div>

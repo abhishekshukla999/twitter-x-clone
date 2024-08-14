@@ -34,6 +34,7 @@ export default {
     },
     plugins: [
         function ({ addVariant }) {
+            addVariant("dim", ".dim &");
             addVariant("purple", ".purple &");
             addVariant("yellow", ".yellow &");
             addVariant("crimson", ".crimson &");

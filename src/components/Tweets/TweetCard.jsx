@@ -645,7 +645,7 @@ function TweetCard({
     return (
         <>
             <div
-                className="parent post px-2 border border-t-0 pt-2 cursor-pointer hover:bg-[#F7F7F7]"
+                className="parent post px-2 border border-t-0 dark:border-gray-800 dim:border-gray-800 pt-2 cursor-pointer hover:bg-[#F7F7F7] dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                 onClick={handleTweetNavigation}
             >
                 {interactions.myRetweet && (

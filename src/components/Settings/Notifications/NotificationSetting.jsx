@@ -18,7 +18,7 @@ function NotificationSetting() {
                 <div>
                     <NavLink
                         to="/settings/notifications/filters"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -55,7 +55,7 @@ function NotificationSetting() {
                     </NavLink>
                     <NavLink
                         to="/settings/notifications/preferences"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg

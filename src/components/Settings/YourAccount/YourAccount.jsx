@@ -18,7 +18,7 @@ function YourAccount() {
                 <div>
                     <NavLink
                         to="/settings/your_twitter_data/account"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -56,7 +56,7 @@ function YourAccount() {
                     </NavLink>
                     <NavLink
                         to="/settings/password"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -94,7 +94,7 @@ function YourAccount() {
                     </NavLink>
                     <NavLink
                         to="/settings/deactivate"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg

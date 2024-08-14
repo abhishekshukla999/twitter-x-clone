@@ -36,7 +36,7 @@ function EmailNotifications() {
                                 <div
                                     className={`block w-10 h-6 rounded-full ${
                                         isChecked
-                                            ? "bg-blue-600"
+                                            ? "bg-twitter-blue yellow:bg-twitter-yellow crimson:bg-twitter-crimson purple:bg-twitter-purple orange:bg-twitter-orange green:bg-twitter-green"
                                             : "bg-gray-300"
                                     }`}
                                 ></div>
@@ -57,7 +57,7 @@ function EmailNotifications() {
                 <div className="py-1 px-2 text-[13px] text-gray-500">
                     Get emails to find out what&apos;s going on when you&apos;re
                     not on X. You can turn them off anytime.
-                    <span className="text-twitter-blue cursor-pointer hover:underline">
+                    <span className="cursor-pointer hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                         {""} Learn more
                     </span>
                 </div>

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { profileMediaService, profileService } from "../../appwrite";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
-import { LoadingModal } from "../";
+import { LoadingModal, Input } from "../";
 import { toast } from "sonner";
 
 function EditProfileModal({ isOpen, onClose }) {
@@ -171,11 +171,11 @@ function EditProfileModal({ isOpen, onClose }) {
             <LoadingModal isOpen={loading} />
 
             <form
-                className="bg-white overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen text-black"
+                className="bg-white text-black dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen"
                 onSubmit={handleSubmit(saveProfile)}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex gap-5 py-1 sticky z-30 top-0 bg-white opacity-80">
+                <div className="flex gap-5 py-1 sticky z-30 top-0 bg-white opacity-80 dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white">
                     <button
                         className="rounded-lg bg-none border-none text-2xl cursor-pointer my-auto px-3"
                         onClick={onClose}
@@ -183,7 +183,7 @@ function EditProfileModal({ isOpen, onClose }) {
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"
-                            className="w-5 fill-black r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                            className="w-5 fill-black dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                         >
                             <g>
                                 <path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"></path>
@@ -195,7 +195,7 @@ function EditProfileModal({ isOpen, onClose }) {
                         Edit Profile
                     </span>
                     <button
-                        className="justify-self-end p-2 px-4 my-auto font-bold text-base border text-white bg-black border-zinc-300 rounded-full"
+                        className="justify-self-end p-2 px-4 my-auto font-bold text-base border text-white bg-black dark:bg-white dim:bg-white dark:text-black dim:text-black border-zinc-300 rounded-full"
                         type="submit"
                     >
                         Save
@@ -293,17 +293,10 @@ function EditProfileModal({ isOpen, onClose }) {
 
                 {/* user info */}
                 <div className="">
-                    <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
-                        <label
-                            htmlFor="name"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Name
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            className="focus:outline-none"
+                    <div className="flex flex-col p-2 my-5 mx-3 rounded-lg">
+                        <Input
+                            label="Name"
+                            className="dark:text-white dim:text-white"
                             {...register("name", {
                                 required: "Name can't be empty",
                             })}
@@ -314,46 +307,28 @@ function EditProfileModal({ isOpen, onClose }) {
                             {errors.name?.message}
                         </div>
                     )}
-                    <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
-                        <label
-                            htmlFor="bio"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Bio
-                        </label>
-                        <textarea
-                            name=""
-                            id="bio"
-                            rows="3"
-                            className="focus:outline-none resize-none"
+                    <div
+                        className="flex flex-col p-2 my-5 mx-3 rounded-lg"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Input
+                            label="Bio"
+                            type="textarea"
+                            className="dark:text-white dim:text-white"
                             {...register("bio")}
-                        ></textarea>
+                        />
                     </div>
-                    <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
-                        <label
-                            htmlFor="location"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Location
-                        </label>
-                        <input
-                            id="location"
-                            type="text"
-                            className="focus:outline-none"
+                    <div className="flex flex-col p-2 my-5 mx-3 rounded-lg">
+                        <Input
+                            label="Location"
+                            className="dark:text-white dim:text-white"
                             {...register("location")}
                         />
                     </div>
-                    <div className="flex flex-col border p-2 my-5 mx-3">
-                        <label
-                            htmlFor="website"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Website
-                        </label>
-                        <input
-                            id="website"
-                            type="text"
-                            className="focus:outline-none"
+                    <div className="flex flex-col p-2 my-5 mx-3">
+                        <Input
+                            label="Website"
+                            className="dark:text-white dim:text-white"
                             {...register("website")}
                         />
                     </div>
@@ -361,7 +336,7 @@ function EditProfileModal({ isOpen, onClose }) {
                         <div className="text-gray-500 flex gap-1">
                             <div>Birth date</div>
                             <div
-                                className="text-twitter-blue cursor-pointer"
+                                className="hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600 cursor-pointer"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setIsEditDob((prev) => !prev);
@@ -370,7 +345,9 @@ function EditProfileModal({ isOpen, onClose }) {
                                 {isEditDob ? "Save" : "Edit"}
                             </div>
                         </div>
-                        <div className="text-xl">{toLocalDate(dob)}</div>
+                        <div className="text-xl dark:text-white dim:text-white">
+                            {toLocalDate(dob)}
+                        </div>
                         {isEditDob && (
                             <div>
                                 <input

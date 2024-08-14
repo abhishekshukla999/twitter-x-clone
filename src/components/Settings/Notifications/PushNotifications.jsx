@@ -36,7 +36,7 @@ function PushNotifications() {
                                 <div
                                     className={`block w-10 h-6 rounded-full ${
                                         isChecked
-                                            ? "bg-blue-600"
+                                            ? "bg-twitter-blue yellow:bg-twitter-yellow crimson:bg-twitter-crimson purple:bg-twitter-purple orange:bg-twitter-orange green:bg-twitter-green"
                                             : "bg-gray-300"
                                     }`}
                                 ></div>

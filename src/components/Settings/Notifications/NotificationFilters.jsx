@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { SettingItemsContainer, BackButton } from "../../";
 
 function NotificationFilters() {
@@ -32,7 +32,7 @@ function NotificationFilters() {
 
                 <NavLink
                     to="/settings/notifications/advanced_filters"
-                    className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                    className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                 >
                     <div className="text-[15px]">Muted notifications</div>
 

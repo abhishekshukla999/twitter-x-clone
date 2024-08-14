@@ -68,15 +68,15 @@ function Followers() {
         <>
             <Feed>
                 <div>
-                    <div className="top flex px-2 sticky top-0 backdrop-blur-[400px] opacity-[100%] border border-t-0 border-b-0">
+                    <div className="top flex px-2 sticky top-0 backdrop-blur-[400px] opacity-[100%] border border-t-0 border-b-0 dark:border-gray-800 dim:border-gray-800">
                         <NavLink
-                            className="left my-auto p-3 hover:bg-gray-200 rounded-full"
+                            className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
                             onClick={() => navigate(-1)}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
-                                className="w-5 m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                                className="w-5 dark:fill-white dim:fill-white m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                             >
                                 <g>
                                     <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
@@ -117,14 +117,17 @@ function Followers() {
                             @{usernameData?.username} has no followers
                         </div>
                     ) : (
-                        followsData?.followersData.map((user) => (
-                            <ActionsCard
-                                key={user.$id}
-                                name={user.name}
-                                username={user.username}
-                                media={user.avatar}
-                            />
-                        ))
+                        <div className="mx-2">
+                            {followsData?.followersData.map((user) => (
+                                <ActionsCard
+                                    key={user.$id}
+                                    name={user.name}
+                                    username={user.username}
+                                    media={user.avatar}
+                                    userId={user.$id}
+                                />
+                            ))}
+                        </div>
                     )}
                 </div>
             </Feed>

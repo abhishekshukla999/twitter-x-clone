@@ -34,7 +34,6 @@ import Loader from "./Loader";
 import UnderDev from "./UnderDev/UnderDev";
 import PostModal from "./Modals/PostModal";
 import LogoutModal from "./Modals/LogoutModal";
-import NavigationModal from "./Modals/NavigationModal";
 import NavigationMD from "./Header/NavigationMD";
 import NavigationMobile from "./Header/NavigationMobile";
 import NavigationBottom from "./Header/NavigationBottom";
@@ -129,7 +128,6 @@ export {
     UnderDev,
     PostModal,
     LogoutModal,
-    NavigationModal,
     NavigationMD,
     NavigationBottom,
     NavigationMobile,

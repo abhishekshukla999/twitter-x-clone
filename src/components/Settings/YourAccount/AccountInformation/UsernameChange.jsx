@@ -93,7 +93,7 @@ function UsernameChange() {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit(changeUsername)}>
-                    <div className="border-b py-4 px-3">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3">
                         <Input
                             label="Username"
                             type="text"
@@ -126,8 +126,8 @@ function UsernameChange() {
                             type="submit"
                             className={`py-1.5 px-4 text-white font-bold ${
                                 isSave
-                                    ? "bg-twitter-blue hover:bg-blue-500"
-                                    : "bg-blue-300"
+                                    ? "bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
+                                    : "bg-blue-300 yellow:bg-yellow-300 crimson:bg-rose-300 purple:bg-purple-300 orange:bg-orange-300 green:bg-green-300"
                             } rounded-full`}
                             disabled={!isSave}
                         >

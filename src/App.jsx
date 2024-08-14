@@ -5,7 +5,7 @@ import {
     removeProfileData,
 } from "./features/profile/profileSlice";
 import { authService, profileService } from "./appwrite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Root, Header } from "./components";
 import { Outlet, useNavigate } from "react-router-dom";
 import { removeTweets } from "./features/tweet/tweetSlice";
@@ -22,6 +22,12 @@ function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const status = useSelector((state) => state.auth.status);
+    const [currentColor, setCurrentColor] = useState(
+        localStorage.getItem("color") || "default"
+    );
+    const [currentTheme, setCurrentTheme] = useState(
+        localStorage.getItem("theme") || "light"
+    );
 
     useEffect(() => {
         authService
@@ -60,6 +66,43 @@ function App() {
                 console.log("Error fetching authentication data :: ", error);
             });
     }, [navigate, dispatch, status]);
+
+    useEffect(() => {
+        const html = document.querySelector("html");
+
+        // theme
+        html.classList.remove("light", "dim", "dark");
+
+        if (currentTheme) {
+            html.classList.add(currentTheme);
+            localStorage.setItem("theme", currentTheme);
+        } else {
+            const defaultTheme = "light";
+            html.classList.add(defaultTheme);
+            setCurrentTheme(defaultTheme);
+            localStorage("theme", defaultTheme);
+        }
+
+        // color
+        html.classList.remove(
+            "default",
+            "yellow",
+            "crimson",
+            "purple",
+            "orange",
+            "green"
+        );
+
+        if (currentColor) {
+            html.classList.add(currentColor);
+            localStorage.setItem("color", currentColor);
+        } else {
+            const defaultColor = "default";
+            html.classList.add(defaultColor);
+            setCurrentColor(defaultColor);
+            localStorage.setItem("color", defaultColor);
+        }
+    }, [currentColor, currentTheme]);
 
     if (!status) return <Root />;
 

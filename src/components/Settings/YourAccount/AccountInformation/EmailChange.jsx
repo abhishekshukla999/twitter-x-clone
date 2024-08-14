@@ -140,7 +140,7 @@ function EmailChange() {
                             </small>
                         )}
                     </div>
-                    <div className="border-b py-4 px-3">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3">
                         <Input
                             type="password"
                             label="Password"
@@ -170,8 +170,8 @@ function EmailChange() {
                             type="submit"
                             className={`py-3 px-4 text-center w-full ${
                                 isSave
-                                    ? "text-twitter-blue hover:bg-blue-100"
-                                    : "text-blue-200"
+                                    ? "text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600 hover:bg-blue-100 yellow:hover:bg-yellow-100 crimson:hover:bg-rose-100 purple:hover:bg-purple-100 orange:hover:bg-orange-100 green:hover:bg-gray-100"
+                                    : "text-blue-200 yellow:text-yellow-200 crimson:text-rose-200 purple:text-purple-200 orange:text-orange-200 green:text-green-200"
                             }`}
                             disabled={!isSave}
                         >

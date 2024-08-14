@@ -147,7 +147,7 @@ function Reply({
 
     return (
         <>
-            <div className="parent post px-2  border-b pt-2 py-2 hover:bg-[#F7F7F7]">
+            <div className="parent post px-2 border-b dark:border-gray-600 dim:border-gray-600 pt-2 py-2 hover:bg-[#F7F7F7] dark:hover:bg-slate-700 dim:hover:bg-slate-800">
                 <div className="flex">
                     {/* User avatar */}
                     <div className="avatar w-[50px]">
@@ -192,7 +192,7 @@ function Reply({
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-9 p-2 hover:bg-blue-100 rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                        className="w-9 p-2 hover:bg-blue-100dark:hover:bg-slate-800 dim:hover:bg-slate-700  fill-gray-500 dark:fill-white dim:fill-white rounded-full r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
                                     >
                                         <g>
                                             <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
