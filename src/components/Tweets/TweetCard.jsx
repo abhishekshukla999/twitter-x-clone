@@ -722,7 +722,7 @@ function TweetCard({
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-9 p-2 hover:bg-blue-100 hover:fill-twitter-blue rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                        className="w-9 p-2 hover:bg-blue-100 hover:fill-twitter-blue dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full fill-gray-500 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
                                     >
                                         <g>
                                             <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
@@ -732,7 +732,7 @@ function TweetCard({
                             </div>
                             {/* options layover */}
                             {isOpen && (
-                                <div className="absolute bg-white z-50 top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
+                                <div className="absolute bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg z-50 top-1 left-1/2 transform -translate-x-1/3 w-2/3 border dark:border-gray-500 dim:border-gray-500 rounded-xl shadow-2xl dark:shadow-inner dim:shadow-gray-500">
                                     <button
                                         className="font-bold mx-3 text-3xl"
                                         onClick={(e) => {
@@ -745,7 +745,7 @@ function TweetCard({
                                     <div className="my-2 w-full">
                                         {author === authData.$id && (
                                             <div
-                                                className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
+                                                className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 dark:hover:bg-slate-700 dim:hover:bg-slate-800 w-full"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDelete();
