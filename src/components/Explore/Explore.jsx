@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { MobileNavIcon, TweetCard, UserSearchCard } from "../";
+import { MobileNavIcon, TrendingCard, TweetCard, UserSearchCard } from "../";
 import { profileService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 
@@ -69,30 +69,58 @@ function Explore() {
                     </div>
                 </div>
             </div>
-            <div>
-                {usersList.map((user) => (
-                    <UserSearchCard
-                        key={user.$id}
-                        name={user.name}
-                        username={user.username}
-                        media={user.avatar}
-                    />
-                ))}
-            </div>
 
-            <div>
-                {tweetsList.map((tweet) => (
-                    <TweetCard
-                        key={tweet.$id}
-                        tweetId={tweet.$id}
-                        content={tweet.content}
-                        media={tweet.media}
-                        author={tweet.author}
-                        createdAt={tweet.$createdAt}
-                        updatedAt={tweet.$updatedAt}
+            {usersList.length === 0 && tweetsList.length === 0 ? (
+                <div>
+                    <TrendingCard
+                        prefix="Trending in India"
+                        title="BCCI"
+                        suffix="205K posts"
                     />
-                ))}
-            </div>
+                    <TrendingCard
+                        prefix="Sports · Trending"
+                        title="#Siraj"
+                        suffix="19.5K posts"
+                    />
+                    <TrendingCard
+                        prefix="Entertainment · Trending"
+                        title="Avatar 3"
+                        suffix="11K posts"
+                    />
+                    <TrendingCard
+                        prefix="Finance · Trending"
+                        title="#Doge"
+                        suffix="9K posts"
+                    />
+                </div>
+            ) : (
+                <div>
+                    <div>
+                        {usersList.map((user) => (
+                            <UserSearchCard
+                                key={user.$id}
+                                name={user.name}
+                                username={user.username}
+                                media={user.avatar}
+                            />
+                        ))}
+                    </div>
+
+                    <div>
+                        {tweetsList.map((tweet) => (
+                            <TweetCard
+                                key={tweet.$id}
+                                tweetId={tweet.$id}
+                                content={tweet.content}
+                                media={tweet.media}
+                                author={tweet.author}
+                                createdAt={tweet.$createdAt}
+                                updatedAt={tweet.$updatedAt}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
