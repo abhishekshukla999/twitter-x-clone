@@ -41,10 +41,8 @@ function EmailChange() {
     useEffect(() => {
         async function fetchUsername() {
             const profileDocs = await profileService.getProfiles([
-                Query.equal("email", [currrentEmail]),
+                Query.equal("email", [currrentEmail || ""]),
             ]);
-
-            console.log(profileDocs.documents);
 
             if (profileDocs.documents.length !== 0) {
                 setEmailAvailable(false);
@@ -124,7 +122,7 @@ function EmailChange() {
                         />
 
                         {profileData?.email !== currrentEmail &&
-                        currrentEmail.length !== 0 ? (
+                        currrentEmail?.length !== 0 ? (
                             emailAvailable ? (
                                 <small className="text-green-500 block">
                                     {currrentEmail} is available

@@ -5,6 +5,7 @@ import { authService, profileService } from "../../appwrite";
 import { login as authLogin } from "../../features/auth/authSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { Input, LoadingModal } from "../";
+import { toast } from "sonner";
 
 function Login() {
     const {
@@ -33,9 +34,14 @@ function Login() {
                         dispatch(addProfileData(profileData));
                     }
                 }
+            } else {
+                throw new Error("Login failed");
             }
         } catch (error) {
-            console.log("Error in login", error);
+            // console.log("Error in login", error);
+            toast.error(
+                `${error.message}. Please check email and password. If the problem still persists try refreshing the page.`
+            );
         } finally {
             setLoading(false);
         }

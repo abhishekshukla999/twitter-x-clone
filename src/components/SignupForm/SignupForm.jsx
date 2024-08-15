@@ -6,9 +6,10 @@ import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { LoadingModal } from "../";
+import { toast } from "sonner";
 
 function SignupForm({ step, setStep }) {
-    const { register, handleSubmit, formState } = useForm();
+    const { register, handleSubmit, formState, watch, trigger } = useForm();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
 
@@ -45,8 +46,13 @@ function SignupForm({ step, setStep }) {
                     dispatch(addProfileData(profileData));
                 }
             }
+
+            toast.success(`Account created successfully !! Welcome ${name}`);
         } catch (error) {
-            console.log("Error in singup :: ", error);
+            // console.log("Error in singup :: ", error);
+            toast.error(
+                "Failed creating account. Please refresh and try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -59,6 +65,8 @@ function SignupForm({ step, setStep }) {
                         register={register}
                         onNext={handleNext}
                         formState={formState}
+                        watch={watch}
+                        trigger={trigger}
                     />
                 )}
 
@@ -67,6 +75,7 @@ function SignupForm({ step, setStep }) {
                         register={register}
                         onBack={handleBack}
                         formState={formState}
+                        watch={watch}
                     />
                 )}
             </form>

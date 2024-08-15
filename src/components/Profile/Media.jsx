@@ -1,14 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { replyService, tweetService } from "../../appwrite";
 import { Query, ID } from "appwrite";
 import { addMedia, removeMedia } from "../../features/media/mediaSlice";
-import { MediaCard } from "../";
+import { MediaCard, Loader } from "../";
+import { toast } from "sonner";
 
 function Media() {
     const otherProfileData = useSelector((state) => state.otherProfile);
     const mediaData = useSelector((state) => state.media);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchAllMedia() {
@@ -55,7 +57,10 @@ function Media() {
                     dispatch(removeMedia());
                 }
             } catch (error) {
-                console.log("Error fetching media :: ", error);
+                // console.log("Error fetching media :: ", error);
+                toast.error("Failed loading media");
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -64,17 +69,24 @@ function Media() {
 
     return (
         <div>
-            {mediaData.length !== 0
-                ? mediaData?.map((data) => {
-                      return (
-                          <MediaCard
-                              key={ID.unique()}
-                              tweetId={data.tweetId}
-                              media={data.media}
-                          />
-                      );
-                  })
-                : null}
+            {loading ? (
+                <Loader />
+            ) : mediaData.length === 0 ? (
+                <div className="text-3xl font-bold text-center p-4">
+                    @{otherProfileData?.username || ""} don&apos;t have any
+                    media
+                </div>
+            ) : mediaData.length !== 0 ? (
+                mediaData?.map((data) => {
+                    return (
+                        <MediaCard
+                            key={ID.unique()}
+                            tweetId={data.tweetId}
+                            media={data.media}
+                        />
+                    );
+                })
+            ) : null}
         </div>
     );
 }

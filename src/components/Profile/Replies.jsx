@@ -5,6 +5,7 @@ import { Query } from "appwrite";
 import { Loader, Reply } from "../";
 import { addReplies, removeReplies } from "../../features/replies/replySlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 function Replies() {
     const otherProfileData = useSelector((state) => state.otherProfile);
@@ -32,7 +33,8 @@ function Replies() {
                     dispatch(removeReplies());
                 }
             } catch (error) {
-                console.error("Error in fetching replies :: ", error);
+                // console.error("Error in fetching replies :: ", error);
+                toast.error("Failed loading replies")
             } finally {
                 setLoading(false);
             }
@@ -53,6 +55,11 @@ function Replies() {
         <div>
             {loading ? (
                 <Loader />
+            ) : repliesData.data.length === 0 ? (
+                <div className="text-3xl font-bold text-center p-4">
+                    @{otherProfileData?.username || ""} don&apos;t have any
+                    replies
+                </div>
             ) : (
                 <div>
                     {repliesData.data.map((reply) => (

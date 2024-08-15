@@ -4,6 +4,7 @@ import { addTweets, removeTweets } from "../../features/tweet/tweetSlice";
 import { tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 import { Loader, TweetCard } from "../index";
+import { toast } from "sonner";
 
 function Posts() {
     const [tweetLoading, setTweetLoading] = useState(true);
@@ -28,7 +29,8 @@ function Posts() {
                     dispatch(removeTweets());
                 }
             } catch (error) {
-                console.error("Error fetching tweets:", error);
+                // console.error("Error fetching tweets:", error);
+                toast.error("Failed loading posts")
             } finally {
                 setTweetLoading(false);
             }
@@ -42,7 +44,7 @@ function Posts() {
             {tweetLoading ? (
                 <Loader />
             ) : tweetsData?.length === 0 ? (
-                <div className="text-3xl font-bold text-center">
+                <div className="text-3xl font-bold text-center p-4">
                     @{otherProfileData?.username || ""} don&apos;t have any
                     posts
                 </div>

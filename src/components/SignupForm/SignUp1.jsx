@@ -1,7 +1,37 @@
+import { useEffect, useState } from "react";
 import { Input } from "../";
+import { Query } from "appwrite";
+import { profileService } from "../../appwrite";
 
-function Step1({ register, onNext, formState }) {
-    const { isValid } = formState;
+function Step1({ register, onNext, formState, watch, trigger }) {
+    const [emailAvailable, setEmailAvailable] = useState(true);
+    const { isValid, errors } = formState;
+
+    const currrentEmail = watch("email");
+
+    useEffect(() => {
+        async function fetchUsername() {
+            const profileDocs = await profileService.getProfiles([
+                Query.equal("email", [currrentEmail || ""]),
+            ]);
+
+            console.log(profileDocs.documents);
+
+            if (profileDocs.documents.length !== 0) {
+                setEmailAvailable(false);
+            } else {
+                setEmailAvailable(true);
+            }
+        }
+
+        fetchUsername();
+    }, [currrentEmail]);
+
+    useEffect(() => {
+        if (currrentEmail !== undefined) {
+            trigger("email");
+        }
+    }, [currrentEmail, trigger]);
 
     return (
         <div>
@@ -13,7 +43,11 @@ function Step1({ register, onNext, formState }) {
                     <Input
                         className="bg-black text-white"
                         maxLength="50"
-                        label="Name"
+                        label={
+                            <>
+                                Name <span className="text-red-500">*</span>
+                            </>
+                        }
                         {...register("name", {
                             required: true,
                         })}
@@ -23,7 +57,11 @@ function Step1({ register, onNext, formState }) {
                     <Input
                         className="bg-black text-white"
                         type="email"
-                        label="Email"
+                        label={
+                            <>
+                                Email <span className="text-red-500">*</span>
+                            </>
+                        }
                         {...register("email", {
                             required: "Please enter email address",
                             validate: {
@@ -35,15 +73,32 @@ function Step1({ register, onNext, formState }) {
                             },
                         })}
                     />
-                    {!isValid && (
-                        <small className="text-gray-500 p-1">
-                            example@example.com
+
+                    <small className="text-gray-500 p-1 block">
+                        ex - example@example.com
+                    </small>
+
+                    {errors.email ? (
+                        <small className="text-red-500 p-1 block">
+                            {errors.email.message}
                         </small>
-                    )}
+                    ) : currrentEmail && currrentEmail?.length !== 0 ? (
+                        emailAvailable ? (
+                            <small className="text-green-500 block">
+                                {currrentEmail} is available
+                            </small>
+                        ) : (
+                            <small className="text-red-500 block">
+                                {currrentEmail} is already registered
+                            </small>
+                        )
+                    ) : null}
                 </div>
+
                 <div className="mx-7 my-5 flex flex-col sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
                     <label className="text-white my-2" htmlFor="dob">
-                        Date of birth
+                        Date of birth{" "}
+                        <span className="text-red-500">&#42;</span>
                     </label>
                     <p className="mt-1 mb-3 text-sm text-gray-400 break-words">
                         This will not be shown publicly. Confirm your own age,
@@ -64,12 +119,12 @@ function Step1({ register, onNext, formState }) {
                 <div className="mx-7 my-5 text-black font-bold sm:w-[500px] max-[639px]:w-[350px] max-[350px]:w-full">
                     <button
                         className={`bg-gray-100 ${
-                            !isValid
+                            !isValid || !emailAvailable
                                 ? "text-gray-500 bg-gray-400 cursor-not-allowed"
                                 : null
                         } rounded-full p-4 w-full`}
                         onClick={onNext}
-                        disabled={!isValid}
+                        disabled={!isValid || !emailAvailable}
                     >
                         Next
                     </button>

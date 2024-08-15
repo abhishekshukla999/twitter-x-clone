@@ -15,7 +15,7 @@ function UsernameChange() {
         register,
         handleSubmit,
         watch,
-        formState: { isValid },
+        formState: { isValid, errors },
     } = useForm({
         defaultValues: { username: profileData?.username || "" },
     });
@@ -101,11 +101,30 @@ function UsernameChange() {
                             type="text"
                             placeholder="Type username"
                             {...register("username", {
-                                required: true,
+                                required: "Username is required",
+                                minLength: {
+                                    value: 3,
+                                    message:
+                                        "Username must be at least 3 characters long",
+                                },
+                                maxLength: {
+                                    value: 15,
+                                    message:
+                                        "Username cannot exceed 15 characters",
+                                },
+                                pattern: {
+                                    value: /^[a-zA-Z0-9_]+$/,
+                                    message:
+                                        "Username can only contain letters, numbers, and underscores",
+                                },
                             })}
                         />
-                        {profileData?.username !== currentUsername &&
-                        currentUsername.length !== 0 ? (
+                        {!isValid ? (
+                            <small className="text-red-500">
+                                {errors.username?.message}
+                            </small>
+                        ) : profileData?.username !== currentUsername &&
+                          currentUsername.length !== 0 ? (
                             usernameAvailable ? (
                                 <small className="text-green-500">
                                     @{currentUsername} is available
@@ -115,13 +134,7 @@ function UsernameChange() {
                                     @{currentUsername} is already taken
                                 </small>
                             )
-                        ) : (
-                            !isValid && (
-                                <small className="text-red-500">
-                                    Please write username
-                                </small>
-                            )
-                        )}
+                        ) : null}
                     </div>
                     <div className="flex justify-end px-2 py-3">
                         <button
