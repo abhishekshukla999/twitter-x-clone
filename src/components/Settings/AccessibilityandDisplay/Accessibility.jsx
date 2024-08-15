@@ -1,6 +1,8 @@
 import { SettingItemsContainer, BackButton } from "../../";
 
 function Accessibility() {
+    document.title = "Accessibility / X";
+
     return (
         <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
@@ -30,7 +32,9 @@ function Accessibility() {
                     </div>
                 </div>
 
-                <small className="py-3 px-2 text-red-400">This feature will be available soon</small>
+                <small className="py-3 px-2 text-red-400">
+                    This feature will be available soon
+                </small>
             </div>
         </SettingItemsContainer>
     );

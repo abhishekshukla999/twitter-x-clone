@@ -16,6 +16,8 @@ function DeactivateAccount() {
             : "/defaultAvatar.png";
     };
 
+    document.title = "Deactivate account / X";
+
     return !confirm ? (
         <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">

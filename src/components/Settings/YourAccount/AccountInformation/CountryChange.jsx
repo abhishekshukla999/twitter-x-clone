@@ -18,6 +18,8 @@ function CountryChange() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
 
+    document.title = "Change country / X";
+
     const countryList = [
         "Afghanistan",
         "Albania",

@@ -9,6 +9,7 @@ function Settings() {
     const navigate = useNavigate();
 
     const isBaseSettingsRoute = location.pathname === "/settings";
+    document.title = "X";
 
     useEffect(() => {
         if (isWideScreen) {

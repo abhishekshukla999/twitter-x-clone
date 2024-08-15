@@ -2,6 +2,8 @@ import { NavLink } from "react-router-dom";
 import { SettingItemsContainer, BackButton } from "../../";
 
 function NotificationPreferences() {
+    document.title = "Preferences / X";
+
     return (
         <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">

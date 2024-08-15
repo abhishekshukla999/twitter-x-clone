@@ -5,6 +5,8 @@ import { SettingItemsContainer, BackButton } from "../../../";
 function AccountInformation() {
     const profileData = useSelector((state) => state.profile);
 
+    document.title = "Account information / X";
+
     // converting date to local
     const toLocalDate = (date) => {
         const toLocal = new Date(date);

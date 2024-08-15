@@ -16,6 +16,8 @@ function Gender() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
 
+    document.title = "Gender / X";
+
     const changeGender = async (data) => {
         setLoading(true);
 

@@ -64,7 +64,7 @@ function LogoutButton() {
             </div>
             <LogoutModal isOpen={isOpen} onClose={handleClose}>
                 <div
-                    className="w-full hover:bg-gray-200 p-2 cursor-pointer font-bold rounded-lg border-2"
+                    className="w-full hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 border-2 dark:border-gray-500 dim:border-gray-500 p-2 cursor-pointer font-bold rounded-lg "
                     onClick={authLogout}
                 >
                     Logout @{profileData?.username}

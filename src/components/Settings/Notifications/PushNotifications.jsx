@@ -4,6 +4,8 @@ import { SettingItemsContainer, BackButton } from "../../";
 function PushNotifications() {
     const [isChecked, setIsChecked] = useState(false);
 
+    document.title = "Push notifications / X";
+
     const handleToggle = () => {
         setIsChecked(!isChecked);
     };

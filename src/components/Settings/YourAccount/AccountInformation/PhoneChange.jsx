@@ -22,6 +22,8 @@ function PhoneChange() {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
+    document.title = "Change phone / X";
+
     const changePhone = async (data, action) => {
         setLoading(true);
 

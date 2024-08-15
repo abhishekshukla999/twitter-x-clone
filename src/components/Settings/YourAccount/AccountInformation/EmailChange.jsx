@@ -28,6 +28,8 @@ function EmailChange() {
 
     const currrentEmail = watch("email");
 
+    document.title = "Change email / X";
+
     useEffect(() => {
         if (currrentEmail.length === 0 || currrentEmail === authData?.email) {
             setIsSave(false);

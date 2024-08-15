@@ -55,6 +55,8 @@ function UsernameChange() {
         fetchUsername();
     }, [currentUsername, profileData?.username]);
 
+    document.title = "Change username / X";
+
     const changeUsername = async (data) => {
         setLoading(true);
 

@@ -27,6 +27,8 @@ function ChangePassword() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    document.title = "Change your password / X";
+
     const password = watch(["newPassword", "confirmPassword"]);
 
     const changePassword = async (data) => {

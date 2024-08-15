@@ -66,6 +66,8 @@ function Display() {
         localStorage.setItem("color", currentColor);
     }, [currentColor]);
 
+    document.title = "Display / X";
+
     return (
         <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">

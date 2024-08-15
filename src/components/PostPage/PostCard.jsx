@@ -220,6 +220,8 @@ function PostCard({
         fetchRepliesData();
     }, [repliesCount]);
 
+    document.title = `${authorInfo?.name} on X`;
+
     // converting date to local
     const toLocalDate = (date) => {
         const toLocal = new Date(date);

@@ -4,6 +4,8 @@ import { SettingItemsContainer, BackButton } from "../../../";
 function Age() {
     const profileData = useSelector((state) => state.profile);
 
+    document.title = "Age / X";
+
     const calculateAge = (dob) => {
         const birthDate = new Date(dob);
         const today = new Date();
@@ -34,7 +36,9 @@ function Age() {
                 <div className="border-b dark:border-gray-800 dim:border-gray-800 py-3 px-3 text-[15px] text-gray-500">
                     These are the age ranges associated with you.
                 </div>
-                <div className="border-b dark:border-gray-800 dim:border-gray-800 py-3 px-3 text-[15px]">{age}</div>
+                <div className="border-b dark:border-gray-800 dim:border-gray-800 py-3 px-3 text-[15px]">
+                    {age}
+                </div>
                 <div className="py-3 px-3 text-[15px] text-gray-500">
                     Not right? You can add your date of birth to your profile
                     without sharing it publicly.

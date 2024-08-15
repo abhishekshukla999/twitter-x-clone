@@ -18,7 +18,9 @@ function FollowCard() {
                     </div>
                 </div>
                 <div className="mx-2">
-                    <Follow />
+                    <button className="w-20 mx-2 text-base text-white bg-black hover:bg-gray-800 rounded-full">
+                        <div className="p-2">Follow</div>
+                    </button>
                 </div>
             </div>
         </div>

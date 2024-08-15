@@ -2,6 +2,8 @@ import { NavLink } from "react-router-dom";
 import { SettingItemsContainer, MobileBackButton } from "../../";
 
 function NotificationSetting() {
+    document.title = "Notifications / X";
+
     return (
         <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">

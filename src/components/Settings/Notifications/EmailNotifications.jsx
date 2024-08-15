@@ -4,6 +4,8 @@ import { SettingItemsContainer, BackButton } from "../../";
 function EmailNotifications() {
     const [isChecked, setIsChecked] = useState(false);
 
+    document.title = "Email notifications / X";
+
     const handleToggle = () => {
         setIsChecked(!isChecked);
     };

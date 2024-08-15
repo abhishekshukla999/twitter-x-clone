@@ -1,6 +1,8 @@
-import { Feed, Aside, Premium as PremiumBuy } from "../components";
+import { Premium as PremiumBuy } from "../components";
 
 function Premium() {
+    document.title = "Premium / X";
+
     return (
         <>
             <PremiumBuy />

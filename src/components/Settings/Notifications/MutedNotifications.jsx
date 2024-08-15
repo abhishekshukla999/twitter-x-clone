@@ -1,6 +1,8 @@
 import { SettingItemsContainer, BackButton } from "../../";
 
 function MutedNotifications() {
+    document.title = "Muted notfications / X";
+
     return (
         <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
