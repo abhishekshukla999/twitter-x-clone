@@ -1,27 +1,37 @@
+import { profileMediaService } from "../../appwrite";
+import { useSelector } from "react-redux";
 import { Follow } from "../index";
 
-function FollowCard() {
+function FollowCard({ name, username, avatar, userId }) {
+    const authId = useSelector((state) => state.auth.userData.$id);
+
+    function fetchAvatar(avatar) {
+        if (!avatar) {
+            return "/defaultAvatar.png";
+        } else {
+            return profileMediaService.getCustomFilePreview(avatar, 50, 50);
+        }
+    }
+
     return (
         <div>
             <div className="flex justify-between text-base">
                 <div className="flex">
-                    <div className="m-3">
+                    <div className="m-3 min-w-[40px] max-w-[43px]">
                         <img
-                            className="w-10 rounded-full"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s"
+                            className="w-full rounded-full"
+                            src={fetchAvatar(avatar)}
                             alt="user avatar"
                             loading="lazy"
                         />
                     </div>
                     <div className="flex flex-col p-1">
-                        <span className="font-bold">Abhishek Shukla</span>
-                        <span>@username</span>
+                        <span className="font-bold">{name}</span>
+                        <span>@{username}</span>
                     </div>
                 </div>
                 <div className="mx-2">
-                    <button className="w-20 mx-2 text-base text-white bg-black hover:bg-gray-800 rounded-full">
-                        <div className="p-2">Follow</div>
-                    </button>
+                    <Follow followingId={userId} followerId={authId} />
                 </div>
             </div>
         </div>
