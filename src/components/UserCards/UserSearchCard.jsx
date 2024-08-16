@@ -30,6 +30,7 @@ function UserSearchCard({ name, username, media, userId }) {
                         className="rounded-full"
                         src={avatarUrl()}
                         alt="avatar"
+                        loading="lazy"
                     />
                 </div>
 

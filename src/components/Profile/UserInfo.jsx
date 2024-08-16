@@ -103,6 +103,7 @@ function UserInfo({ username, setStatus }) {
                                 ) || ""
                             }
                             alt="Cover Image"
+                            loading="lazy"
                         />
                     )}
                 </div>
@@ -114,6 +115,7 @@ function UserInfo({ username, setStatus }) {
                             className="rounded-full h-[133.5px] w-[133.5px] p-1 bg-white"
                             src={imageUrl()}
                             alt="Avatar Image"
+                            loading="lazy"
                         />
                     </div>
                     {/* Edit / Follow */}

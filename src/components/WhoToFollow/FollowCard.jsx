@@ -9,7 +9,8 @@ function FollowCard() {
                         <img
                             className="w-10 rounded-full"
                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s"
-                            alt=""
+                            alt="user avatar"
+                            loading="lazy"
                         />
                     </div>
                     <div className="flex flex-col p-1">

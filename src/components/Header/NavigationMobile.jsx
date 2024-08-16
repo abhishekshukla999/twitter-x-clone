@@ -79,6 +79,7 @@ function NavigationMobile({ isOpen, onClose }) {
                                 className="w-full rounded-full"
                                 src={avatarURL}
                                 alt="navigation menu"
+                                loading="lazy"
                             />
                         </div>
                         <div className="font-bold mt-0.5 text-[17px]">

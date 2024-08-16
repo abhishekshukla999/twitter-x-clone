@@ -41,6 +41,7 @@ function LogoutButton() {
                             className="w-full rounded-full"
                             src={imageUrl()}
                             alt="avatar"
+                            loading="lazy"
                         />
                     </div>
                     <div className="flex-[0_0_60%] flex-nowrap hidden xl:block">

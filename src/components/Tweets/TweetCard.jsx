@@ -24,7 +24,12 @@ import { useNavigate } from "react-router-dom";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addTweets } from "../../features/tweet/tweetSlice";
 import { toast } from "sonner";
-import { LoadingModal, FollowTweet } from "../index";
+import {
+    LoadingModal,
+    FollowTweet,
+    MediaLoader,
+    UserCardLoader,
+} from "../index";
 
 function TweetCard({
     tweetId,
@@ -61,6 +66,7 @@ function TweetCard({
     });
 
     const [mediaLoader, setMediaLoader] = useState(true);
+    const [authorInfoLoader, setAuthorInfoLoader] = useState(true);
     const navigate = useNavigate();
     const [navLoading, setNavLoading] = useState(false);
 
@@ -69,19 +75,23 @@ function TweetCard({
             const authorData = await profileService.getProfile(author);
 
             if (authorData) {
-                const url = profileMediaService.getCustomFilePreview(
-                    authorData.avatar,
-                    50,
-                    50
-                );
-                const URL = url ? url : "/defaultAvatar.png";
+                const authorData = await profileService.getProfile(author);
 
-                setAvatarURL(URL);
+                if (authorData) {
+                    const url = profileMediaService.getFilePreview(
+                        authorData.avatar
+                    );
+                    const URL = url ? url : "/defaultAvatar.png";
 
-                setAuthorInfo({
-                    name: authorData.name,
-                    username: authorData.username,
-                });
+                    setAvatarURL(URL);
+
+                    setAuthorInfo({
+                        name: authorData.name,
+                        username: authorData.username,
+                    });
+
+                    setAuthorInfoLoader(false);
+                }
             }
         };
 
@@ -91,14 +101,26 @@ function TweetCard({
     useEffect(() => {
         const fetchMedia = async () => {
             if (media) {
-                setMediaURL(
-                    tweetMediaService.getCustomQualityFilePreview({
-                        fileId: media,
-                        quality: 70,
-                    })
-                );
+                const img = new Image();
+                img.src = tweetMediaService.getCustomQualityFilePreview({
+                    fileId: media,
+                    quality: 70,
+                });
 
-                setMediaLoader(false);
+                img.onload = () => {
+                    setMediaURL(img.src);
+                    setMediaLoader(false);
+                };
+
+                img.onerror = () => {
+                    mediaURL("/errorImage.png");
+                    setMediaLoader(false);
+                };
+
+                if (img.complete) {
+                    setMediaURL(img.src);
+                    setMediaLoader(false);
+                }
             }
         };
 
@@ -109,29 +131,33 @@ function TweetCard({
     // bookmarks
     useEffect(() => {
         const fetchBookmarksData = async () => {
-            const allBookmarks = await bookmarkService.getBookmarks([
-                Query.equal("tweetId", [tweetId]),
-            ]);
-
-            if (allBookmarks.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    bookmarksCount: allBookmarks.documents.length,
-                }));
-
-                const isMyBook = await bookmarkService.getBookmarks([
-                    Query.and([
-                        Query.equal("tweetId", [tweetId]),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
+            try {
+                const allBookmarks = await bookmarkService.getBookmarks([
+                    Query.equal("tweetId", [tweetId]),
                 ]);
 
-                if (isMyBook.documents.length !== 0) {
+                if (allBookmarks.documents.length !== 0) {
                     setInteractions((interactions) => ({
                         ...interactions,
-                        myBookmark: true,
+                        bookmarksCount: allBookmarks.documents.length,
                     }));
+
+                    const isMyBook = await bookmarkService.getBookmarks([
+                        Query.and([
+                            Query.equal("tweetId", [tweetId]),
+                            Query.equal("userId", [authData.$id]),
+                        ]),
+                    ]);
+
+                    if (isMyBook.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            myBookmark: true,
+                        }));
+                    }
                 }
+            } catch (error) {
+                console.log("Bookmarks loading failed :: ", error);
             }
         };
 
@@ -141,29 +167,33 @@ function TweetCard({
     // likes
     useEffect(() => {
         const fetchLikesData = async () => {
-            const allLikes = await likeService.getLikes([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allLikes.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    likesCount: allLikes.documents.length,
-                }));
-
-                const isMyLike = await likeService.getLikes([
-                    Query.and([
-                        Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
+            try {
+                const allLikes = await likeService.getLikes([
+                    Query.equal("tweetId", tweetId),
                 ]);
 
-                if (isMyLike.documents.length !== 0) {
+                if (allLikes.documents.length !== 0) {
                     setInteractions((interactions) => ({
                         ...interactions,
-                        myLike: true,
+                        likesCount: allLikes.documents.length,
                     }));
+
+                    const isMyLike = await likeService.getLikes([
+                        Query.and([
+                            Query.equal("tweetId", tweetId),
+                            Query.equal("userId", [authData.$id]),
+                        ]),
+                    ]);
+
+                    if (isMyLike.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            myLike: true,
+                        }));
+                    }
                 }
+            } catch (error) {
+                console.log("Likes loading failed :: ", error);
             }
         };
 
@@ -173,29 +203,33 @@ function TweetCard({
     // retweets
     useEffect(() => {
         const fetchRetweetsData = async () => {
-            const allRetweets = await retweetService.getRetweets([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allRetweets.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    retweetsCount: allRetweets.documents.length,
-                }));
-
-                const isMyRetweet = await retweetService.getRetweets([
-                    Query.and([
-                        Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
+            try {
+                const allRetweets = await retweetService.getRetweets([
+                    Query.equal("tweetId", tweetId),
                 ]);
 
-                if (isMyRetweet.documents.length !== 0) {
+                if (allRetweets.documents.length !== 0) {
                     setInteractions((interactions) => ({
                         ...interactions,
-                        myRetweet: true,
+                        retweetsCount: allRetweets.documents.length,
                     }));
+
+                    const isMyRetweet = await retweetService.getRetweets([
+                        Query.and([
+                            Query.equal("tweetId", tweetId),
+                            Query.equal("userId", [authData.$id]),
+                        ]),
+                    ]);
+
+                    if (isMyRetweet.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            myRetweet: true,
+                        }));
+                    }
                 }
+            } catch (error) {
+                console.log("Retweets loading failed :: ", error);
             }
         };
 
@@ -205,15 +239,19 @@ function TweetCard({
     // replies
     useEffect(() => {
         const fetchRepliesData = async () => {
-            const allReplies = await replyService.getReplies([
-                Query.equal("tweetId", [tweetId]),
-            ]);
+            try {
+                const allReplies = await replyService.getReplies([
+                    Query.equal("tweetId", [tweetId]),
+                ]);
 
-            if (allReplies.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    repliesCount: allReplies.documents.length,
-                }));
+                if (allReplies.documents.length !== 0) {
+                    setInteractions((interactions) => ({
+                        ...interactions,
+                        repliesCount: allReplies.documents.length,
+                    }));
+                }
+            } catch (error) {
+                console.log("Replies loading failed :: ", error);
             }
         };
 
@@ -641,6 +679,7 @@ function TweetCard({
             window.location.href = URL.href;
         }
     };
+
     return (
         <>
             <div
@@ -673,62 +712,67 @@ function TweetCard({
                             className="w-full rounded-full"
                             src={avatarURL}
                             alt="avatar"
+                            loading="lazy"
                         />
                     </div>
 
                     <div className="content w-[90%]">
                         {/* User details */}
                         <div className="relative">
-                            <div className="flex justify-between">
-                                <div
-                                    className="user-details flex flex-wrap mx-0.5 text-base"
-                                    onClick={handleProfileNavigation}
-                                >
-                                    <span className="mx-0.5 font-bold hover:underline">
-                                        {authorInfo?.name}
-                                    </span>
-                                    <span className="mx-0.5 text-zin font-light">
-                                        @{authorInfo?.username}
-                                    </span>
-                                    <span className="mx-0.5 font-light">
-                                        &middot;
-                                    </span>
-                                    <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
+                            {authorInfoLoader ? (
+                                <UserCardLoader />
+                            ) : (
+                                <div className="flex justify-between">
+                                    <div
+                                        className="user-details flex flex-wrap mx-0.5 text-base"
+                                        onClick={handleProfileNavigation}
+                                    >
+                                        <span className="mx-0.5 font-bold hover:underline">
+                                            {authorInfo?.name}
+                                        </span>
+                                        <span className="mx-0.5 text-zin font-light">
+                                            @{authorInfo?.username}
+                                        </span>
+                                        <span className="mx-0.5 font-light">
+                                            &middot;
+                                        </span>
+                                        <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
 
-                                    {createdAt !== updatedAt && (
-                                        <>
-                                            <span className="mx-0.5 font-light">
-                                                &middot;
-                                            </span>
-                                            <span className="mx-0.5 text-[13px] font-light">
-                                                Edited
-                                            </span>
-                                        </>
-                                    )}
-                                </div>
+                                        {createdAt !== updatedAt && (
+                                            <>
+                                                <span className="mx-0.5 font-light">
+                                                    &middot;
+                                                </span>
+                                                <span className="mx-0.5 text-[13px] font-light">
+                                                    Edited
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
 
-                                {/* options */}
-                                <div
-                                    className="w-9 cursor-pointer relative"
-                                    title="Options"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setisOpen(true);
-                                    }}
-                                >
-                                    <div className="">
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            aria-hidden="true"
-                                            className="w-9 p-2 hover:bg-blue-100 hover:fill-twitter-blue dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full fill-gray-500 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
-                                        >
-                                            <g>
-                                                <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
-                                            </g>
-                                        </svg>
+                                    {/* options */}
+                                    <div
+                                        className="w-9 cursor-pointer relative"
+                                        title="Options"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setisOpen(true);
+                                        }}
+                                    >
+                                        <div className="">
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                aria-hidden="true"
+                                                className="w-9 p-2 hover:bg-blue-100 hover:fill-twitter-blue dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full fill-gray-500 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                            >
+                                                <g>
+                                                    <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                             {/* options layover */}
                             {isOpen && (
                                 <div className="absolute bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg z-20 top-1 left-1/2 transform -translate-x-1/3 w-2/3 border dark:border-gray-500 dim:border-gray-500 rounded-xl shadow-2xl dark:shadow-inner dim:shadow-gray-500">
@@ -781,114 +825,16 @@ function TweetCard({
 
                         {media &&
                             (mediaLoader ? (
-                                <div className="flex justify-center">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 200 200"
-                                        className="w-20"
-                                    >
-                                        <circle
-                                            fill="#1D9BF0"
-                                            stroke="#1D9BF0"
-                                            strokeWidth="15"
-                                            r="15"
-                                            cx="35"
-                                            cy="100"
-                                        >
-                                            <animate
-                                                attributeName="cx"
-                                                calcMode="spline"
-                                                dur="2"
-                                                values="35;165;165;35;35"
-                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
-                                                repeatCount="indefinite"
-                                                begin="0"
-                                            ></animate>
-                                        </circle>
-                                        <circle
-                                            fill="#1D9BF0"
-                                            stroke="#1D9BF0"
-                                            strokeWidth="15"
-                                            opacity=".8"
-                                            r="15"
-                                            cx="35"
-                                            cy="100"
-                                        >
-                                            <animate
-                                                attributeName="cx"
-                                                calcMode="spline"
-                                                dur="2"
-                                                values="35;165;165;35;35"
-                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
-                                                repeatCount="indefinite"
-                                                begin="0.05"
-                                            ></animate>
-                                        </circle>
-                                        <circle
-                                            fill="#1D9BF0"
-                                            stroke="#1D9BF0"
-                                            strokeWidth="15"
-                                            opacity=".6"
-                                            r="15"
-                                            cx="35"
-                                            cy="100"
-                                        >
-                                            <animate
-                                                attributeName="cx"
-                                                calcMode="spline"
-                                                dur="2"
-                                                values="35;165;165;35;35"
-                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
-                                                repeatCount="indefinite"
-                                                begin=".1"
-                                            ></animate>
-                                        </circle>
-                                        <circle
-                                            fill="#1D9BF0"
-                                            stroke="#1D9BF0"
-                                            strokeWidth="15"
-                                            opacity=".4"
-                                            r="15"
-                                            cx="35"
-                                            cy="100"
-                                        >
-                                            <animate
-                                                attributeName="cx"
-                                                calcMode="spline"
-                                                dur="2"
-                                                values="35;165;165;35;35"
-                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
-                                                repeatCount="indefinite"
-                                                begin=".15"
-                                            ></animate>
-                                        </circle>
-                                        <circle
-                                            fill="#1D9BF0"
-                                            stroke="#1D9BF0"
-                                            strokeWidth="15"
-                                            opacity=".2"
-                                            r="15"
-                                            cx="35"
-                                            cy="100"
-                                        >
-                                            <animate
-                                                attributeName="cx"
-                                                calcMode="spline"
-                                                dur="2"
-                                                values="35;165;165;35;35"
-                                                keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1"
-                                                repeatCount="indefinite"
-                                                begin=".2"
-                                            ></animate>
-                                        </circle>
-                                    </svg>
+                                <div className="m-1.5">
+                                    <MediaLoader />
                                 </div>
                             ) : (
                                 <div className="image m-1.5">
                                     <img
                                         className="rounded-2xl w-full"
                                         src={mediaURL}
-                                        alt=""
+                                        alt="tweet media"
+                                        loading="lazy"
                                     />
                                 </div>
                             ))}

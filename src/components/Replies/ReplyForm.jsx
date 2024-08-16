@@ -105,7 +105,7 @@ function ReplyForm({ tweetId }) {
     return (
         <div className="reply-form flex pt-3 w-full max-h-[70%] border-b border-zinc-200 dark:border-gray-800 dim:border-gray-800">
             <div className="mx-2 min-w-[40px] max-w-[43px]">
-                <img className="w-full rounded-full" src={imageUrl()} alt="" />
+                <img className="w-full rounded-full" src={imageUrl()} alt="avatar" loading="lazy" />
             </div>
             <form className="items w-[90%]" onSubmit={handleSubmit(submitPost)}>
                 {/* textarea */}

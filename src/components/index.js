@@ -29,6 +29,11 @@ import Premium from "./Premium/Premium";
 import SettingsList from "./Settings/SettingsList";
 import Protected from "./Authorization/Protected";
 import Loader from "./Loader/Loader";
+import MediaLoader from "./Loader/MediaLoader";
+import ContentLoader from "./Loader/ContentLoader";
+import UserCardLoader from "./Loader/UserCardLoader";
+import LoadCardContainer from "./Loader/LoadCardContainer";
+import AvatarLoader from "./Loader/AvatarLoader";
 import UnderDev from "./UnderDev/UnderDev";
 import PostModal from "./Modals/PostModal";
 import LogoutModal from "./Modals/LogoutModal";
@@ -124,6 +129,11 @@ export {
     SettingsList,
     Protected,
     Loader,
+    MediaLoader,
+    ContentLoader,
+    UserCardLoader,
+    LoadCardContainer,
+    AvatarLoader,
     UnderDev,
     PostModal,
     LogoutModal,
@@ -178,5 +188,5 @@ export {
     MobileBackButton,
     SettingItemsContainer,
     BackButton,
-    FollowCard
+    FollowCard,
 };

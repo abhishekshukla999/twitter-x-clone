@@ -13,6 +13,7 @@ function WhatsHappening() {
                             className="w-[79px] h-[79px] rounded-xl"
                             src="/Live.jpg"
                             alt="live now image"
+                            loading="lazy"
                         />
                     </span>
                     <span>

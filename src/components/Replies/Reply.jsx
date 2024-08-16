@@ -8,7 +8,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { FollowTweet, LoadingModal } from "../index";
+import { FollowTweet, LoadingModal, MediaLoader } from "../index";
 import { toast } from "sonner";
 
 function Reply({
@@ -26,6 +26,7 @@ function Reply({
     const authData = useSelector((state) => state.auth.userData);
     const tweetPageData = useSelector((state) => state.tweetPage);
     const dispatch = useDispatch();
+    const [mediaLoader, setMediaLoader] = useState(true);
 
     // options box handling
     const [isOpen, setisOpen] = useState(false);
@@ -44,7 +45,7 @@ function Reply({
                     50
                 );
 
-                setAvatarURL(url);
+                setAvatarURL(url || "/defaultAvatar.png");
 
                 setAuthorInfo({
                     name: authorData.name,
@@ -59,7 +60,26 @@ function Reply({
     useEffect(() => {
         const fetchMedia = async () => {
             if (media) {
-                setMediaURL(tweetMediaService.getFilePreview(media));
+                const img = new Image();
+                img.src = tweetMediaService.getCustomQualityFilePreview({
+                    fileId: media,
+                    quality: 70,
+                });
+
+                img.onload = () => {
+                    setMediaURL(img.src);
+                    setMediaLoader(false);
+                };
+
+                img.onerror = () => {
+                    mediaURL("/errorImage.png");
+                    setMediaLoader(false);
+                };
+
+                if (img.complete) {
+                    setMediaURL(img.src);
+                    setMediaLoader(false);
+                }
             }
         };
 
@@ -155,6 +175,7 @@ function Reply({
                             className="rounded-full"
                             src={avatarURL}
                             alt="avatar"
+                            loading="lazy"
                         />
                     </div>
 
@@ -252,15 +273,19 @@ function Reply({
                         {/* User content */}
                         <div className="text mx-1.5 mb-1 mt-0.5">{content}</div>
 
-                        {media && (
-                            <div className="image m-1.5">
-                                <img
-                                    className="rounded-2xl w-full"
-                                    src={mediaURL}
-                                    alt=""
-                                />
-                            </div>
-                        )}
+                        {media &&
+                            (mediaLoader ? (
+                                <MediaLoader />
+                            ) : (
+                                <div className="image m-1.5">
+                                    <img
+                                        className="rounded-2xl w-full"
+                                        src={mediaURL}
+                                        alt="tweet media"
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ))}
                     </div>
                 </div>
             </div>

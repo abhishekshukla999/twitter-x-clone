@@ -115,6 +115,7 @@ function TweetForm() {
                         className="w-full rounded-full"
                         src={imageUrl()}
                         alt="avatar"
+                        loading="lazy"
                     />
                 </div>
                 <form
@@ -150,7 +151,7 @@ function TweetForm() {
                                     </span>
                                 </div>
 
-                                <img className="rounded-lg" src={prevImage} />
+                                <img className="rounded-lg" src={prevImage} alt="upload image" loading="lazy" />
                             </div>
                         )}
                         <small>Image size should be less than 5MB</small>

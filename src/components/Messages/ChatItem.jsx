@@ -8,6 +8,7 @@ function ChatItem() {
                     className="w-full rounded-full"
                     src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
                     alt="user image"
+                    loading="lazy"
                 />
             </div>
             <div className="w-full">

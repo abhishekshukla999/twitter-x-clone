@@ -39,6 +39,7 @@ function DeactivateAccount() {
                                 src={avatarUrl()}
                                 alt="avatar"
                                 className="w-full rounded-full"
+                                loading="lazy"
                             />
                         </div>
                         <div className="text-[15px] px-1.5 my-auto leading-5">

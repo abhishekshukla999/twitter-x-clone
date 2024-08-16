@@ -220,6 +220,7 @@ function PostModal({ isOpen, onClose, post = false }) {
                                 className="w-full rounded-full"
                                 src={imageUrl()}
                                 alt="avatar"
+                                loading="lazy"
                             />
                         </div>
                         <form
@@ -262,6 +263,8 @@ function PostModal({ isOpen, onClose, post = false }) {
                                             <img
                                                 className="rounded-lg"
                                                 src={prevImage}
+                                                alt="preview new image"
+                                                loading="lazy"
                                             />
                                         </div>
                                     </div>
@@ -277,7 +280,8 @@ function PostModal({ isOpen, onClose, post = false }) {
                                             src={tweetMediaService.getFilePreview(
                                                 post.media
                                             )}
-                                            alt="Tweet Image"
+                                            alt="current tweet Image"
+                                            loading="lazy"
                                         />
                                     </div>
                                 )}

@@ -82,6 +82,7 @@ function Payment() {
                                 <img
                                     src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
                                     className="h-8 ml-3"
+                                    loading="lazy"
                                 />
                             </label>
                         </div>
@@ -99,6 +100,7 @@ function Payment() {
                                 <img
                                     src="https://www.sketchappsources.com/resources/source-image/PayPalCard.png"
                                     className="h-8 ml-3"
+                                    loading="lazy"
                                 />
                             </label>
                         </div>

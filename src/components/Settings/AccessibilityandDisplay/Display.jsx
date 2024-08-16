@@ -89,6 +89,7 @@ function Display() {
                             src="/twitter.ico"
                             alt="avatar"
                             className="rounded-full"
+                            loading="lazy"
                         />
                     </div>
                     <div className="px-2">

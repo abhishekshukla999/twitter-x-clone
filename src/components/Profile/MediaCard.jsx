@@ -24,7 +24,7 @@ function MediaCard({ tweetId, media }) {
                 navigate(`/${otherProfileData.username}/status/${tweetId}`)
             }
         >
-            <img src={fetchMediaUrl()} alt="tweet media" />
+            <img src={fetchMediaUrl()} alt="tweet media" loading="lazy" />
         </div>
     );
 }
