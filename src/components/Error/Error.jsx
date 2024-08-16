@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Error() {
     return (
-        <section className="bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg">
+        <section className="flex justify-center items-center bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg">
             <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
                 <div className="mx-auto max-w-screen-sm text-center">
                     <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-twitter-blue yellow:text-twitter-yellow crimson:text-twitter-crimson purple:text-twitter-purple  orange:text-twitter-orange green:text-twitter-green ">
