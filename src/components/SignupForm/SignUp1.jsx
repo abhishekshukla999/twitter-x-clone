@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input } from "../";
+import { Input } from "../index";
 import { Query } from "appwrite";
 import { profileService } from "../../appwrite";
 

@@ -1,11 +1,15 @@
-import { Select, LoadingModal } from "../../../index";
+import {
+    Select,
+    LoadingModal,
+    SettingItemsContainer,
+    BackButton,
+} from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
 import { useState } from "react";
 import { toast } from "sonner";
-import { SettingItemsContainer, BackButton } from "../../../";
 
 function CountryChange() {
     const authData = useSelector((state) => state.auth.userData);

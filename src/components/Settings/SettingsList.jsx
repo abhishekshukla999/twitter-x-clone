@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { MobileBackButton } from "../";
+import { MobileBackButton } from "../index";
 
 function SettingsList() {
     const profileData = useSelector((state) => state.profile);

@@ -80,7 +80,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+        <div className="close-outer fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-gray-600 bg-opacity-50 flex justify-center items-center">
             <div className="bg-white opacity-100 dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white p-5 rounded-xl shadow-lg relative 2xl:w-[40%] xl:w-[50%] lg:w-[50%] md:w-[60%] max-h-fit max-[702px]:h-screen max-[702px]:w-screen text-black">
                 <div className="">
                     <button

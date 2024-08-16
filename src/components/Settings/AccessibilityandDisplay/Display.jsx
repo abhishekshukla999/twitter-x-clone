@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SettingItemsContainer, BackButton } from "../../";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function Display() {
     const [currentColor, setCurrentColor] = useState(

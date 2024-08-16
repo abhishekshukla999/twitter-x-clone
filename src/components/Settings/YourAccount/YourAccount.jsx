@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { SettingItemsContainer, MobileBackButton } from "../../";
+import { SettingItemsContainer, MobileBackButton } from "../../index";
 
 function YourAccount() {
     document.title = "Your Account / X";

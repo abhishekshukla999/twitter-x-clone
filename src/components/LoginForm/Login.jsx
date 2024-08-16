@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { authService, profileService } from "../../appwrite";
 import { login as authLogin } from "../../features/auth/authSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
-import { Input, LoadingModal } from "../";
+import { Input, LoadingModal } from "../index";
 import { toast } from "sonner";
 
 function Login() {

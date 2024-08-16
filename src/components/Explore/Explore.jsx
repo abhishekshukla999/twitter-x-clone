@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { MobileNavIcon, TrendingCard, TweetCard, UserSearchCard } from "../";
+import {
+    MobileNavIcon,
+    TrendingCard,
+    TweetCard,
+    UserSearchCard,
+} from "../index";
 import { profileService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 
@@ -102,6 +107,7 @@ function Explore() {
                                 name={user.name}
                                 username={user.username}
                                 media={user.avatar}
+                                userId={user.$id}
                             />
                         ))}
                     </div>

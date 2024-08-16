@@ -1,4 +1,4 @@
-import FollowCard from "./FollowCard";
+import { FollowCard } from "../index";
 
 function WhoToFollow() {
     return (

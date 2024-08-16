@@ -59,7 +59,7 @@ function FeedContent() {
     return (
         <div className="relative">
             {/* Navigation Mobile */}
-            <div className="hidden max-[499px]:flex sticky top-0 z-1 bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg opacity-95">
+            <div className="hidden max-[499px]:flex sticky top-0 z-30 bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg opacity-95">
                 <div className="w-1/2">
                     <MobileNavIcon />
                 </div>
@@ -76,7 +76,7 @@ function FeedContent() {
                 </div>
             </div>
 
-            <div className="top flex p-3 min-[500px]:sticky top-0 backdrop-blur-3xl opacity-[100%] border-b border-l border-r border-b-zinc-200 dark:border-gray-800 dim:border-gray-800">
+            <div className="top flex p-3 min-[500px]:sticky z-30 top-0 backdrop-blur-3xl opacity-[100%] border-b border-l border-r border-b-zinc-200 dark:border-gray-800 dim:border-gray-800">
                 <NavLink className="left w-1/2 flex justify-center font-bold text-base">
                     For You
                 </NavLink>

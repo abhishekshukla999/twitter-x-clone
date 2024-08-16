@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { SignUp1, SignUp2 } from "../";
+import { SignUp1, SignUp2, LoadingModal } from "../index";
 import { useForm } from "react-hook-form";
 import { authService, profileService } from "../../appwrite";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
-import { LoadingModal } from "../";
 import { toast } from "sonner";
 
 function SignupForm({ step, setStep }) {

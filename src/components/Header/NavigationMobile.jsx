@@ -46,7 +46,7 @@ function NavigationMobile({ isOpen, onClose }) {
                 onClose();
             }}
         >
-            <div className="bg-white opacity-100 p-2 z-50 shadow-lg relative w-[57%] text-black dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white">
+            <div className="bg-white opacity-100 p-2 z-50 shadow-lg relative min-w-[57%] text-black dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white">
                 <div className="m-2">
                     <button
                         className="rounded-lg absolute top-2.5 right-2.5 bg-none border-none text-2xl cursor-pointer"
@@ -74,9 +74,9 @@ function NavigationMobile({ isOpen, onClose }) {
                             navigate(`/${profileData.username}`);
                         }}
                     >
-                        <div className="">
+                        <div className="min-w-[40px] max-w-[43px]">
                             <img
-                                className="w-8 rounded-full"
+                                className="w-full rounded-full"
                                 src={avatarURL}
                                 alt="navigation menu"
                             />

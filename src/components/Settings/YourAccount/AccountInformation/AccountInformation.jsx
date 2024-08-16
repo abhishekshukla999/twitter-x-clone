@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-import { SettingItemsContainer, BackButton } from "../../../";
+import { SettingItemsContainer, BackButton } from "../../../index";
 
 function AccountInformation() {
     const profileData = useSelector((state) => state.profile);

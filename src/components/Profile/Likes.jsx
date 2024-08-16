@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { likeService, tweetService } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { Query } from "appwrite";
-import { Loader, TweetCard } from "../";
+import { Loader, TweetCard } from "../index";
 import { addLikes } from "../../features/like/likeSlice";
 
 function Likes() {

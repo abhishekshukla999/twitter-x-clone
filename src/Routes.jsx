@@ -38,13 +38,13 @@ import {
     Payment,
     PhoneChange,
     Posts,
+    Protected,
     PushNotifications,
     Replies,
     UsernameChange,
     WelcomeUser,
     YourAccount,
 } from "./components";
-import Protected from "./components/Protected.jsx";
 
 const router = createBrowserRouter([
     {

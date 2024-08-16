@@ -16,13 +16,17 @@ import {
     replyService,
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
-import { PostEngagementsModal, PostModal, FollowTweet } from "../index";
+import {
+    PostEngagementsModal,
+    PostModal,
+    FollowTweet,
+    LoadingModal,
+} from "../index";
 import { Query } from "appwrite";
 import { useNavigate } from "react-router-dom";
 import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { toast } from "sonner";
-import { LoadingModal } from "../";
 
 function PostCard({
     tweetId = "",
@@ -631,7 +635,7 @@ function PostCard({
                 >
                     <div className="flex cursor-pointer">
                         {/* User avatar */}
-                        <div className="avatar m-1.5 w-[45px]">
+                        <div className="avatar m-1.5 min-w-[40px] max-w-[43px]">
                             <img
                                 className="w-full rounded-full"
                                 src={avatarURL}

@@ -5,7 +5,7 @@ function LogoutModal({ children, isOpen, onClose }) {
 
     return createPortal(
         <div
-            className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center"
+            className="close-outer fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-gray-600 bg-opacity-50 flex justify-center items-center"
             onClick={() => onClose()}
         >
             <div

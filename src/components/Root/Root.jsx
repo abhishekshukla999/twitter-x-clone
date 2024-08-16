@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Login, LogSignModal, SignupForm } from "./index";
+import { Login, LogSignModal, SignupForm } from "../index";
 import { NavLink } from "react-router-dom";
 import { Toaster } from "sonner";
 

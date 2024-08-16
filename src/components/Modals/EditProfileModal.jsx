@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { profileMediaService, profileService } from "../../appwrite";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
-import { LoadingModal, Input } from "../";
+import { LoadingModal, Input } from "../index";
 import { toast } from "sonner";
 
 function EditProfileModal({ isOpen, onClose }) {
@@ -165,7 +165,7 @@ function EditProfileModal({ isOpen, onClose }) {
 
     return createPortal(
         <div
-            className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center"
+            className="close-outer fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-gray-600 bg-opacity-50 flex justify-center items-center"
             onClick={onClose}
         >
             <LoadingModal isOpen={loading} />

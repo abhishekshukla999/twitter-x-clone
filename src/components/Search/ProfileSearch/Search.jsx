@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { UserSearchCard } from "./";
-import { profileService } from "../appwrite";
+import { UserSearchCard } from "../../index";
+import { profileService } from "../../../appwrite";
 import { Query } from "appwrite";
 
 function Search() {
@@ -64,6 +64,7 @@ function Search() {
                             name={user.name}
                             username={user.username}
                             media={user.avatar}
+                            userId={user.$id}
                         />
                     ))}
                 </div>

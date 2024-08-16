@@ -1,9 +1,9 @@
-import { MobileNavIcon, NotificationsCard } from "../";
+import { MobileNavIcon, NotificationsCard } from "../index";
 import { NavLink } from "react-router-dom";
 
 function Notifications() {
     return (
-        <div className="border-r border-l h-screen">
+        <div className="border-r border-l dark:border-gray-800 dim:border-gray-800 h-screen">
             <div className="top flex justify-between p-3 sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex">
                     <div className="w-16">

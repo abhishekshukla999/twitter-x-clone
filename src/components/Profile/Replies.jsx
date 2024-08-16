@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { profileService, replyService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
-import { Loader, Reply } from "../";
+import { Loader, Reply } from "../index";
 import { addReplies, removeReplies } from "../../features/replies/replySlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

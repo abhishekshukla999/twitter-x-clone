@@ -1,7 +1,6 @@
 import { useState } from "react";
-import UserInfo from "./UserInfo";
+import { UserInfo, NoUser } from "../index";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
-import NoUser from "./NoUser";
 import { useSelector } from "react-redux";
 
 function Profile({ username }) {
@@ -13,7 +12,7 @@ function Profile({ username }) {
 
     return (
         <div>
-            <div className="top flex px-2 sticky z-50 top-0 backdrop-blur-[400px] opacity-[100%]">
+            <div className="top flex px-2 sticky z-30 top-0 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
                     className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
                     onClick={() => navigate(-1)}

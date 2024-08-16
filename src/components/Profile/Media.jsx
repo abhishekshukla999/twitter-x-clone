@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { replyService, tweetService } from "../../appwrite";
 import { Query, ID } from "appwrite";
 import { addMedia, removeMedia } from "../../features/media/mediaSlice";
-import { MediaCard, Loader } from "../";
+import { MediaCard, Loader } from "../index";
 import { toast } from "sonner";
 
 function Media() {

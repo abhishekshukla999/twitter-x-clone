@@ -1,4 +1,4 @@
-import { SettingItemsContainer, BackButton } from "../../";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function Accessibility() {
     document.title = "Accessibility / X";

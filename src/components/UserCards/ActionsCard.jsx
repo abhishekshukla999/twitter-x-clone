@@ -1,6 +1,6 @@
 import { profileMediaService } from "../../appwrite";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Follow } from "../";
+import { Follow } from "../index";
 import { useSelector } from "react-redux";
 
 function ActionsCard({ name, username, media, userId }) {

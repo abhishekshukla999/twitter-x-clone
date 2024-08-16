@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, NavLink, useNavigate } from "react-router-dom";
-import Feed from "../Containers/Feed";
-import Aside from "../Containers/Aside";
+import { useParams, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { followService, profileService } from "../../appwrite";
 import { Query } from "appwrite";
 import { addFollowData, removeFollowData } from "../../features/follow/follow";
-import { Loader, ActionsCard } from "../index";
+import { Loader, ActionsCard, Feed, Aside } from "../index";
 
 function Following() {
     const { username } = useParams();
@@ -15,6 +13,7 @@ function Following() {
     const followsData = useSelector((state) => state.follows);
     const [usernameData, setUsernameData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const location = useLocation();
 
     useEffect(() => {
         const fetchFollowing = async () => {
@@ -93,20 +92,27 @@ function Following() {
                             </p>
                         </div>
                     </div>
-                    <div className="top flex top-0 backdrop-blur-3xl opacity-80 border-b border-b-zinc-200">
+                    <div className="top flex top-0 backdrop-blur-3xl opacity-80 border-b border-b-zinc-200 dark:border-gray-600 dim:border-gray-600">
                         <NavLink
                             to={`/${username}/following`}
-                            className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                            className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                         >
-                            <div className="py-4 text-black border-b-4 border-twitter-blue">
+                            <div
+                                className={`py-4 ${
+                                    location.pathname ===
+                                    `/${username}/following`
+                                        ? "text-black border-b-4 border-twitter-blue yellow:border-twitter-yellow crimson:border-twitter-crimson purple:border-twitter-purple orange:border-twitter-orange green:border-twitter-green dark:text-white dim:text-white"
+                                        : "text-gray-600 dark:text-gray-400 dim:text-gray-400"
+                                }`}
+                            >
                                 Following
                             </div>
                         </NavLink>
                         <NavLink
                             to={`/${username}/followers`}
-                            className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
+                            className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                         >
-                            <div className="py-4 text-gray-600">Followers</div>
+                            <div className="py-4 text-gray-600 dark:text-gray-400 dim:text-gray-400">Followers</div>
                         </NavLink>
                     </div>
 

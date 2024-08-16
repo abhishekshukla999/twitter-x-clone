@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authService, profileMediaService } from "../../appwrite";
 import { logout } from "../../features/auth/authSlice";
-import LogoutModal from "../Modals/LogoutModal";
+import { LogoutModal } from "../index";
 
 function LogoutButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -36,9 +36,9 @@ function LogoutButton() {
                 }}
             >
                 <div className="flex justify-center items-center max-w-xl">
-                    <div className="profile m-2">
+                    <div className="profile m-2 min-w-[40px] max-w-[43px]">
                         <img
-                            className="w-[40px] rounded-full"
+                            className="w-full rounded-full"
                             src={imageUrl()}
                             alt="avatar"
                         />

@@ -7,7 +7,7 @@ import {
 } from "../../appwrite";
 import { useSelector, useDispatch } from "react-redux";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { LoadingModal } from "../";
+import { LoadingModal } from "../index";
 import { toast } from "sonner";
 
 function ReplyForm({ tweetId }) {
@@ -103,8 +103,8 @@ function ReplyForm({ tweetId }) {
     };
 
     return (
-        <div className="reply-form flex max-[499px]:hidden pt-3 w-full max-h-[70%] border-b border-zinc-200 dark:border-gray-800 dim:border-gray-800">
-            <div className="mx-2 w-[43px]">
+        <div className="reply-form flex pt-3 w-full max-h-[70%] border-b border-zinc-200 dark:border-gray-800 dim:border-gray-800">
+            <div className="mx-2 min-w-[40px] max-w-[43px]">
                 <img className="w-full rounded-full" src={imageUrl()} alt="" />
             </div>
             <form className="items w-[90%]" onSubmit={handleSubmit(submitPost)}>
@@ -143,8 +143,9 @@ function ReplyForm({ tweetId }) {
                         </div>
                     )}
                 </div>
-                {/* usables */}
-                <div className="flex justify-between border-t dark:border-gray-600 dim:border-gray-600">
+
+                <div className="flex flex-wrap justify-between border-t dark:border-gray-600 dim:border-gray-600">
+                    {/* usables */}
                     <div className="flex my-2 flex-wrap">
                         {/* file upload */}
                         <div

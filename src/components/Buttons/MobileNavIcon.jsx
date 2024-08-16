@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavigationMobile } from "../";
+import { NavigationMobile } from "../index";
 import { useSelector } from "react-redux";
 import { profileMediaService } from "../../appwrite";
 
@@ -29,9 +29,12 @@ function MobileNavIcon() {
     return (
         <div>
             <div className="my-3 hidden max-[499px]:block">
-                <div onClick={() => setIsOpen(true)}>
+                <div
+                    className="min-w-[40px] max-w-[43px] mx-3"
+                    onClick={() => setIsOpen(true)}
+                >
                     <img
-                        className="w-[45px] rounded-full mx-3"
+                        className="rounded-full"
                         src={avatarURL}
                         alt="navigation menu avatar"
                     />

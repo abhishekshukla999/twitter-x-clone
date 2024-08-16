@@ -1,6 +1,6 @@
 import { useState } from "react";
 import NavigationBottom from "../Header/NavigationBottom";
-import PostModal from "../Modals/PostModal";
+import { PostModal } from "../index";
 
 function Feed({ children }) {
     const [isOpen, setIsOpen] = useState(false);

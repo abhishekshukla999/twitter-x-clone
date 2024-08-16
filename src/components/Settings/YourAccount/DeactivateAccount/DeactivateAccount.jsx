@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Input } from "../../../index";
 import { useSelector } from "react-redux";
 import { profileMediaService } from "../../../../appwrite";
-import { SettingItemsContainer, BackButton } from "../../../";
+import { Input, SettingItemsContainer, BackButton } from "../../../index";
 
 function DeactivateAccount() {
     const navigate = useNavigate();
@@ -35,7 +34,7 @@ function DeactivateAccount() {
                         className="p-3 flex hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                         to={`/${profileData.username}`}
                     >
-                        <div className="w-10 my-auto">
+                        <div className="min-w-[40px] max-w-[43px] my-auto">
                             <img
                                 src={avatarUrl()}
                                 alt="avatar"

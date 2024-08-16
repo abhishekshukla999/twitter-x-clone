@@ -117,7 +117,7 @@ function UserInfo({ username, setStatus }) {
                         />
                     </div>
                     {/* Edit / Follow */}
-                    <div className="absolute top-4 right-4">
+                    <div className="absolute top-4 right-4 max-[299px]:relative max-[299px]:flex max-[299px]:w-full max-[299px]:items-center max-[299px]:mt-16 max-[299px]:ml-8">
                         {authId === otherProfileData?.$id ? (
                             <button
                                 className="p-2 px-4 font-bold text-base border border-zinc-300 dark:border-gray-800 dim:border-gray-800 rounded-full"

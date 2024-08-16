@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import PostModal from "../Modals/PostModal";
-import NavigationMD from "./NavigationMD";
+import { PostModal, NavigationMD } from "../index";
 import { useSelector } from "react-redux";
 
 function Navigation() {
@@ -36,7 +35,11 @@ function Navigation() {
                         <NavLink
                             to="/home"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Home"
                         >
@@ -58,7 +61,11 @@ function Navigation() {
                         <NavLink
                             to="/explore"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Explore"
                         >
@@ -80,7 +87,11 @@ function Navigation() {
                         <NavLink
                             to="/notifications"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Notifications"
                         >
@@ -102,7 +113,11 @@ function Navigation() {
                         <NavLink
                             to="/messages"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Messages"
                         >
@@ -124,7 +139,11 @@ function Navigation() {
                         <NavLink
                             to="/grok"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Grok"
                         >
@@ -163,7 +182,11 @@ function Navigation() {
                         <NavLink
                             to="/bookmarks"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Bookmarks"
                         >
@@ -185,7 +208,11 @@ function Navigation() {
                         <NavLink
                             to="/communities"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Communities"
                         >
@@ -207,7 +234,11 @@ function Navigation() {
                         <NavLink
                             to="/premium"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Premium"
                         >
@@ -229,7 +260,11 @@ function Navigation() {
                         <NavLink
                             to="/verified-orgs"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Verified Orgs"
                         >
@@ -251,7 +286,11 @@ function Navigation() {
                         <NavLink
                             to={`/${profileData?.username}` || "#"}
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Profile"
                         >
@@ -273,7 +312,11 @@ function Navigation() {
                         <NavLink
                             to="/settings"
                             className={({ isActive }) =>
-                                `${listStyle} ${isActive ? "font-bold dark:bg-slate-800 dim:bg-slate-700" : null}`
+                                `${listStyle} ${
+                                    isActive
+                                        ? "font-bold dark:bg-slate-800 dim:bg-slate-700"
+                                        : null
+                                }`
                             }
                             title="Settings"
                         >

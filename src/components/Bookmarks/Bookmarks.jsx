@@ -4,7 +4,7 @@ import TweetCard from "../Tweets/TweetCard";
 import { useDispatch, useSelector } from "react-redux";
 import { bookmarkService, tweetService } from "../../appwrite";
 import { Query } from "appwrite";
-import { Loader } from "../";
+import { Loader } from "../index";
 import {
     addBookmarks,
     removeBookmarks,
@@ -104,7 +104,7 @@ function Bookmarks() {
                 setIsOptionOpen(false);
             }}
         >
-            <div className="top flex justify-between p-3 pt-1 sticky top-0 backdrop-blur-3xl opacity-[100%]">
+            <div className="top flex justify-between p-3 pt-1 sticky top-0 z-30 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex">
                     <NavLink
                         className="m-0.5 my-auto p-2 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full hidden max-[499px]:block"
@@ -147,36 +147,36 @@ function Bookmarks() {
                         </svg>
                     </div>
                 </div>
-            </div>
-            {isOptionOpen && (
-                <div
-                    className="absolute flex bg-white top-3 left-1/2 transform -translate-x-1/3 w-2/3 rounded-xl shadow-lg dark:shadow-gray-500 dark:shadow-inner dim:shadow-gray-500 dim:shadow-inner dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <button
-                        className="font-bold mx-3 p-1 text-3xl rounded-full hover:text-twitter-blue"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsOptionOpen(false);
-                        }}
-                    >
-                        &times;
-                    </button>
+                {isOptionOpen && (
                     <div
-                        className="my-2 w-full cursor-pointer"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleClearAllBookmarks();
-                        }}
+                        className="absolute z-50 flex bg-white top-3 left-1/2 transform -translate-x-1/3 w-2/3 rounded-xl shadow-lg dark:shadow-gray-500 dark:shadow-inner dim:shadow-gray-500 dim:shadow-inner dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex gap-2 mr-5 text-base font-bold text-red-600 px-5 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 dim:hover:bg-slate-700 w-full">
-                            <button className="w-full">
-                                Clear all Bookmarks
-                            </button>
+                        <button
+                            className="font-bold mx-3 p-1 text-3xl rounded-full hover:text-twitter-blue"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsOptionOpen(false);
+                            }}
+                        >
+                            &times;
+                        </button>
+                        <div
+                            className="my-2 w-full cursor-pointer"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleClearAllBookmarks();
+                            }}
+                        >
+                            <div className="flex gap-2 mr-5 text-base font-bold text-red-600 px-5 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 dim:hover:bg-slate-700 w-full">
+                                <button className="w-full">
+                                    Clear all Bookmarks
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {/* Tweet Card */}
             {loader ? (

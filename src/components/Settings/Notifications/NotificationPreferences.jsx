@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { SettingItemsContainer, BackButton } from "../../";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function NotificationPreferences() {
     document.title = "Preferences / X";

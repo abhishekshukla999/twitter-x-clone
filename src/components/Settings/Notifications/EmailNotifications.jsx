@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SettingItemsContainer, BackButton } from "../../";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function EmailNotifications() {
     const [isChecked, setIsChecked] = useState(false);

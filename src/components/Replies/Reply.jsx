@@ -8,9 +8,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { FollowTweet } from "../";
+import { FollowTweet, LoadingModal } from "../index";
 import { toast } from "sonner";
-import { LoadingModal } from "../";
 
 function Reply({
     replyId,
@@ -150,59 +149,60 @@ function Reply({
             <div className="parent post px-2 border-b dark:border-gray-600 dim:border-gray-600 pt-2 py-2 hover:bg-[#F7F7F7] dark:hover:bg-slate-700 dim:hover:bg-slate-800">
                 <div className="flex">
                     {/* User avatar */}
-                    <div className="avatar w-[50px]">
-                        <div className="m-1">
-                            <img
-                                className="w-full rounded-full"
-                                src={avatarURL}
-                                alt="avatar"
-                            />
-                        </div>
+
+                    <div className="avatar m-1 min-w-[40px] max-w-[43px]">
+                        <img
+                            className="rounded-full"
+                            src={avatarURL}
+                            alt="avatar"
+                        />
                     </div>
 
                     <div className="content w-[90%]">
                         {/* User details */}
-                        <div className="flex justify-between relative flex-wrap">
-                            <div
-                                className="user-details cursor-pointer flex flex-wrap mx-0.5 text-base"
-                                onClick={handleProfileNavigation}
-                            >
-                                <span className="mx-0.5 font-bold hover:underline">
-                                    {authorInfo?.name}
-                                </span>
-                                <span className="mx-0.5 text-zin font-light">
-                                    @{authorInfo?.username}
-                                </span>
-                                <span className="mx-0.5 font-light">
-                                    &middot;
-                                </span>
-                                <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
-                            </div>
+                        <div className="relative">
+                            <div className="flex justify-between">
+                                <div
+                                    className="user-details cursor-pointer flex flex-wrap mx-0.5 text-base"
+                                    onClick={handleProfileNavigation}
+                                >
+                                    <span className="mx-0.5 font-bold hover:underline">
+                                        {authorInfo?.name}
+                                    </span>
+                                    <span className="mx-0.5 text-zin font-light">
+                                        @{authorInfo?.username}
+                                    </span>
+                                    <span className="mx-0.5 font-light">
+                                        &middot;
+                                    </span>
+                                    <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
+                                </div>
 
-                            {/* options */}
-                            <div
-                                className="w-9 cursor-pointer relative"
-                                title="Options"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setisOpen(true);
-                                }}
-                            >
-                                <div className="">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                        className="w-9 p-2 hover:bg-blue-100dark:hover:bg-slate-800 dim:hover:bg-slate-700  fill-gray-500 dark:fill-white dim:fill-white rounded-full r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
-                                    >
-                                        <g>
-                                            <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
-                                        </g>
-                                    </svg>
+                                {/* options */}
+                                <div
+                                    className="w-9 cursor-pointer relative"
+                                    title="Options"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setisOpen(true);
+                                    }}
+                                >
+                                    <div className="">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                            className="w-9 p-2 hover:bg-blue-100dark:hover:bg-slate-800 dim:hover:bg-slate-700  fill-gray-500 dark:fill-white dim:fill-white rounded-full r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                        >
+                                            <g>
+                                                <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                             {/* options layover */}
                             {isOpen && (
-                                <div className="absolute z-50 bg-white top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
+                                <div className="absolute z-20 bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg top-1 left-1/2 transform -translate-x-1/3 w-2/3 border rounded-xl shadow-2xl">
                                     <button
                                         className="font-bold mx-3 text-3xl"
                                         onClick={(e) => {
@@ -216,7 +216,7 @@ function Reply({
                                         {(userId === authData.$id ||
                                             tweetAuthorId === authData.$id) && (
                                             <div
-                                                className="flex gap-2 mr-5 cursor-pointer text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
+                                                className="flex gap-2 mr-5 cursor-pointer text-base font-bold px-5 py-1 hover:bg-gray-200 dark:hover:bg-slate-700 dim:hover:bg-slate-800 w-full"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDelete();

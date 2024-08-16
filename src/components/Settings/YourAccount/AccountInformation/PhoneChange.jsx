@@ -1,11 +1,15 @@
-import { Input, LoadingModal } from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
 import { toast } from "sonner";
 import { useState } from "react";
-import { SettingItemsContainer, BackButton } from "../../../";
+import {
+    SettingItemsContainer,
+    BackButton,
+    Input,
+    LoadingModal,
+} from "../../../index";
 
 function PhoneChange() {
     const profileData = useSelector((state) => state.profile);

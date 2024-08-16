@@ -1,4 +1,4 @@
-import TrendingCard from "./TrendingCard";
+import { TrendingCard } from "../index";
 import { NavLink } from "react-router-dom";
 
 function WhatsHappening() {

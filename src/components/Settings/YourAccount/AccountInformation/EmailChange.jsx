@@ -1,4 +1,9 @@
-import { Input, LoadingModal } from "../../../index";
+import {
+    Input,
+    LoadingModal,
+    SettingItemsContainer,
+    BackButton,
+} from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { authService, profileService } from "../../../../appwrite";
@@ -7,7 +12,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Query } from "appwrite";
 import { login } from "../../../../features/auth/authSlice";
-import { SettingItemsContainer, BackButton } from "../../../";
 
 function EmailChange() {
     const profileData = useSelector((state) => state.profile);

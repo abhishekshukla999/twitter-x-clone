@@ -1,12 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { Input, LoadingModal } from "../../../index";
+import {
+    Input,
+    LoadingModal,
+    SettingItemsContainer,
+    BackButton,
+} from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { authService } from "../../../../appwrite";
 import { login } from "../../../../features/auth/authSlice";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
-import { SettingItemsContainer, BackButton } from "../../../";
 
 function ChangePassword() {
     const authData = useSelector((state) => state.auth.userData);

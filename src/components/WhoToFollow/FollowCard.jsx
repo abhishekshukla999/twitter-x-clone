@@ -1,4 +1,4 @@
-import { Follow } from "../";
+import { Follow } from "../index";
 
 function FollowCard() {
     return (

@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, NavLink, useNavigate } from "react-router-dom";
-import Feed from "../Containers/Feed";
-import Aside from "../Containers/Aside";
 import { followService, profileService } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { Query } from "appwrite";
 import { addFollowData, removeFollowData } from "../../features/follow/follow";
-import { Loader, ActionsCard } from "../index";
+import { Loader, ActionsCard, Feed, Aside } from "../index";
 
 function Followers() {
     const { username } = useParams();
@@ -104,7 +102,14 @@ function Followers() {
                             to={`/${username}/followers`}
                             className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300`}
                         >
-                            <div className="py-4 text-black border-b-4 border-twitter-blue">
+                            <div
+                                className={`py-4 ${
+                                    location.pathname ===
+                                    `/${username}/followers`
+                                        ? "text-black border-b-4 border-twitter-blue yellow:border-twitter-yellow crimson:border-twitter-crimson purple:border-twitter-purple orange:border-twitter-orange green:border-twitter-green dark:text-white dim:text-white"
+                                        : "text-gray-600 dark:text-gray-400 dim:text-gray-400"
+                                }`}
+                            >
                                 Followers
                             </div>
                         </NavLink>

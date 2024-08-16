@@ -1,6 +1,6 @@
-import WelcomeUser from "./WelcomeUser";
+import WelcomeUser from "./Home/WelcomeUser";
 import Login from "./LoginForm/Login";
-import Root from "./Root";
+import Root from "./Root/Root";
 import LogSignModal from "./Modals/LogSignModal";
 import SignUp1 from "./SignupForm/SignUp1";
 import SignUp2 from "./SignupForm/SignUp2";
@@ -12,7 +12,8 @@ import Feed from "./Containers/Feed";
 import Aside from "./Containers/Aside";
 import Navigation from "./Header/Navigation";
 import TweetCard from "./Tweets/TweetCard";
-import Search from "./Search";
+import Search from "./Search/ProfileSearch/Search";
+import SearchBox from "./Search/SearchBox/SearchBox";
 import WhatsHappening from "./Trending/WhatsHappening";
 import WhoToFollow from "./WhoToFollow/WhoToFollow";
 import TrendingCard from "./Trending/TrendingCard";
@@ -22,15 +23,12 @@ import Bookmarks from "./Bookmarks/Bookmarks";
 import Explore from "./Explore/Explore";
 import Notifications from "./Notifications/Notifications";
 import NotificationsCard from "./Notifications/NotificationsCard";
-import MessageBox from "./Messages/MessageBox";
-import MessageEntity from "./Messages/MessageEntity";
 import MessagesList from "./Messages/MessagesList";
-import TypeBox from "./Messages/TypeBox";
 import ChatItem from "./Messages/ChatItem";
 import Premium from "./Premium/Premium";
 import SettingsList from "./Settings/SettingsList";
-import Protected from "./Protected";
-import Loader from "./Loader";
+import Protected from "./Authorization/Protected";
+import Loader from "./Loader/Loader";
 import UnderDev from "./UnderDev/UnderDev";
 import PostModal from "./Modals/PostModal";
 import LogoutModal from "./Modals/LogoutModal";
@@ -42,6 +40,8 @@ import Likes from "./Profile/Likes";
 import Media from "./Profile/Media";
 import Replies from "./Profile/Replies";
 import Posts from "./Profile/Posts";
+import NoUser from "./Profile/NoUser";
+import UserInfo from "./Profile/UserInfo";
 import PremiumModal from "./Modals/PremiumModal";
 import PostPageComponent from "./PostPage/PostPageComponent";
 import PostCard from "./PostPage/PostCard";
@@ -53,6 +53,7 @@ import Follow from "./Buttons/Follow";
 import Followers from "./Follows/Followers";
 import Following from "./Follows/Following";
 import FollowTweet from "./Buttons/FollowTweet";
+import FollowCard from "./WhoToFollow/FollowCard";
 import Input from "./Inputs/Input";
 import Select from "./Inputs/Select";
 import LoadingModal from "./Modals/LoadingModal";
@@ -107,6 +108,7 @@ export {
     Navigation,
     TweetCard,
     Search,
+    SearchBox,
     WhatsHappening,
     WhoToFollow,
     TrendingCard,
@@ -116,10 +118,7 @@ export {
     Explore,
     Notifications,
     NotificationsCard,
-    MessageBox,
-    MessageEntity,
     MessagesList,
-    TypeBox,
     ChatItem,
     Premium,
     SettingsList,
@@ -136,6 +135,8 @@ export {
     Media,
     Replies,
     Posts,
+    NoUser,
+    UserInfo,
     PremiumModal,
     PostPageComponent,
     Reply,
@@ -177,4 +178,5 @@ export {
     MobileBackButton,
     SettingItemsContainer,
     BackButton,
+    FollowCard
 };

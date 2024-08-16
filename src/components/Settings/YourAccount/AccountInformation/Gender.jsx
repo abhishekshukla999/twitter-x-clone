@@ -2,10 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
+import {
+    SettingItemsContainer,
+    BackButton,
+    LoadingModal,
+} from "../../../index";
 import { useState } from "react";
-import { LoadingModal } from "../../../";
 import { toast } from "sonner";
-import { SettingItemsContainer, BackButton } from "../../../";
 
 function Gender() {
     const profileData = useSelector((state) => state.profile);

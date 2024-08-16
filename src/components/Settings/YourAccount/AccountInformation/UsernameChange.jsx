@@ -1,4 +1,9 @@
-import { Input, LoadingModal } from "../../../index";
+import {
+    SettingItemsContainer,
+    BackButton,
+    Input,
+    LoadingModal,
+} from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
@@ -6,7 +11,6 @@ import { addProfileData } from "../../../../features/profile/profileSlice";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Query } from "appwrite";
-import { SettingItemsContainer, BackButton } from "../../../";
 
 function UsernameChange() {
     const profileData = useSelector((state) => state.profile);

@@ -8,7 +8,7 @@ import {
 } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { addProfileData } from "../../features/profile/profileSlice";
-import { LoadingModal } from "..";
+import { LoadingModal } from "../index";
 import { toast } from "sonner";
 
 function TweetForm() {
@@ -110,9 +110,9 @@ function TweetForm() {
     return (
         <>
             <div className="tweet-form flex max-[499px]:hidden pt-3 w-full max-h-[70%] border border-t-0 border-zinc-200 dark:border-gray-800 dim:border-gray-800">
-                <div className="mx-3 my-2 w-[40px]">
+                <div className="mx-3 my-2 min-w-[40px] max-w-[43px]">
                     <img
-                        className="min-w-[40px] rounded-full"
+                        className="w-full rounded-full"
                         src={imageUrl()}
                         alt="avatar"
                     />

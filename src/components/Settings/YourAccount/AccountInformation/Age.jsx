@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { SettingItemsContainer, BackButton } from "../../../";
+import { SettingItemsContainer, BackButton } from "../../../index";
 
 function Age() {
     const profileData = useSelector((state) => state.profile);
