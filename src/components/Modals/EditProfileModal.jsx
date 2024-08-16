@@ -161,12 +161,24 @@ function EditProfileModal({ isOpen, onClose }) {
         setUploadCoverImage(null);
     };
 
+    const handleClose = (e) => {
+        console.log("FORm submmted");
+
+        onClose();
+        reset({
+            name: profileData?.name || "",
+            bio: profileData?.bio || "",
+            location: profileData?.location || "",
+            website: profileData?.website || "",
+        });
+    };
+
     if (!isOpen) return null;
 
     return createPortal(
         <div
             className="close-outer fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-gray-600 bg-opacity-50 flex justify-center items-center"
-            onClick={onClose}
+            onClick={handleClose}
         >
             <LoadingModal isOpen={loading} />
 
@@ -174,11 +186,16 @@ function EditProfileModal({ isOpen, onClose }) {
                 className="bg-white text-black dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen"
                 onSubmit={handleSubmit(saveProfile)}
                 onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault(); // Prevent default Enter key behavior
+                    }
+                }}
             >
                 <div className="flex gap-5 py-1 sticky z-30 top-0 bg-white opacity-80 dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white">
                     <button
                         className="rounded-lg bg-none border-none text-2xl cursor-pointer my-auto px-3"
-                        onClick={onClose}
+                        onClick={handleClose}
                     >
                         <svg
                             viewBox="0 0 24 24"
@@ -297,6 +314,7 @@ function EditProfileModal({ isOpen, onClose }) {
                         <Input
                             label="Name"
                             className="dark:text-white dim:text-white"
+                            maxlength="50"
                             {...register("name", {
                                 required: "Name can't be empty",
                             })}
@@ -315,6 +333,7 @@ function EditProfileModal({ isOpen, onClose }) {
                             label="Bio"
                             type="textarea"
                             className="dark:text-white dim:text-white"
+                            maxlength="125"
                             {...register("bio")}
                         />
                     </div>
@@ -322,12 +341,14 @@ function EditProfileModal({ isOpen, onClose }) {
                         <Input
                             label="Location"
                             className="dark:text-white dim:text-white"
+                            maxlength="30"
                             {...register("location")}
                         />
                     </div>
                     <div className="flex flex-col p-2 my-5 mx-3">
                         <Input
                             label="Website"
+                            maxlength="80"
                             className="dark:text-white dim:text-white"
                             {...register("website")}
                         />
