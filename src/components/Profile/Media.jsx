@@ -69,9 +69,7 @@ function Media() {
 
     return (
         <div>
-            {loading ? (
-                <Loader />
-            ) : mediaData.length === 0 ? (
+            {mediaData.length === 0 ? (
                 <div className="text-3xl font-bold text-center p-4">
                     @{otherProfileData?.username || ""} don&apos;t have any
                     media

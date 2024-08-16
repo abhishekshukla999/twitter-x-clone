@@ -57,7 +57,7 @@ function TweetForm() {
             });
 
             if (tweetPost) {
-                console.log("Tweet Created");
+                // console.log("Tweet Created");
                 const updatedTweetsCount = profileData?.tweets + 1;
 
                 const updatedProfileData = await profileService.updateProfile(

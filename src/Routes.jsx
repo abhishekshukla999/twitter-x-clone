@@ -26,6 +26,7 @@ import {
     Display,
     EmailChange,
     EmailNotifications,
+    Error,
     Followers,
     Following,
     Gender,
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <WelcomeUser />,
+                errorElement: <Error />,
             },
             {
                 path: "home",
@@ -62,6 +64,7 @@ const router = createBrowserRouter([
                         <Home />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: ":username",
@@ -70,6 +73,7 @@ const router = createBrowserRouter([
                         <Profile />
                     </Protected>
                 ),
+                errorElement: <Error />,
                 children: [
                     {
                         index: true,
@@ -92,10 +96,12 @@ const router = createBrowserRouter([
             {
                 path: ":username/following",
                 element: <Following />,
+                errorElement: <Error />,
             },
             {
                 path: ":username/followers",
                 element: <Followers />,
+                errorElement: <Error />,
             },
             {
                 path: "explore",
@@ -104,6 +110,7 @@ const router = createBrowserRouter([
                         <Explore />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "notifications",
@@ -112,6 +119,7 @@ const router = createBrowserRouter([
                         <Notifications />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "messages",
@@ -120,6 +128,7 @@ const router = createBrowserRouter([
                         <Messages />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "grok",
@@ -128,6 +137,7 @@ const router = createBrowserRouter([
                         <Grok />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "lists",
@@ -136,6 +146,7 @@ const router = createBrowserRouter([
                         <Lists />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "bookmarks",
@@ -144,6 +155,7 @@ const router = createBrowserRouter([
                         <Bookmarks />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "communities",
@@ -152,6 +164,7 @@ const router = createBrowserRouter([
                         <Communities />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "premium",
@@ -160,6 +173,7 @@ const router = createBrowserRouter([
                         <Premium />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "/checkout",
@@ -168,6 +182,7 @@ const router = createBrowserRouter([
                         <Payment />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "verified-orgs",
@@ -176,6 +191,7 @@ const router = createBrowserRouter([
                         <VerifiedOrgs />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "settings",
@@ -262,6 +278,7 @@ const router = createBrowserRouter([
                         element: <Display />,
                     },
                 ],
+                errorElement: <Error />,
             },
             {
                 path: ":username/status/:tweetId",
@@ -270,6 +287,7 @@ const router = createBrowserRouter([
                         <PostPage />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
         ],
     },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Loader, MobileNavIcon, TweetCard, TweetForm } from "../index";
 import { tweetService } from "../../appwrite";
@@ -7,11 +7,43 @@ import { config } from "../../config/config";
 
 function FeedContent() {
     const [tweetsList, setTweetsList] = useState([]);
+    const [lastId, setLastId] = useState("");
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
 
     useEffect(() => {
-        fetchTweets();
+        setLoading(true);
+        setError(false);
 
+        async function fetchTweets() {
+            const queryParams = [Query.limit(7), Query.orderDesc("$createdAt")];
+
+            if (lastId) {
+                queryParams.push(Query.cursorAfter(lastId));
+            }
+
+            try {
+                const tweets = await tweetService.getTweets(queryParams);
+
+                if (tweets.documents.length > 0) {
+                    const oldTweetsList = [...tweetsList];
+                    setTweetsList([...oldTweetsList, ...tweets.documents]);
+
+                    setHasMore(tweets.total);
+                }
+            } catch (error) {
+                console.log("Error Fetching tweet list :: ", error);
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchTweets();
+    }, [lastId]);
+
+    useEffect(() => {
         const client = new Client()
             .setEndpoint(config.appwriteUrl)
             .setProject(config.appwriteProjectId);
@@ -39,22 +71,31 @@ function FeedContent() {
             }
         );
 
-        tweetService.client.subscribe(``);
-
         return () => {
             unsubscribe();
         };
     }, []);
 
-    async function fetchTweets() {
-        const tweets = await tweetService.getTweets([
-            Query.limit(10),
-            Query.orderDesc("$createdAt"),
-        ]);
+    const observer = useRef();
+    const lastIdElementRef = useCallback(
+        (node) => {
+            if (loading) return;
 
-        setTweetsList(tweets.documents);
-        setLoading(false);
-    }
+            if (observer.current) observer.current.disconnect();
+
+            observer.current = new IntersectionObserver((entries) => {
+                if (
+                    entries["0"].isIntersecting &&
+                    hasMore > tweetsList.length
+                ) {
+                    setLastId(tweetsList[tweetsList.length - 1]?.$id);
+                }
+            });
+
+            if (node) observer.current.observe(node);
+        },
+        [loading]
+    );
 
     return (
         <div className="relative">
@@ -75,7 +116,6 @@ function FeedContent() {
                     </svg>
                 </div>
             </div>
-
             <div className="top flex p-3 min-[500px]:sticky z-30 top-0 backdrop-blur-3xl opacity-[100%] border-b border-l border-r border-b-zinc-200 dark:border-gray-800 dim:border-gray-800">
                 <NavLink className="left w-1/2 flex justify-center font-bold text-base">
                     For You
@@ -88,21 +128,35 @@ function FeedContent() {
             {/* TweetForm */}
             <TweetForm />
 
-            {loading ? (
-                <Loader />
-            ) : (
-                tweetsList.map((tweet) => (
-                    <TweetCard
-                        key={tweet.$id}
-                        tweetId={tweet.$id}
-                        content={tweet.content}
-                        media={tweet.media}
-                        author={tweet.author}
-                        createdAt={tweet.$createdAt}
-                        updatedAt={tweet.$updatedAt}
-                    />
-                ))
+            {tweetsList?.map((tweet, index) =>
+                tweetsList.length === index + 1 ? (
+                    <div key={tweet.$id} ref={lastIdElementRef}>
+                        <TweetCard
+                            tweetId={tweet.$id}
+                            content={tweet.content}
+                            media={tweet.media}
+                            author={tweet.author}
+                            createdAt={tweet.$createdAt}
+                            updatedAt={tweet.$updatedAt}
+                        />
+                    </div>
+                ) : (
+                    <div key={tweet.$id}>
+                        <TweetCard
+                            tweetId={tweet.$id}
+                            content={tweet.content}
+                            media={tweet.media}
+                            author={tweet.author}
+                            createdAt={tweet.$createdAt}
+                            updatedAt={tweet.$updatedAt}
+                        />
+                    </div>
+                )
             )}
+
+            {loading && <Loader />}
+
+            {error && "ERROR!!!!!!!!!"}
         </div>
     );
 }

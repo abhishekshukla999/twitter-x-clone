@@ -309,7 +309,7 @@ function PostCard({
                 dispatch(addProfileData({ ...updatedProfileData }));
 
                 dispatch(removeTweetPageData());
-                navigate(-1);
+                navigate(-2);
             }
 
             // deleting associated docs

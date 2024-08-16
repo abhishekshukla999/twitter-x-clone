@@ -67,6 +67,7 @@ import MediaCard from "./Profile/MediaCard";
 import MobileNavIcon from "./Buttons/MobileNavIcon";
 import Payment from "./Payment/Payment";
 import SignupForm from "./SignupForm/SignupForm";
+import Error from "./Error/Error";
 
 import YourAccount from "./Settings/YourAccount/YourAccount";
 
@@ -189,4 +190,5 @@ export {
     SettingItemsContainer,
     BackButton,
     FollowCard,
+    Error,
 };
