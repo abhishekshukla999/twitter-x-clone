@@ -20,7 +20,7 @@ function NotificationsCard() {
                     <span>
                         <img
                             className="w-8 rounded-full"
-                            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                            src="/elon-musk.svg"
                             alt="notifications"
                             loading="lazy"
                         />

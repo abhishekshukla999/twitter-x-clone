@@ -46,7 +46,7 @@ function NavigationMobile({ isOpen, onClose }) {
 
     return createPortal(
         <div
-            className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-zinc-900 bg-opacity-50 flex"
+            className="close-outer fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-zinc-900 bg-opacity-50 flex"
             onClick={(e) => {
                 e.stopPropagation();
                 onClose();
