@@ -15,7 +15,7 @@ function Profile({ username }) {
             <div className="top flex px-2 sticky z-30 top-0 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
                     className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(-2)}
                 >
                     <svg
                         viewBox="0 0 24 24"

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-let unsubscribe = false;
+
 import { NavLink } from "react-router-dom";
 import { Loader, MobileNavIcon, TweetCard, TweetForm } from "../index";
 import { tweetService } from "../../appwrite";

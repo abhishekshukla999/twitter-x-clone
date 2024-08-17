@@ -114,7 +114,7 @@ function Bookmarks() {
                 <div className="flex">
                     <NavLink
                         className="m-0.5 my-auto p-2 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full hidden max-[499px]:block"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate(-2)}
                     >
                         <svg
                             viewBox="0 0 24 24"

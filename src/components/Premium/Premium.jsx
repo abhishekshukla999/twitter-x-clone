@@ -50,7 +50,7 @@ function Premium() {
             <div className="top flex p-2 sticky z-50 border-b dark:border-gray-800 dim:border-gray-800 top-0 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
                     className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(-2)}
                 >
                     <svg
                         viewBox="0 0 24 24"

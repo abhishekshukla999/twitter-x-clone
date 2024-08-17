@@ -108,7 +108,7 @@ function PostPageComponent({ username, tweetId }) {
             <div className="top flex py-1 px-3 h-[51px] sticky z-20 top-0 backdrop-blur-[400px] opacity-[100%]">
                 <NavLink
                     className="left my-auto rounded-full"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(-2)}
                 >
                     <svg
                         viewBox="0 0 24 24"

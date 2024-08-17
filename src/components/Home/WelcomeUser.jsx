@@ -5,12 +5,8 @@ function WelcomeUser() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        navigateHome();
-    }, []);
-
-    function navigateHome() {
         navigate("/home");
-    }
+    }, []);
 
     return (
         <div className="w-full flex flex-col justify-center items-center p-12 my-auto font-bold">
