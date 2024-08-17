@@ -16,43 +16,48 @@ function Following() {
     const location = useLocation();
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchFollowing = async () => {
-            try {
-                const usernameData = await profileService.getProfiles([
-                    Query.equal("username", [username]),
-                ]);
-
-                if (usernameData.documents.length !== 0) {
-                    setUsernameData(usernameData.documents["0"]);
-                    const userId = usernameData.documents["0"].$id;
-
-                    const allFollowing = await followService.getFollows([
-                        Query.equal("followerId", [userId]),
+            if (!unsubscribe) {
+                try {
+                    const usernameData = await profileService.getProfiles([
+                        Query.equal("username", [username]),
                     ]);
 
-                    const allFollowingIds = allFollowing.documents.map(
-                        (follow) => follow.followingId
-                    );
+                    if (usernameData.documents.length !== 0) {
+                        setUsernameData(usernameData.documents["0"]);
+                        const userId = usernameData.documents["0"].$id;
 
-                    const allFollowingData = await profileService.getProfiles([
-                        Query.equal("$id", allFollowingIds),
-                    ]);
+                        const allFollowing = await followService.getFollows([
+                            Query.equal("followerId", [userId]),
+                        ]);
 
-                    const updatedFollowingData = [
-                        ...allFollowingData.documents,
-                    ];
+                        const allFollowingIds = allFollowing.documents.map(
+                            (follow) => follow.followingId
+                        );
 
-                    dispatch(
-                        addFollowData({
-                            ...followsData,
-                            followingData: updatedFollowingData,
-                        })
-                    );
+                        const allFollowingData =
+                            await profileService.getProfiles([
+                                Query.equal("$id", allFollowingIds),
+                            ]);
+
+                        const updatedFollowingData = [
+                            ...allFollowingData.documents,
+                        ];
+
+                        dispatch(
+                            addFollowData({
+                                ...followsData,
+                                followingData: updatedFollowingData,
+                            })
+                        );
+                    }
+                } catch (error) {
+                    console.log("Error fetching following :: ", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.log("Error fetching following :: ", error);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -60,6 +65,7 @@ function Following() {
 
         return () => {
             dispatch(removeFollowData());
+            unsubscribe = true;
         };
     }, [dispatch, username]);
 
@@ -112,7 +118,9 @@ function Following() {
                             to={`/${username}/followers`}
                             className={`left w-1/2 px-3 flex justify-center font-bold text-base hover:bg-gray-300 dark:hover:bg-slate-700 dim:hover:bg-slate-600`}
                         >
-                            <div className="py-4 text-gray-600 dark:text-gray-400 dim:text-gray-400">Followers</div>
+                            <div className="py-4 text-gray-600 dark:text-gray-400 dim:text-gray-400">
+                                Followers
+                            </div>
                         </NavLink>
                     </div>
 

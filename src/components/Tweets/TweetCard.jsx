@@ -71,36 +71,55 @@ function TweetCard({
     const [navLoading, setNavLoading] = useState(false);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const avatarUrl = async () => {
-            const authorData = await profileService.getProfile(author);
+            if (!unsubscribe) {
+                try {
+                    const authorData = await profileService.getProfile(author);
 
-            if (authorData) {
-                const authorData = await profileService.getProfile(author);
+                    if (authorData) {
+                        const authorData = await profileService.getProfile(
+                            author
+                        );
 
-                if (authorData) {
-                    const url = profileMediaService.getFilePreview(
-                        authorData.avatar
+                        if (authorData) {
+                            const url = profileMediaService.getFilePreview(
+                                authorData.avatar
+                            );
+                            const URL = url ? url : "/defaultAvatar.png";
+
+                            setAvatarURL(URL);
+
+                            setAuthorInfo({
+                                name: authorData.name,
+                                username: authorData.username,
+                            });
+
+                            setAuthorInfoLoader(false);
+                        }
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching profile in tweets card :: ",
+                        error
                     );
-                    const URL = url ? url : "/defaultAvatar.png";
-
-                    setAvatarURL(URL);
-
-                    setAuthorInfo({
-                        name: authorData.name,
-                        username: authorData.username,
-                    });
-
-                    setAuthorInfoLoader(false);
                 }
             }
         };
 
         avatarUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [author]);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchMedia = async () => {
-            if (media) {
+            if (media && !unsubscribe) {
                 const img = new Image();
                 img.src = tweetMediaService.getCustomQualityFilePreview({
                     fileId: media,
@@ -126,136 +145,172 @@ function TweetCard({
 
         fetchMedia();
         setDate(toLocalDate(createdAt));
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [media]);
 
     // bookmarks
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchBookmarksData = async () => {
-            try {
-                const allBookmarks = await bookmarkService.getBookmarks([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
-
-                if (allBookmarks.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        bookmarksCount: allBookmarks.documents.length,
-                    }));
-
-                    const isMyBook = await bookmarkService.getBookmarks([
-                        Query.and([
-                            Query.equal("tweetId", [tweetId]),
-                            Query.equal("userId", [authData.$id]),
-                        ]),
+            if (!unsubscribe) {
+                try {
+                    const allBookmarks = await bookmarkService.getBookmarks([
+                        Query.equal("tweetId", [tweetId]),
                     ]);
 
-                    if (isMyBook.documents.length !== 0) {
+                    if (allBookmarks.documents.length !== 0) {
                         setInteractions((interactions) => ({
                             ...interactions,
-                            myBookmark: true,
+                            bookmarksCount: allBookmarks.documents.length,
                         }));
+
+                        const isMyBook = await bookmarkService.getBookmarks([
+                            Query.and([
+                                Query.equal("tweetId", [tweetId]),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyBook.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myBookmark: true,
+                            }));
+                        }
                     }
+                } catch (error) {
+                    console.log("Bookmarks loading failed :: ", error);
                 }
-            } catch (error) {
-                console.log("Bookmarks loading failed :: ", error);
             }
         };
 
         fetchBookmarksData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // likes
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchLikesData = async () => {
-            try {
-                const allLikes = await likeService.getLikes([
-                    Query.equal("tweetId", tweetId),
-                ]);
-
-                if (allLikes.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        likesCount: allLikes.documents.length,
-                    }));
-
-                    const isMyLike = await likeService.getLikes([
-                        Query.and([
-                            Query.equal("tweetId", tweetId),
-                            Query.equal("userId", [authData.$id]),
-                        ]),
+            if (!unsubscribe) {
+                try {
+                    const allLikes = await likeService.getLikes([
+                        Query.equal("tweetId", tweetId),
                     ]);
 
-                    if (isMyLike.documents.length !== 0) {
+                    if (allLikes.documents.length !== 0) {
                         setInteractions((interactions) => ({
                             ...interactions,
-                            myLike: true,
+                            likesCount: allLikes.documents.length,
                         }));
+
+                        const isMyLike = await likeService.getLikes([
+                            Query.and([
+                                Query.equal("tweetId", tweetId),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyLike.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myLike: true,
+                            }));
+                        }
                     }
+                } catch (error) {
+                    console.log("Likes loading failed :: ", error);
                 }
-            } catch (error) {
-                console.log("Likes loading failed :: ", error);
             }
         };
 
         fetchLikesData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // retweets
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchRetweetsData = async () => {
-            try {
-                const allRetweets = await retweetService.getRetweets([
-                    Query.equal("tweetId", tweetId),
-                ]);
-
-                if (allRetweets.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        retweetsCount: allRetweets.documents.length,
-                    }));
-
-                    const isMyRetweet = await retweetService.getRetweets([
-                        Query.and([
-                            Query.equal("tweetId", tweetId),
-                            Query.equal("userId", [authData.$id]),
-                        ]),
+            if (!unsubscribe) {
+                try {
+                    const allRetweets = await retweetService.getRetweets([
+                        Query.equal("tweetId", tweetId),
                     ]);
 
-                    if (isMyRetweet.documents.length !== 0) {
+                    if (allRetweets.documents.length !== 0) {
                         setInteractions((interactions) => ({
                             ...interactions,
-                            myRetweet: true,
+                            retweetsCount: allRetweets.documents.length,
                         }));
+
+                        const isMyRetweet = await retweetService.getRetweets([
+                            Query.and([
+                                Query.equal("tweetId", tweetId),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyRetweet.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myRetweet: true,
+                            }));
+                        }
                     }
+                } catch (error) {
+                    console.log("Retweets loading failed :: ", error);
                 }
-            } catch (error) {
-                console.log("Retweets loading failed :: ", error);
             }
         };
 
         fetchRetweetsData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // replies
     useEffect(() => {
-        const fetchRepliesData = async () => {
-            try {
-                const allReplies = await replyService.getReplies([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
+        let unsubscribe = false;
 
-                if (allReplies.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        repliesCount: allReplies.documents.length,
-                    }));
+        const fetchRepliesData = async () => {
+            if (!unsubscribe) {
+                try {
+                    const allReplies = await replyService.getReplies([
+                        Query.equal("tweetId", [tweetId]),
+                    ]);
+
+                    if (allReplies.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            repliesCount: allReplies.documents.length,
+                        }));
+                    }
+                } catch (error) {
+                    console.log("Replies loading failed :: ", error);
                 }
-            } catch (error) {
-                console.log("Replies loading failed :: ", error);
             }
         };
 
         fetchRepliesData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // converting date to local

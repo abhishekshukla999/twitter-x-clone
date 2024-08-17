@@ -35,26 +35,41 @@ function Reply({
     const navigate = useNavigate();
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const avatarUrl = async () => {
-            const authorData = await profileService.getProfile(userId);
+            if (!unsubscribe) {
+                try {
+                    const authorData = await profileService.getProfile(userId);
 
-            if (authorData) {
-                const url = profileMediaService.getCustomFilePreview(
-                    authorData.avatar,
-                    50,
-                    50
-                );
+                    if (authorData) {
+                        const url = profileMediaService.getCustomFilePreview(
+                            authorData.avatar,
+                            50,
+                            50
+                        );
 
-                setAvatarURL(url || "/defaultAvatar.png");
+                        setAvatarURL(url || "/defaultAvatar.png");
 
-                setAuthorInfo({
-                    name: authorData.name,
-                    username: authorData.username,
-                });
+                        setAuthorInfo({
+                            name: authorData.name,
+                            username: authorData.username,
+                        });
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching Avatar url in reply :: ",
+                        error
+                    );
+                }
             }
         };
 
         avatarUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [userId]);
 
     useEffect(() => {

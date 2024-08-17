@@ -12,49 +12,61 @@ function Likes() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchLikes() {
-            try {
-                const myLikes = await likeService.getLikes([
-                    Query.equal("userId", [otherProfileData.$id]),
-                ]);
-
-                if (myLikes.documents.length !== 0) {
-                    const tweetIds = myLikes.documents.map(
-                        (like) => like.tweetId
-                    );
-
-                    const likedTweets = await tweetService.getTweets([
-                        Query.equal("$id", tweetIds),
+            if (!unsubscribe) {
+                try {
+                    const myLikes = await likeService.getLikes([
+                        Query.equal("userId", [otherProfileData.$id]),
                     ]);
 
-                    // map of tweetId to like createdAt
-                    const likeMap = myLikes.documents.reduce((map, like) => {
-                        map[like.tweetId] = like.$createdAt;
-                        return map;
-                    }, {});
-
-                    // Sorting the tweets based on like creation date
-                    likedTweets.documents.sort((a, b) => {
-                        return (
-                            new Date(likeMap[b.$id]) - new Date(likeMap[a.$id])
+                    if (myLikes.documents.length !== 0) {
+                        const tweetIds = myLikes.documents.map(
+                            (like) => like.tweetId
                         );
-                    });
 
-                    dispatch(
-                        addLikes({
-                            data: likedTweets.documents,
-                            likesCount: myLikes.documents.length,
-                        })
-                    );
+                        const likedTweets = await tweetService.getTweets([
+                            Query.equal("$id", tweetIds),
+                        ]);
+
+                        // map of tweetId to like createdAt
+                        const likeMap = myLikes.documents.reduce(
+                            (map, like) => {
+                                map[like.tweetId] = like.$createdAt;
+                                return map;
+                            },
+                            {}
+                        );
+
+                        // Sorting the tweets based on like creation date
+                        likedTweets.documents.sort((a, b) => {
+                            return (
+                                new Date(likeMap[b.$id]) -
+                                new Date(likeMap[a.$id])
+                            );
+                        });
+
+                        dispatch(
+                            addLikes({
+                                data: likedTweets.documents,
+                                likesCount: myLikes.documents.length,
+                            })
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error in fetching likes :: ", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error("Error in fetching likes :: ", error);
-            } finally {
-                setLoading(false);
             }
         }
 
         fetchLikes();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, likesData.likesCount, otherProfileData.$id]);
 
     return (

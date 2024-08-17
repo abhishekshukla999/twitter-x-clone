@@ -15,32 +15,40 @@ function Replies() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function fetchReplies() {
-            try {
-                const myReplies = await replyService.getReplies([
-                    Query.equal("userId", [otherProfileData.$id]),
-                    Query.orderDesc("$createdAt"),
-                ]);
+        let unsubscribe = false;
 
-                if (myReplies.documents.length !== 0) {
-                    dispatch(
-                        addReplies({
-                            data: myReplies.documents,
-                            repliesCount: myReplies.documents.length,
-                        })
-                    );
-                } else {
-                    dispatch(removeReplies());
+        async function fetchReplies() {
+            if (!unsubscribe) {
+                try {
+                    const myReplies = await replyService.getReplies([
+                        Query.equal("userId", [otherProfileData.$id]),
+                        Query.orderDesc("$createdAt"),
+                    ]);
+
+                    if (myReplies.documents.length !== 0) {
+                        dispatch(
+                            addReplies({
+                                data: myReplies.documents,
+                                repliesCount: myReplies.documents.length,
+                            })
+                        );
+                    } else {
+                        dispatch(removeReplies());
+                    }
+                } catch (error) {
+                    // console.error("Error in fetching replies :: ", error);
+                    toast.error("Failed loading replies");
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                // console.error("Error in fetching replies :: ", error);
-                toast.error("Failed loading replies")
-            } finally {
-                setLoading(false);
             }
         }
 
         fetchReplies();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, repliesData.repliesCount, otherProfileData.$id]);
 
     const navigateTweet = async (tweetId) => {

@@ -161,9 +161,7 @@ function EditProfileModal({ isOpen, onClose }) {
         setUploadCoverImage(null);
     };
 
-    const handleClose = (e) => {
-        console.log("FORm submmted");
-
+    const handleClose = () => {
         onClose();
         reset({
             name: profileData?.name || "",

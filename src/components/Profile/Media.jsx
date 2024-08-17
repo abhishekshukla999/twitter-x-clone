@@ -13,58 +13,69 @@ function Media() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchAllMedia() {
-            try {
-                const tweetsData = await tweetService.getTweets([
-                    Query.equal("author", [otherProfileData.$id]),
-                ]);
-                const repliesData = await replyService.getReplies([
-                    Query.equal("userId", [otherProfileData.$id]),
-                ]);
+            if (!unsubscribe) {
+                try {
+                    const tweetsData = await tweetService.getTweets([
+                        Query.equal("author", [otherProfileData.$id]),
+                    ]);
+                    const repliesData = await replyService.getReplies([
+                        Query.equal("userId", [otherProfileData.$id]),
+                    ]);
 
-                if (
-                    tweetsData.documents.length !== 0 ||
-                    repliesData.documents.length !== 0
-                ) {
-                    const updatedTweetsData = tweetsData.documents.map(
-                        (tweet) => {
-                            return {
-                                tweetId: tweet.$id,
-                                media: tweet.media,
-                                $createdAt: tweet.$createdAt,
-                            };
+                    if (
+                        tweetsData.documents.length !== 0 ||
+                        repliesData.documents.length !== 0
+                    ) {
+                        const updatedTweetsData = tweetsData.documents.map(
+                            (tweet) => {
+                                return {
+                                    tweetId: tweet.$id,
+                                    media: tweet.media,
+                                    $createdAt: tweet.$createdAt,
+                                };
+                            }
+                        );
+
+                        const combinedData = [
+                            ...updatedTweetsData,
+                            ...repliesData.documents,
+                        ];
+
+                        const sortedData = combinedData.sort(
+                            (a, b) =>
+                                new Date(b.$createdAt) - new Date(a.$createdAt)
+                        );
+
+                        if (sortedData.length !== 0) {
+                            const allMedia = sortedData.map((data) => {
+                                return {
+                                    tweetId: data.tweetId,
+                                    media: data.media,
+                                };
+                            });
+
+                            dispatch(addMedia(allMedia));
                         }
-                    );
-
-                    const combinedData = [
-                        ...updatedTweetsData,
-                        ...repliesData.documents,
-                    ];
-
-                    const sortedData = combinedData.sort(
-                        (a, b) =>
-                            new Date(b.$createdAt) - new Date(a.$createdAt)
-                    );
-
-                    if (sortedData.length !== 0) {
-                        const allMedia = sortedData.map((data) => {
-                            return { tweetId: data.tweetId, media: data.media };
-                        });
-
-                        dispatch(addMedia(allMedia));
+                    } else {
+                        dispatch(removeMedia());
                     }
-                } else {
-                    dispatch(removeMedia());
+                } catch (error) {
+                    // console.log("Error fetching media :: ", error);
+                    toast.error("Failed loading media");
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                // console.log("Error fetching media :: ", error);
-                toast.error("Failed loading media");
-            } finally {
-                setLoading(false);
             }
         }
 
         fetchAllMedia();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, otherProfileData.$id]);
 
     return (

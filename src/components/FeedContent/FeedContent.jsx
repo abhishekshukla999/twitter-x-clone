@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+let unsubscribe = false;
 import { NavLink } from "react-router-dom";
 import { Loader, MobileNavIcon, TweetCard, TweetForm } from "../index";
 import { tweetService } from "../../appwrite";
@@ -13,34 +14,45 @@ function FeedContent() {
     const [hasMore, setHasMore] = useState(false);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         setLoading(true);
         setError(false);
 
         async function fetchTweets() {
-            const queryParams = [Query.limit(7), Query.orderDesc("$createdAt")];
+            if (!unsubscribe) {
+                const queryParams = [
+                    Query.limit(7),
+                    Query.orderDesc("$createdAt"),
+                ];
 
-            if (lastId) {
-                queryParams.push(Query.cursorAfter(lastId));
-            }
-
-            try {
-                const tweets = await tweetService.getTweets(queryParams);
-
-                if (tweets.documents.length > 0) {
-                    const oldTweetsList = [...tweetsList];
-                    setTweetsList([...oldTweetsList, ...tweets.documents]);
-
-                    setHasMore(tweets.total);
+                if (lastId) {
+                    queryParams.push(Query.cursorAfter(lastId));
                 }
-            } catch (error) {
-                console.log("Error Fetching tweet list :: ", error);
-                setError(true);
-            } finally {
-                setLoading(false);
+
+                try {
+                    const tweets = await tweetService.getTweets(queryParams);
+
+                    if (tweets.documents.length > 0) {
+                        const oldTweetsList = [...tweetsList];
+                        setTweetsList([...oldTweetsList, ...tweets.documents]);
+
+                        setHasMore(tweets.total);
+                    }
+                } catch (error) {
+                    console.log("Error Fetching tweet list :: ", error);
+                    setError(true);
+                } finally {
+                    setLoading(false);
+                }
             }
         }
 
         fetchTweets();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [lastId]);
 
     useEffect(() => {

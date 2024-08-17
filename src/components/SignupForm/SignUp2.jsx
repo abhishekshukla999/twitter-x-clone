@@ -11,17 +11,27 @@ function Step2({ register, onBack, formState, watch }) {
     const currentUsername = watch("username");
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchUsername() {
-            const profileDocs = await profileService.getProfiles([
-                Query.equal("username", [currentUsername]),
-            ]);
+            if (!unsubscribe) {
+                try {
+                    const profileDocs = await profileService.getProfiles([
+                        Query.equal("username", [currentUsername]),
+                    ]);
 
-            console.log(profileDocs.documents);
+                    console.log(profileDocs.documents);
 
-            if (profileDocs.documents.length !== 0) {
-                setUsernameAvailable(false);
-            } else {
-                setUsernameAvailable(true);
+                    if (profileDocs.documents.length !== 0) {
+                        setUsernameAvailable(false);
+                    } else {
+                        setUsernameAvailable(true);
+                    }
+                } catch (error) {
+                    console.log(
+                        ("Error fetching profile in signup2 :: ", error)
+                    );
+                }
             }
         }
 

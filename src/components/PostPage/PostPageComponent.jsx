@@ -19,69 +19,88 @@ function PostPageComponent({ username, tweetId }) {
 
     // author & tweet data
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchPostData = async () => {
-            try {
-                const authorData = await profileService.getProfiles([
-                    Query.equal("username", username),
-                ]);
+            if (!unsubscribe) {
+                try {
+                    const authorData = await profileService.getProfiles([
+                        Query.equal("username", username),
+                    ]);
 
-                if (authorData.documents.length !== 0) {
-                    setAuthor(authorData.documents["0"].$id);
+                    if (authorData.documents.length !== 0) {
+                        setAuthor(authorData.documents["0"].$id);
+                    }
+
+                    const postData = await tweetService.getTweet(tweetId);
+
+                    if (postData) {
+                        const oldData = tweetPageData;
+                        dispatch(
+                            addTweetPageData({
+                                ...oldData,
+                                tweetData: postData,
+                            })
+                        );
+                    }
+                } catch (error) {
+                    console.log("Error fetching Post data", error);
+                } finally {
+                    setTweetLoading(false);
                 }
-
-                const postData = await tweetService.getTweet(tweetId);
-
-                if (postData) {
-                    const oldData = tweetPageData;
-                    dispatch(
-                        addTweetPageData({ ...oldData, tweetData: postData })
-                    );
-                }
-            } catch (error) {
-                console.log("Error fetching Post data", error);
-            } finally {
-                setTweetLoading(false);
             }
         };
 
         fetchPostData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, username, tweetId]);
 
     // replies
     useEffect(() => {
-        const fetchReplies = async () => {
-            try {
-                const allReplies = await replyService.getReplies([
-                    Query.equal("tweetId", [tweetId]),
-                    Query.orderDesc("$createdAt"),
-                ]);
+        let unsubscribe = false;
 
-                if (allReplies.documents.length !== 0) {
-                    const oldData = tweetPageData;
-                    dispatch(
-                        addTweetPageData({
-                            ...oldData,
-                            repliesData: allReplies.documents,
-                            repliesCount: allReplies.documents.length,
-                        })
-                    );
-                } else {
-                    dispatch(
-                        addTweetPageData({
-                            ...tweetPageData,
-                            repliesData: [],
-                            repliesCount: 0,
-                        })
-                    );
+        const fetchReplies = async () => {
+            if (!unsubscribe) {
+                try {
+                    const allReplies = await replyService.getReplies([
+                        Query.equal("tweetId", [tweetId]),
+                        Query.orderDesc("$createdAt"),
+                    ]);
+
+                    if (allReplies.documents.length !== 0) {
+                        const oldData = tweetPageData;
+                        dispatch(
+                            addTweetPageData({
+                                ...oldData,
+                                repliesData: allReplies.documents,
+                                repliesCount: allReplies.documents.length,
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            addTweetPageData({
+                                ...tweetPageData,
+                                repliesData: [],
+                                repliesCount: 0,
+                            })
+                        );
+                    }
+                } catch (error) {
+                    console.log("Error fetching Replies data", error);
+                } finally {
+                    setRepliesLoading(false);
                 }
-            } catch (error) {
-                console.log("Error fetching Replies data", error);
-            } finally {
-                setRepliesLoading(false);
             }
         };
 
         fetchReplies();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, repliesCount, tweetId]);
 
     return (

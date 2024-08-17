@@ -10,21 +10,33 @@ function Step1({ register, onNext, formState, watch, trigger }) {
     const currrentEmail = watch("email");
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchUsername() {
-            const profileDocs = await profileService.getProfiles([
-                Query.equal("email", [currrentEmail || ""]),
-            ]);
+            if (!unsubscribe) {
+                try {
+                    const profileDocs = await profileService.getProfiles([
+                        Query.equal("email", [currrentEmail || ""]),
+                    ]);
 
-            console.log(profileDocs.documents);
+                    console.log(profileDocs.documents);
 
-            if (profileDocs.documents.length !== 0) {
-                setEmailAvailable(false);
-            } else {
-                setEmailAvailable(true);
+                    if (profileDocs.documents.length !== 0) {
+                        setEmailAvailable(false);
+                    } else {
+                        setEmailAvailable(true);
+                    }
+                } catch (error) {
+                    console.log("Error fetching profile in signup1 :: ", error);
+                }
             }
         }
 
         fetchUsername();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [currrentEmail]);
 
     useEffect(() => {

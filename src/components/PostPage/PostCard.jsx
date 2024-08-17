@@ -73,36 +73,53 @@ function PostCard({
     document.title = `${authorInfo?.name} on X`;
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const avatarUrl = async () => {
-            const authorData = await profileService.getProfile(author);
+            if (!unsubscribe) {
+                try {
+                    const authorData = await profileService.getProfile(author);
 
-            if (authorData) {
-                const url = profileMediaService.getCustomFilePreview(
-                    authorData.avatar,
-                    50,
-                    50
-                );
+                    if (authorData) {
+                        const url = profileMediaService.getCustomFilePreview(
+                            authorData.avatar,
+                            50,
+                            50
+                        );
 
-                const URL = url ? url : "/defaultAvatar.png";
+                        const URL = url ? url : "/defaultAvatar.png";
 
-                setAvatarURL(URL);
+                        setAvatarURL(URL);
 
-                setAuthorInfo({
-                    name: authorData.name,
-                    username: authorData.username,
-                });
+                        setAuthorInfo({
+                            name: authorData.name,
+                            username: authorData.username,
+                        });
 
-                setAuthorInfoLoader(false);
+                        setAuthorInfoLoader(false);
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching profle data on post card :: ",
+                        error
+                    );
+                }
             }
         };
 
         avatarUrl();
         setDate(toLocalDate(createdAt));
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [author, createdAt]);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchMedia = async () => {
-            if (media) {
+            if (media && !unsubscribe) {
                 const img = new Image();
                 img.src = tweetMediaService.getCustomQualityFilePreview({
                     fileId: media,
@@ -127,121 +144,168 @@ function PostCard({
         };
 
         fetchMedia();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [media]);
 
     // bookmarks
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchBookmarksData = async () => {
-            const allBookmarks = await bookmarkService.getBookmarks([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allBookmarks.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    bookmarksCount: allBookmarks.documents.length,
-                }));
-
-                const isMyBook = await bookmarkService.getBookmarks([
-                    Query.and([
-                        Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
+            if (!unsubscribe) {
+                const allBookmarks = await bookmarkService.getBookmarks([
+                    Query.equal("tweetId", tweetId),
                 ]);
 
-                if (isMyBook.documents.length !== 0) {
+                if (allBookmarks.documents.length !== 0) {
                     setInteractions((interactions) => ({
                         ...interactions,
-                        myBookmark: true,
+                        bookmarksCount: allBookmarks.documents.length,
                     }));
+
+                    const isMyBook = await bookmarkService.getBookmarks([
+                        Query.and([
+                            Query.equal("tweetId", tweetId),
+                            Query.equal("userId", [authData.$id]),
+                        ]),
+                    ]);
+
+                    if (isMyBook.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            myBookmark: true,
+                        }));
+                    }
                 }
             }
         };
 
         fetchBookmarksData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // likes
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchLikesData = async () => {
-            const allLikes = await likeService.getLikes([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allLikes.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    likesCount: allLikes.documents.length,
-                }));
-
-                const isMyLike = await likeService.getLikes([
-                    Query.and([
+            if (!unsubscribe) {
+                try {
+                    const allLikes = await likeService.getLikes([
                         Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
-                ]);
+                    ]);
 
-                if (isMyLike.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        myLike: true,
-                    }));
+                    if (allLikes.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            likesCount: allLikes.documents.length,
+                        }));
+
+                        const isMyLike = await likeService.getLikes([
+                            Query.and([
+                                Query.equal("tweetId", tweetId),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyLike.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myLike: true,
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.log("Error fetching likes in post card");
                 }
             }
         };
 
         fetchLikesData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // retweets
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchRetweetsData = async () => {
-            const allRetweets = await retweetService.getRetweets([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allRetweets.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    retweetsCount: allRetweets.documents.length,
-                }));
-
-                const isMyRetweet = await retweetService.getRetweets([
-                    Query.and([
+            if (!unsubscribe) {
+                try {
+                    const allRetweets = await retweetService.getRetweets([
                         Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
-                ]);
+                    ]);
 
-                if (isMyRetweet.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        myRetweet: true,
-                    }));
+                    if (allRetweets.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            retweetsCount: allRetweets.documents.length,
+                        }));
+
+                        const isMyRetweet = await retweetService.getRetweets([
+                            Query.and([
+                                Query.equal("tweetId", tweetId),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyRetweet.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myRetweet: true,
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.log("Error fetching retweets for post page");
                 }
             }
         };
 
         fetchRetweetsData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // replies
     useEffect(() => {
-        const fetchRepliesData = async () => {
-            const allReplies = await replyService.getReplies([
-                Query.equal("tweetId", [tweetId]),
-            ]);
+        let unsubscribe = false;
 
-            if (allReplies.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    repliesCount: allReplies.documents.length,
-                }));
-            } else {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    repliesCount: 0,
-                }));
+        const fetchRepliesData = async () => {
+            if (!unsubscribe) {
+                try {
+                    const allReplies = await replyService.getReplies([
+                        Query.equal("tweetId", [tweetId]),
+                    ]);
+
+                    if (allReplies.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            repliesCount: allReplies.documents.length,
+                        }));
+                    } else {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            repliesCount: 0,
+                        }));
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching replies in post card :: ",
+                        error
+                    );
+                }
             }
         };
 

@@ -11,8 +11,10 @@ function MediaCard({ tweetId, media }) {
     const [mediaURL, setMediaURL] = useState("");
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchMediaUrl = () => {
-            if (media) {
+            if (media && !unsubscribe) {
                 const img = new Image();
 
                 img.src = tweetMediaService.getCustomQualityFilePreview({
@@ -40,6 +42,10 @@ function MediaCard({ tweetId, media }) {
         };
 
         fetchMediaUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [media]);
 
     return !media ? null : (

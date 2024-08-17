@@ -6,24 +6,32 @@ function FollowTweet({ followerId, followingId, username }) {
     const [isFollowing, setIsFollowing] = useState(null);
 
     useEffect(() => {
-        const fetchFollowing = async () => {
-            try {
-                const myFollow = await followService.getFollows([
-                    Query.and([
-                        Query.equal("followingId", [followingId]),
-                        Query.equal("followerId", followerId),
-                    ]),
-                ]);
+        let unsubscribe = false;
 
-                if (myFollow.documents.length !== 0) {
-                    setIsFollowing(myFollow.documents["0"]);
+        const fetchFollowing = async () => {
+            if (!unsubscribe) {
+                try {
+                    const myFollow = await followService.getFollows([
+                        Query.and([
+                            Query.equal("followingId", [followingId]),
+                            Query.equal("followerId", followerId),
+                        ]),
+                    ]);
+
+                    if (myFollow.documents.length !== 0) {
+                        setIsFollowing(myFollow.documents["0"]);
+                    }
+                } catch (error) {
+                    console.log("Error fetching follow :: ", error);
                 }
-            } catch (error) {
-                console.log("Error fetching follow :: ", error);
             }
         };
 
         fetchFollowing();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [followerId, followingId]);
 
     const handleFollow = async () => {

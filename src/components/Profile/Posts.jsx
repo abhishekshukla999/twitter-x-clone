@@ -15,28 +15,36 @@ function Posts() {
     useEffect(() => {
         if (!otherProfileData?.$id) return;
 
-        const fetchTweets = async () => {
-            try {
-                const tweetsCollectionData = await tweetService.getTweets([
-                    Query.equal("author", [otherProfileData?.$id]),
-                    Query.orderDesc("$createdAt"),
-                ]);
+        let unsubscribe = false;
 
-                if (tweetsCollectionData.documents.length !== 0) {
-                    const tweetsCollection = tweetsCollectionData.documents;
-                    dispatch(addTweets(tweetsCollection));
-                } else {
-                    dispatch(removeTweets());
+        const fetchTweets = async () => {
+            if (!unsubscribe) {
+                try {
+                    const tweetsCollectionData = await tweetService.getTweets([
+                        Query.equal("author", [otherProfileData?.$id]),
+                        Query.orderDesc("$createdAt"),
+                    ]);
+
+                    if (tweetsCollectionData.documents.length !== 0) {
+                        const tweetsCollection = tweetsCollectionData.documents;
+                        dispatch(addTweets(tweetsCollection));
+                    } else {
+                        dispatch(removeTweets());
+                    }
+                } catch (error) {
+                    // console.error("Error fetching tweets:", error);
+                    toast.error("Failed loading posts");
+                } finally {
+                    setTweetLoading(false);
                 }
-            } catch (error) {
-                // console.error("Error fetching tweets:", error);
-                toast.error("Failed loading posts")
-            } finally {
-                setTweetLoading(false);
             }
         };
 
         fetchTweets();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, otherProfileData?.$id]);
 
     return (

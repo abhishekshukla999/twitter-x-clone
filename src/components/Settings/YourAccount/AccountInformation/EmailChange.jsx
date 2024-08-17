@@ -43,19 +43,34 @@ function EmailChange() {
     }, [currrentEmail, authData?.email]);
 
     useEffect(() => {
-        async function fetchUsername() {
-            const profileDocs = await profileService.getProfiles([
-                Query.equal("email", [currrentEmail || ""]),
-            ]);
+        let unsubscribe = false;
 
-            if (profileDocs.documents.length !== 0) {
-                setEmailAvailable(false);
-            } else {
-                setEmailAvailable(true);
+        async function fetchUsername() {
+            if (!unsubscribe) {
+                try {
+                    const profileDocs = await profileService.getProfiles([
+                        Query.equal("email", [currrentEmail || ""]),
+                    ]);
+
+                    if (profileDocs.documents.length !== 0) {
+                        setEmailAvailable(false);
+                    } else {
+                        setEmailAvailable(true);
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching profile in email change :: ",
+                        error
+                    );
+                }
             }
         }
 
         fetchUsername();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [currrentEmail, profileData?.email]);
 
     const changeEmail = async (data) => {

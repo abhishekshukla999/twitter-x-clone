@@ -15,43 +15,48 @@ function Followers() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchFollowers = async () => {
-            try {
-                const usernameData = await profileService.getProfiles([
-                    Query.equal("username", [username]),
-                ]);
-
-                if (usernameData.documents.length !== 0) {
-                    setUsernameData(usernameData.documents["0"]);
-                    const userId = usernameData.documents["0"].$id;
-
-                    const allFollowers = await followService.getFollows([
-                        Query.equal("followingId", [userId]),
+            if (!unsubscribe) {
+                try {
+                    const usernameData = await profileService.getProfiles([
+                        Query.equal("username", [username]),
                     ]);
 
-                    const allFollowerIds = allFollowers.documents.map(
-                        (follow) => follow.followerId
-                    );
+                    if (usernameData.documents.length !== 0) {
+                        setUsernameData(usernameData.documents["0"]);
+                        const userId = usernameData.documents["0"].$id;
 
-                    const allFollowersData = await profileService.getProfiles([
-                        Query.equal("$id", allFollowerIds),
-                    ]);
+                        const allFollowers = await followService.getFollows([
+                            Query.equal("followingId", [userId]),
+                        ]);
 
-                    const updatedFollowersData = [
-                        ...allFollowersData.documents,
-                    ];
+                        const allFollowerIds = allFollowers.documents.map(
+                            (follow) => follow.followerId
+                        );
 
-                    dispatch(
-                        addFollowData({
-                            ...followsData,
-                            followersData: updatedFollowersData,
-                        })
-                    );
+                        const allFollowersData =
+                            await profileService.getProfiles([
+                                Query.equal("$id", allFollowerIds),
+                            ]);
+
+                        const updatedFollowersData = [
+                            ...allFollowersData.documents,
+                        ];
+
+                        dispatch(
+                            addFollowData({
+                                ...followsData,
+                                followersData: updatedFollowersData,
+                            })
+                        );
+                    }
+                } catch (error) {
+                    console.log("Error fetching followers :: ", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.log("Error fetching followers :: ", error);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -59,6 +64,8 @@ function Followers() {
 
         return () => {
             dispatch(removeFollowData());
+
+            unsubscribe = true;
         };
     }, [dispatch, username]);
 

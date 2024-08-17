@@ -18,63 +18,71 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchEngsData = async () => {
-            try {
-                const allRetweets = await retweetService.getRetweets([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
-
-                if (allRetweets.total !== 0) {
-                    const usersId = allRetweets.documents.map(
-                        (retweet) => retweet.userId
-                    );
-
-                    const usersData = await profileService.getProfiles([
-                        Query.equal("$id", usersId),
+            if (!unsubscribe) {
+                try {
+                    const allRetweets = await retweetService.getRetweets([
+                        Query.equal("tweetId", [tweetId]),
                     ]);
 
-                    setRetweetsList([...usersData.documents]);
-                }
+                    if (allRetweets.total !== 0) {
+                        const usersId = allRetweets.documents.map(
+                            (retweet) => retweet.userId
+                        );
 
-                const allLikes = await likeService.getLikes([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
+                        const usersData = await profileService.getProfiles([
+                            Query.equal("$id", usersId),
+                        ]);
 
-                if (allLikes.total !== 0) {
-                    const usersId = allLikes.documents.map(
-                        (like) => like.userId
-                    );
+                        setRetweetsList([...usersData.documents]);
+                    }
 
-                    const usersData = await profileService.getProfiles([
-                        Query.equal("$id", usersId),
+                    const allLikes = await likeService.getLikes([
+                        Query.equal("tweetId", [tweetId]),
                     ]);
 
-                    setLikesList([...usersData.documents]);
-                }
+                    if (allLikes.total !== 0) {
+                        const usersId = allLikes.documents.map(
+                            (like) => like.userId
+                        );
 
-                const allBookmarks = await bookmarkService.getBookmarks([
-                    Query.equal("tweetId", [tweetId]),
-                ]);
+                        const usersData = await profileService.getProfiles([
+                            Query.equal("$id", usersId),
+                        ]);
 
-                if (allBookmarks.documents.length !== 0) {
-                    const usersId = allBookmarks.documents.map(
-                        (book) => book.userId
-                    );
+                        setLikesList([...usersData.documents]);
+                    }
 
-                    const usersData = await profileService.getProfiles([
-                        Query.equal("$id", usersId),
+                    const allBookmarks = await bookmarkService.getBookmarks([
+                        Query.equal("tweetId", [tweetId]),
                     ]);
 
-                    setBookmarksList([...usersData.documents]);
+                    if (allBookmarks.documents.length !== 0) {
+                        const usersId = allBookmarks.documents.map(
+                            (book) => book.userId
+                        );
+
+                        const usersData = await profileService.getProfiles([
+                            Query.equal("$id", usersId),
+                        ]);
+
+                        setBookmarksList([...usersData.documents]);
+                    }
+                } catch (error) {
+                    console.log("Engagements list fetching falied :: ", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.log("Engagements list fetching falied :: ", error);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchEngsData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     if (!isOpen) return null;

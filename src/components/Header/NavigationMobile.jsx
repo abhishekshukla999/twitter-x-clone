@@ -19,8 +19,10 @@ function NavigationMobile({ isOpen, onClose }) {
     };
 
     useEffect(() => {
+        let unsubscribe = false;
+
         function fetchAvatarUrl() {
-            if (profileData.avatar) {
+            if (profileData.avatar && !unsubscribe) {
                 setAvatarURL(
                     profileMediaService.getCustomFilePreview(
                         profileData.avatar,
@@ -34,6 +36,10 @@ function NavigationMobile({ isOpen, onClose }) {
         }
 
         fetchAvatarUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [profileData.avatar]);
 
     if (!isOpen) return null;
@@ -99,7 +105,10 @@ function NavigationMobile({ isOpen, onClose }) {
                                 navigate(`/${profileData.username}/following`);
                             }}
                         >
-                            <strong className="dark:text-white dim:text-white">{profileData.following}</strong> Following
+                            <strong className="dark:text-white dim:text-white">
+                                {profileData.following}
+                            </strong>{" "}
+                            Following
                         </span>
                         <span
                             className="hover:underline"
@@ -108,7 +117,10 @@ function NavigationMobile({ isOpen, onClose }) {
                                 navigate(`/${profileData.username}/followers`);
                             }}
                         >
-                            <strong className="dark:text-white dim:text-white">{profileData.followers}</strong> Followers
+                            <strong className="dark:text-white dim:text-white">
+                                {profileData.followers}
+                            </strong>{" "}
+                            Followers
                         </span>
                     </div>
 

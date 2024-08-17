@@ -42,21 +42,36 @@ function UsernameChange() {
     }, [currentUsername, profileData?.username]);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchUsername() {
-            const profileDocs = await profileService.getProfiles([
-                Query.equal("username", [currentUsername]),
-            ]);
+            if (!unsubscribe) {
+                try {
+                    const profileDocs = await profileService.getProfiles([
+                        Query.equal("username", [currentUsername]),
+                    ]);
 
-            console.log(profileDocs.documents);
+                    console.log(profileDocs.documents);
 
-            if (profileDocs.documents.length !== 0) {
-                setUsernameAvailable(false);
-            } else {
-                setUsernameAvailable(true);
+                    if (profileDocs.documents.length !== 0) {
+                        setUsernameAvailable(false);
+                    } else {
+                        setUsernameAvailable(true);
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching profile in change username :: ",
+                        error
+                    );
+                }
             }
         }
 
         fetchUsername();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [currentUsername, profileData?.username]);
 
     document.title = "Change username / X";

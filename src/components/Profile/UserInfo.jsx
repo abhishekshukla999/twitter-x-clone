@@ -18,33 +18,42 @@ function UserInfo({ username, setStatus }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchProfile = async () => {
-            try {
-                const currentProfileData = await profileService.getProfiles([
-                    Query.equal("username", [username]),
-                ]);
-
-                if (currentProfileData.documents.length !== 0) {
-                    const currentProfile = currentProfileData.documents["0"];
-
-                    dispatch(
-                        addOtherProfile({
-                            ...currentProfile,
-                        })
+            if (!unsubscribe) {
+                try {
+                    const currentProfileData = await profileService.getProfiles(
+                        [Query.equal("username", [username])]
                     );
-                } else {
-                    dispatch(removeOtherProfile());
-                    setStatus("nouser");
-                    throw new Error("Profile not found");
+
+                    if (currentProfileData.documents.length !== 0) {
+                        const currentProfile =
+                            currentProfileData.documents["0"];
+
+                        dispatch(
+                            addOtherProfile({
+                                ...currentProfile,
+                            })
+                        );
+                    } else {
+                        dispatch(removeOtherProfile());
+                        setStatus("nouser");
+                        throw new Error("Profile not found");
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                } finally {
+                    setProfileLoading(false);
                 }
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            } finally {
-                setProfileLoading(false);
             }
         };
 
         fetchProfile();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, username]);
 
     const imageUrl = () => {

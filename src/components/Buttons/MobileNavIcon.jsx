@@ -9,8 +9,10 @@ function MobileNavIcon() {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         function fetchAvatarUrl() {
-            if (profileData?.avatar) {
+            if (profileData?.avatar && !unsubscribe) {
                 setAvatarURL(
                     profileMediaService.getCustomFilePreview(
                         profileData?.avatar,
@@ -24,6 +26,10 @@ function MobileNavIcon() {
         }
 
         fetchAvatarUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [profileData?.avatar]);
 
     return (

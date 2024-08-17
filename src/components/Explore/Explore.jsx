@@ -27,7 +27,15 @@ function Explore() {
     }, [searchText]);
 
     useEffect(() => {
-        handleSearch();
+        let unsubscribe = false;
+
+        if (!unsubscribe) {
+            handleSearch();
+        }
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [searchText, handleSearch]);
 
     return (

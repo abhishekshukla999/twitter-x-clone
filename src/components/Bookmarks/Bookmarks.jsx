@@ -22,9 +22,11 @@ function Bookmarks() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchBookmarks() {
             try {
-                if (authData) {
+                if (authData && !unsubscribe) {
                     const myBookmarks = await bookmarkService.getBookmarks([
                         Query.equal("userId", [authData.$id]),
                         Query.orderDesc("$createdAt"),
@@ -75,6 +77,10 @@ function Bookmarks() {
         }
 
         fetchBookmarks();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, bookmarksData.bookmarksCount]);
 
     const handleClearAllBookmarks = async () => {
