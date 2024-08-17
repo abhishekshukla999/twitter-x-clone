@@ -1,9 +1,15 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { Select } from "../../../index";
+import {
+    Select,
+    LoadingModal,
+    SettingItemsContainer,
+    BackButton,
+} from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
+import { useState } from "react";
+import { toast } from "sonner";
 
 function CountryChange() {
     const authData = useSelector((state) => state.auth.userData);
@@ -14,7 +20,10 @@ function CountryChange() {
         },
     });
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
+    document.title = "Change country / X";
+
     const countryList = [
         "Afghanistan",
         "Albania",
@@ -268,6 +277,8 @@ function CountryChange() {
     ];
 
     const changeCountry = async (data) => {
+        setLoading(true);
+
         if (authData) {
             try {
                 const updatedProfileData = await profileService.updateProfile(
@@ -280,61 +291,59 @@ function CountryChange() {
                 if (updatedProfileData) {
                     dispatch(addProfileData(updatedProfileData));
                 }
+
+                toast.success("Country changed successfully !!");
             } catch (error) {
-                console.log("Error updating country :: ", error);
+                // console.log("Error updating country :: ", error);
+                toast.error("Country changing failed !!");
+            } finally {
+                setLoading(false);
             }
         }
     };
 
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
-            <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
-                    <div className="font-bold text-xl py-3">Change country</div>
-                </div>
-            </div>
-            <form onSubmit={handleSubmit(changeCountry)}>
-                <div className="border-b py-4 px-3">
-                    <Select
-                        label="Country"
-                        options={countryList}
-                        {...register("country")}
-                    />
-                </div>
-                <div className="my-1 box-border">
-                    <div className="px-4 text-[13px] text-gray-500">
-                        This is the primary country associated with your
-                        account. Your country helps us to customize your X
-                        experience.{" "}
-                        <span className="text-twitter-blue hover:underline cursor-pointer">
-                            Learn more
-                        </span>
+        <>
+            <SettingItemsContainer>
+                <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
+                    <div className="flex gap-5">
+                        <BackButton />
+                        <div className="font-bold text-xl py-3">
+                            Change country
+                        </div>
                     </div>
                 </div>
-                <div className="flex justify-end px-2 py-3">
-                    <button
-                        type="submit"
-                        className="py-1.5 px-4 text-white font-bold bg-twitter-blue rounded-full hover:bg-blue-500"
-                    >
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
+                <form onSubmit={handleSubmit(changeCountry)}>
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3">
+                        <Select
+                            label="Country"
+                            options={countryList}
+                            {...register("country")}
+                        />
+                    </div>
+                    <div className="my-1 box-border">
+                        <div className="px-4 text-[13px] text-gray-500">
+                            This is the primary country associated with your
+                            account. Your country helps us to customize your X
+                            experience.{" "}
+                            <span className="hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600 cursor-pointer">
+                                Learn more
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex justify-end px-2 py-3">
+                        <button
+                            type="submit"
+                            className="py-1.5 px-4 text-white font-bold rounded-full bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </SettingItemsContainer>
+
+            <LoadingModal isOpen={loading} />
+        </>
     );
 }
 

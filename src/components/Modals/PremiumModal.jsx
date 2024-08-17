@@ -4,7 +4,7 @@ function PremiumModal({ children, isOpen, onClose }) {
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-gray-600 bg-opacity-50 flex justify-center items-center">
             <div className="bg-black overflow-y-auto opacity-100 p-5 pt-0 rounded-xl shadow-lg relative w-fit max-h-[70vh] max-[702px]:w-screen text-black">
                 <div className="sticky top-0 bg-black py-5">
                     <button

@@ -2,23 +2,23 @@ import { useEffect, useState } from "react";
 import { likeService, tweetService } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { Query } from "appwrite";
-import { Loader, TweetCard } from "../";
+import { Loader, TweetCard } from "../index";
 import { addLikes } from "../../features/like/likeSlice";
 
 function Likes() {
     const otherProfileData = useSelector((state) => state.otherProfile);
-    const authData = useSelector((state) => state.auth.userData);
     const likesData = useSelector((state) => state.likes);
-    const [loader, setLoader] = useState(true);
+    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
 
     useEffect(() => {
+        let unsubscribe = false;
+
         async function fetchLikes() {
-            try {
-                if (authData) {
+            if (!unsubscribe) {
+                try {
                     const myLikes = await likeService.getLikes([
-                        Query.equal("userId", [authData.$id]),
-                        Query.orderDesc("$createdAt"),
+                        Query.equal("userId", [otherProfileData.$id]),
                     ]);
 
                     if (myLikes.documents.length !== 0) {
@@ -54,20 +54,24 @@ function Likes() {
                             })
                         );
                     }
+                } catch (error) {
+                    console.error("Error in fetching likes :: ", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error("Error in fetching bookmarks :: ", error);
-            } finally {
-                setLoader(false);
             }
         }
 
         fetchLikes();
-    }, [dispatch, likesData.likesCount]);
+
+        return () => {
+            unsubscribe = true;
+        };
+    }, [dispatch, likesData.likesCount, otherProfileData.$id]);
 
     return (
         <div>
-            {loader ? (
+            {loading ? (
                 <Loader />
             ) : likesData.likesCount === 0 ? (
                 <div className="p-4 text-2xl font-bold text-center border-l border-r">

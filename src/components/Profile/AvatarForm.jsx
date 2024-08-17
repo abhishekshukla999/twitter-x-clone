@@ -1,5 +1,3 @@
-import React from "react";
-
 function AvatarForm({ register, onClose }) {
     return (
         <div>

@@ -1,32 +1,20 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function EmailNotifications() {
-    const navigate = useNavigate();
     const [isChecked, setIsChecked] = useState(false);
+
+    document.title = "Email notifications / X";
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
     };
 
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
+                    <BackButton />
                     <div className="font-bold text-xl py-3">
                         Email notifications
                     </div>
@@ -50,7 +38,7 @@ function EmailNotifications() {
                                 <div
                                     className={`block w-10 h-6 rounded-full ${
                                         isChecked
-                                            ? "bg-blue-600"
+                                            ? "bg-twitter-blue yellow:bg-twitter-yellow crimson:bg-twitter-crimson purple:bg-twitter-purple orange:bg-twitter-orange green:bg-twitter-green"
                                             : "bg-gray-300"
                                     }`}
                                 ></div>
@@ -71,12 +59,12 @@ function EmailNotifications() {
                 <div className="py-1 px-2 text-[13px] text-gray-500">
                     Get emails to find out what&apos;s going on when you&apos;re
                     not on X. You can turn them off anytime.
-                    <span className="text-twitter-blue cursor-pointer hover:underline">
+                    <span className="cursor-pointer hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                         {""} Learn more
                     </span>
                 </div>
             </div>
-        </div>
+        </SettingItemsContainer>
     );
 }
 

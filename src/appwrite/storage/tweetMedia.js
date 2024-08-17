@@ -1,5 +1,5 @@
 import { config } from "../../config/config";
-import { Client, Storage, ID } from "appwrite";
+import { Client, Storage, ID, ImageGravity } from "appwrite";
 
 class TweetMediaService {
     client = new Client();
@@ -38,9 +38,57 @@ class TweetMediaService {
 
     getFilePreview(fileId) {
         try {
-            return this.storage.getFilePreview(config.appwriteTweetsBucketId, fileId);
+            return this.storage.getFilePreview(
+                config.appwriteTweetsBucketId,
+                fileId
+            );
         } catch (error) {
             console.log("Appwrite Service :: getFilePreview :: error ", error);
+        }
+    }
+
+    getCustomSizeFilePreview({ fileId, width, height }) {
+        try {
+            return this.storage.getFilePreview(
+                config.appwriteTweetsBucketId,
+                fileId,
+                width,
+                height
+            );
+        } catch (error) {
+            console.log(
+                "Appwrite Service :: getCustomFilePreview :: error ",
+                error
+            );
+        }
+    }
+
+    getCustomQualityFilePreview({ fileId, width, height, quality = 100 }) {
+        try {
+            return this.storage.getFilePreview(
+                config.appwriteTweetsBucketId,
+                fileId,
+                width,
+                height,
+                ImageGravity.Center,
+                quality
+            );
+        } catch (error) {
+            console.log(
+                "Appwrite Service :: getCustomFilePreview :: error ",
+                error
+            );
+        }
+    }
+
+    downloadFile(fileId) {
+        try {
+            return this.storage.getFileDownload(
+                config.appwriteTweetsBucketId,
+                fileId
+            );
+        } catch (error) {
+            console.log("Appwrite Service :: downloadFile :: error ", error);
         }
     }
 }

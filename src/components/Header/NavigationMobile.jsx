@@ -1,39 +1,58 @@
 import { createPortal } from "react-dom";
-import { NavLink } from "react-router-dom";
-import { authService } from "../../appwrite";
+import { NavLink, useNavigate } from "react-router-dom";
+import { authService, profileMediaService } from "../../appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
-import { removeProfileData } from "../../features/profile/profileSlice";
-import { removeTweets } from "../../features/tweet/tweetSlice";
-import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
-import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
-import { removeLikes } from "../../features/like/likeSlice";
-import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { removeFollowData } from "../../features/follow/follow";
+import { useEffect, useState } from "react";
 
 function NavigationMobile({ isOpen, onClose }) {
     const dispatch = useDispatch();
     const profileData = useSelector((state) => state.profile);
-    const listStyle = "flex text-xl hover:bg-zinc-200 rounded-full w-fit";
+    const [avatarURL, setAvatarURL] = useState("");
+    const navigate = useNavigate();
+    const listStyle = "flex text-xl font-bold rounded-full w-fit";
 
     const handleLogout = () => {
         authService.logout().then(() => {
             dispatch(logout());
-            dispatch(removeProfileData());
-            dispatch(removeTweets());
-            dispatch(removeOtherProfile());
-            dispatch(removeBookmarks());
-            dispatch(removeLikes());
-            dispatch(removeTweetPageData());
-            dispatch(removeFollowData());
         });
     };
+
+    useEffect(() => {
+        let unsubscribe = false;
+
+        function fetchAvatarUrl() {
+            if (profileData.avatar && !unsubscribe) {
+                setAvatarURL(
+                    profileMediaService.getCustomFilePreview(
+                        profileData.avatar,
+                        50,
+                        50
+                    )
+                );
+            } else {
+                setAvatarURL("/defaultAvatar.png");
+            }
+        }
+
+        fetchAvatarUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
+    }, [profileData.avatar]);
 
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-zinc-900 bg-opacity-50 flex">
-            <div className="bg-white opacity-100 p-2 shadow-lg relative w-[57%] text-black">
+        <div
+            className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-zinc-900 bg-opacity-50 flex"
+            onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+            }}
+        >
+            <div className="bg-white opacity-100 p-2 z-50 shadow-lg relative min-w-[57%] text-black dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white">
                 <div className="m-2">
                     <button
                         className="rounded-lg absolute top-2.5 right-2.5 bg-none border-none text-2xl cursor-pointer"
@@ -42,7 +61,7 @@ function NavigationMobile({ isOpen, onClose }) {
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"
-                            className="w-7 fill-black r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                            className="w-7 dark:fill-white dim:fill-white fill-black r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                         >
                             <g>
                                 <path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"></path>
@@ -54,27 +73,54 @@ function NavigationMobile({ isOpen, onClose }) {
 
                 <div>
                     {/* profile */}
-                    <div className="mx-3">
-                        <div className="">
+                    <div
+                        className="mx-3"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/${profileData.username}`);
+                        }}
+                    >
+                        <div className="min-w-[40px] max-w-[43px]">
                             <img
-                                className="w-8 rounded-full"
-                                src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+                                className="w-full rounded-full"
+                                src={avatarURL}
                                 alt="navigation menu"
+                                loading="lazy"
                             />
                         </div>
                         <div className="font-bold mt-0.5 text-[17px]">
                             {profileData.name}
                         </div>
-                        <div className="font-light text-[15px]">@{profileData.username}</div>
+                        <div className="font-light text-gray-500 text-[15px]">
+                            @{profileData.username}
+                        </div>
                     </div>
 
                     {/* followers */}
-                    <div className="flex gap-4 text-sm mx-3 my-3 text-gray-700">
-                        <span className="">
-                            <strong>{profileData.following}</strong> Following
+                    <div className="flex gap-4 text-sm mx-3 my-3 text-gray-700 dark:text-gray-400 dim:text-gray-400">
+                        <span
+                            className="hover:underline"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/${profileData.username}/following`);
+                            }}
+                        >
+                            <strong className="dark:text-white dim:text-white">
+                                {profileData.following}
+                            </strong>{" "}
+                            Following
                         </span>
-                        <span className="">
-                            <strong>{profileData.followers}</strong> Followers
+                        <span
+                            className="hover:underline"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/${profileData.username}/followers`);
+                            }}
+                        >
+                            <strong className="dark:text-white dim:text-white">
+                                {profileData.followers}
+                            </strong>{" "}
+                            Followers
                         </span>
                     </div>
 
@@ -83,18 +129,14 @@ function NavigationMobile({ isOpen, onClose }) {
                         <div className="p-1 my-6">
                             <NavLink
                                 to={`/${profileData?.username}` || "#"}
-                                className={({ isActive }) =>
-                                    `${listStyle} ${
-                                        isActive ? "font-bold" : null
-                                    }`
-                                }
+                                className={`${listStyle}`}
                                 title="Profile"
                             >
                                 <span className="mx-1">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-7 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
+                                        className="w-7 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
                                     >
                                         <g>
                                             <path d="M5.651 19h12.698c-.337-1.8-1.023-3.21-1.945-4.19C15.318 13.65 13.838 13 12 13s-3.317.65-4.404 1.81c-.922.98-1.608 2.39-1.945 4.19zm.486-5.56C7.627 11.85 9.648 11 12 11s4.373.85 5.863 2.44c1.477 1.58 2.366 3.8 2.632 6.46l.11 1.1H3.395l.11-1.1c.266-2.66 1.155-4.88 2.632-6.46zM12 4c-1.105 0-2 .9-2 2s.895 2 2 2 2-.9 2-2-.895-2-2-2zM8 6c0-2.21 1.791-4 4-4s4 1.79 4 4-1.791 4-4 4-4-1.79-4-4z"></path>
@@ -107,18 +149,14 @@ function NavigationMobile({ isOpen, onClose }) {
                         <div className="p-1 my-6">
                             <NavLink
                                 to="/premium"
-                                className={({ isActive }) =>
-                                    `${listStyle} ${
-                                        isActive ? "font-bold" : null
-                                    }`
-                                }
+                                className={`${listStyle}`}
                                 title="Premium"
                             >
                                 <span className="mx-1">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-7 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
+                                        className="w-7 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
                                     >
                                         <g>
                                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
@@ -131,18 +169,14 @@ function NavigationMobile({ isOpen, onClose }) {
                         <div className="p-1 my-6">
                             <NavLink
                                 to="/bookmarks"
-                                className={({ isActive }) =>
-                                    `${listStyle} ${
-                                        isActive ? "font-bold" : null
-                                    }`
-                                }
+                                className={`${listStyle}`}
                                 title="Bookmarks"
                             >
                                 <span className="mx-1">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-7 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
+                                        className="w-7 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-lwhw9o r-cnnz9e"
                                     >
                                         <g>
                                             <path d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"></path>
@@ -155,18 +189,14 @@ function NavigationMobile({ isOpen, onClose }) {
                         <div className="p-1 my-6">
                             <NavLink
                                 to="/settings"
-                                className={({ isActive }) =>
-                                    `${listStyle} ${
-                                        isActive ? "font-bold" : null
-                                    }`
-                                }
+                                className={`${listStyle}`}
                                 title="Settings"
                             >
-                                <span className="mx-1">
+                                <span className="mx-1 my-auto">
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-7 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-1q142lx r-1kihuf0 r-1472mwg r-di8nfa r-lrsllp"
+                                        className="w-7 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-1q142lx r-1kihuf0 r-1472mwg r-di8nfa r-lrsllp"
                                         data-testid="icon"
                                     >
                                         <g>
@@ -189,7 +219,7 @@ function NavigationMobile({ isOpen, onClose }) {
                                     <svg
                                         viewBox="0 0 24 24"
                                         aria-hidden="true"
-                                        className="w-7 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-1q142lx r-1kihuf0 r-1472mwg r-di8nfa r-lrsllp"
+                                        className="w-7 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2 r-1q142lx r-1kihuf0 r-1472mwg r-di8nfa r-lrsllp"
                                         data-testid="icon"
                                     >
                                         <g>

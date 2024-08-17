@@ -1,20 +1,26 @@
 import { NavLink } from "react-router-dom";
+import { SettingItemsContainer, MobileBackButton } from "../../index";
 
 function NotificationSetting() {
+    document.title = "Notifications / X";
+
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                <div className="font-bold text-xl py-3">Notifications</div>
+                <div className="flex gap-5">
+                    <MobileBackButton />
+                    <div className="font-bold text-xl py-3">Notifications</div>
+                </div>
             </div>
             <div>
-                <div className="py-3 text-[13px] text-gray-500">
+                <div className="py-3 mx-2 text-[13px] text-gray-500">
                     Select the kinds of notifications you get about your
                     activities, interests, and recommendations.
                 </div>
                 <div>
                     <NavLink
                         to="/settings/notifications/filters"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -51,7 +57,7 @@ function NotificationSetting() {
                     </NavLink>
                     <NavLink
                         to="/settings/notifications/preferences"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -89,7 +95,12 @@ function NotificationSetting() {
                     </NavLink>
                 </div>
             </div>
-        </div>
+            <div className="mx-2 my-4 text-sm underline text-red-400">
+                Note: This is dummy page and it won&apos;t change your
+                notification settings. This feature will be enabled in future
+                updates.
+            </div>
+        </SettingItemsContainer>
     );
 }
 

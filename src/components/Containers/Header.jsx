@@ -1,4 +1,3 @@
-import React from "react";
 import { LogoutButton, Navigation } from "../index";
 
 function Header() {

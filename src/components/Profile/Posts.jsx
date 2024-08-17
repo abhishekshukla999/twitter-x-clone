@@ -4,6 +4,7 @@ import { addTweets, removeTweets } from "../../features/tweet/tweetSlice";
 import { tweetService } from "../../appwrite";
 import { Query } from "appwrite";
 import { Loader, TweetCard } from "../index";
+import { toast } from "sonner";
 
 function Posts() {
     const [tweetLoading, setTweetLoading] = useState(true);
@@ -14,27 +15,36 @@ function Posts() {
     useEffect(() => {
         if (!otherProfileData?.$id) return;
 
-        const fetchTweets = async () => {
-            try {
-                const tweetsCollectionData = await tweetService.getTweets([
-                    Query.equal("author", [otherProfileData?.$id]),
-                    Query.orderDesc("$createdAt"),
-                ]);
+        let unsubscribe = false;
 
-                if (tweetsCollectionData.documents.length !== 0) {
-                    const tweetsCollection = tweetsCollectionData.documents;
-                    dispatch(addTweets(tweetsCollection));
-                } else {
-                    dispatch(removeTweets());
+        const fetchTweets = async () => {
+            if (!unsubscribe) {
+                try {
+                    const tweetsCollectionData = await tweetService.getTweets([
+                        Query.equal("author", [otherProfileData?.$id]),
+                        Query.orderDesc("$createdAt"),
+                    ]);
+
+                    if (tweetsCollectionData.documents.length !== 0) {
+                        const tweetsCollection = tweetsCollectionData.documents;
+                        dispatch(addTweets(tweetsCollection));
+                    } else {
+                        dispatch(removeTweets());
+                    }
+                } catch (error) {
+                    // console.error("Error fetching tweets:", error);
+                    toast.error("Failed loading posts");
+                } finally {
+                    setTweetLoading(false);
                 }
-            } catch (error) {
-                console.error("Error fetching tweets:", error);
-            } finally {
-                setTweetLoading(false);
             }
         };
 
         fetchTweets();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [dispatch, otherProfileData?.$id]);
 
     return (
@@ -42,7 +52,7 @@ function Posts() {
             {tweetLoading ? (
                 <Loader />
             ) : tweetsData?.length === 0 ? (
-                <div className="text-3xl font-bold text-center">
+                <div className="text-3xl font-bold text-center p-4">
                     @{otherProfileData?.username || ""} don&apos;t have any
                     posts
                 </div>

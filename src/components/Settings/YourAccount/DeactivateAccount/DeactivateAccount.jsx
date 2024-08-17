@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Input } from "../../../index";
 import { useSelector } from "react-redux";
 import { profileMediaService } from "../../../../appwrite";
+import { Input, SettingItemsContainer, BackButton } from "../../../index";
 
 function DeactivateAccount() {
     const navigate = useNavigate();
@@ -15,24 +15,13 @@ function DeactivateAccount() {
             : "/defaultAvatar.png";
     };
 
+    document.title = "Deactivate account / X";
+
     return !confirm ? (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
+                    <BackButton />
                     <div className="font-bold text-xl py-3">
                         Deactivate account
                     </div>
@@ -40,16 +29,17 @@ function DeactivateAccount() {
             </div>
 
             <div>
-                <div className="border-b">
+                <div className="border-b dark:border-gray-800 dim:border-gray-800">
                     <NavLink
-                        className="p-3 flex hover:bg-gray-100"
+                        className="p-3 flex hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                         to={`/${profileData.username}`}
                     >
-                        <div className="w-10 my-auto">
+                        <div className="min-w-[40px] max-w-[43px] my-auto">
                             <img
                                 src={avatarUrl()}
                                 alt="avatar"
                                 className="w-full rounded-full"
+                                loading="lazy"
                             />
                         </div>
                         <div className="text-[15px] px-1.5 my-auto leading-5">
@@ -78,42 +68,42 @@ function DeactivateAccount() {
                     </div>
                 </div>
                 <div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b p-3 dark:border-gray-800 dim:border-gray-800 text-[13px] text-gray-500">
                         Some account information may still be available in
                         search engines, such as Google or Bing. {""}
                         <Link
                             to="https://help.x.com/en/safety-and-security/remove-x-profile-from-google-search"
                             target="_blank"
-                            className="text-twitter-blue hover:underline cursor-pointer"
+                            className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                         >
                             Learn more
                         </Link>
                     </div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b p-3 dark:border-gray-800 dim:border-gray-800 text-[13px] text-gray-500">
                         If you just want to change your @username, you
                         don&apos;t need to deactivate your account — edit it in
                         your {""}
                         <Link
                             to="/settings/your_twitter_data/account"
-                            className="text-twitter-blue hover:underline cursor-pointer"
+                            className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                         >
                             settings.
                         </Link>
                     </div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 p-3 text-[13px] text-gray-500">
                         To use your current @username or email address with a
                         different X account,
                         <Link
                             to="/settings/your_twitter_data/account"
-                            className="text-twitter-blue hover:underline cursor-pointer"
+                            className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                         >
                             {""} change{" "}
                         </Link>
                         them before you deactivate this account.
                     </div>
-                    <div className="border-b p-3 text-[13px] text-gray-500">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 p-3 text-[13px] text-gray-500">
                         If you want to download
-                        <span className="text-twitter-blue hover:underline cursor-pointer">
+                        <span className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                             {""} your X data{" "}
                         </span>
                         , you&apos;ll need to complete both the request and
@@ -121,6 +111,10 @@ function DeactivateAccount() {
                         to download your data cannot be sent to deactivated
                         accounts.
                     </div>
+                </div>
+                <div className="p-3 border-b dark:border-gray-800 dim:border-gray-800 text-base underline text-red-400">
+                    Note: This is dummy page and it won&apos;t deactivate your
+                    account. This feature will be enabled in future updates.
                 </div>
                 <div className="my-1 box-border">
                     <button
@@ -132,9 +126,9 @@ function DeactivateAccount() {
                     </button>
                 </div>
             </div>
-        </div>
+        </SettingItemsContainer>
     ) : (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex gap-5">
                     <NavLink
@@ -184,7 +178,7 @@ function DeactivateAccount() {
                     </button>
                 </div>
             </div>
-        </div>
+        </SettingItemsContainer>
     );
 }
 

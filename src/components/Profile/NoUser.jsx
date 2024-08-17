@@ -40,6 +40,7 @@ function NoUser({ username }) {
                                 className="rounded-full h-[133.5px] w-[133.5px] p-1 bg-white"
                                 src="/defaultAvatar.png"
                                 alt="Avatar Image"
+                                loading="lazy"
                             />
                         </div>
                     </div>

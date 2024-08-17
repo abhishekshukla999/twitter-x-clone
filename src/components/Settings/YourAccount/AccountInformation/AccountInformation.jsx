@@ -1,9 +1,11 @@
 import { useSelector } from "react-redux";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { SettingItemsContainer, BackButton } from "../../../index";
 
 function AccountInformation() {
     const profileData = useSelector((state) => state.profile);
-    const navigate = useNavigate();
+
+    document.title = "Account information / X";
 
     // converting date to local
     const toLocalDate = (date) => {
@@ -71,23 +73,10 @@ function AccountInformation() {
     const age = calculateAge(profileData?.dob);
 
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
+                    <BackButton />
                     <div className="font-bold text-xl py-3">
                         Account information
                     </div>
@@ -95,10 +84,10 @@ function AccountInformation() {
             </div>
             <div>
                 <div>
-                    <div className="border-b">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800">
                         <NavLink
                             to="/settings/screen_name"
-                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                         >
                             <div className="leading-5">
                                 <div className="text-[15px]">Username</div>
@@ -120,7 +109,7 @@ function AccountInformation() {
                         </NavLink>
                         <NavLink
                             to="/settings/phone"
-                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                         >
                             <div className="leading-5 mr-6">
                                 <div className="text-[15px]">Phone</div>
@@ -142,7 +131,7 @@ function AccountInformation() {
                         </NavLink>
                         <NavLink
                             to="/settings/email"
-                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                         >
                             <div className="leading-5 mr-6">
                                 <div className="text-[15px]">Email</div>
@@ -183,13 +172,13 @@ function AccountInformation() {
                             </div>
                             <div className="text-[13px] text-gray-500">
                                 {profileData?.premiumMember ? "Yes. " : "No. "}
-                                <span className="text-twitter-blue hover:underline cursor-pointer">
+                                <span className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                                     Learn more
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div className="border-b">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800">
                         <div className="py-3 px-2 leading-5 mr-6 w-full">
                             <div className="text-[15px]">Account creation</div>
                             <div className="text-[13px] text-gray-500">
@@ -197,10 +186,10 @@ function AccountInformation() {
                             </div>
                         </div>
                     </div>
-                    <div className="border-b">
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800">
                         <NavLink
                             to="/settings/country"
-                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                         >
                             <div className="leading-5 mr-6">
                                 <div className="text-[15px]">Country</div>
@@ -222,7 +211,7 @@ function AccountInformation() {
                         </NavLink>
                         <NavLink
                             to="/settings/your_twitter_data/gender"
-                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                         >
                             <div className="leading-5 mr-6">
                                 <div className="text-[15px]">Gender</div>
@@ -251,7 +240,7 @@ function AccountInformation() {
                                 Add your date of birth to your{" "}
                                 <Link
                                     to={`/${profileData?.username}`}
-                                    className="text-twitter-blue hover:underline"
+                                    className="hover:underline text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600"
                                 >
                                     profile.
                                 </Link>
@@ -261,7 +250,7 @@ function AccountInformation() {
                     <div>
                         <NavLink
                             to="/settings/your_twitter_data/age"
-                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100"
+                            className="flex py-3 px-2 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800 "
                         >
                             <div className="leading-5 mr-6">
                                 <div className="text-[15px]">Age</div>
@@ -284,7 +273,7 @@ function AccountInformation() {
                     </div>
                 </div>
             </div>
-        </div>
+        </SettingItemsContainer>
     );
 }
 

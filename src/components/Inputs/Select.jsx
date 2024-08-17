@@ -10,13 +10,15 @@ const Select = forwardRef(function Select(
     return (
         <div
             className={`py-1 px-2 leading-5 rounded-md ${
-                isFocused ? "ring-2 ring-twitter-blue" : "ring-1 ring-gray-300"
+                isFocused
+                    ? "ring-2 ring-twitter-blue yellow:ring-twitter-yellow crimson:ring-twitter-crimson purple:ring-twitter-purple orange:ring-twitter-orange green:ring-twitter-green"
+                    : "ring-1 ring-gray-300 dark:ring-gray-800 dim: dim:ring-gray-700"
             }`}
         >
             <div>
                 <label
                     className={`text-[13px] ${
-                        isFocused ? "text-twitter-blue" : "text-gray-500"
+                        isFocused ? "text-twitter-blue yellow:text-twitter-yellow crimson:text-twitter-crimson purple:text-twitter-purple orange:text-twitter-orange green:text-twitter-green" : "text-gray-500"
                     }`}
                     htmlFor={id}
                 >
@@ -26,7 +28,7 @@ const Select = forwardRef(function Select(
             <div className="my-1">
                 <select
                     id={id}
-                    className={`text-base w-full cursor-pointer focus:outline-none appearance-none bg-no-repeat bg-right bg-[length:23px] ${className} ${
+                    className={`text-base w-full cursor-pointer focus:outline-none appearance-none bg-no-repeat bg-right bg-[length:23px] dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg ${className} ${
                         isFocused
                             ? "bg-[url('/dropdown-blue.svg')]"
                             : "bg-[url('/dropdown-gray.svg')]"

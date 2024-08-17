@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { authService, profileMediaService, profileService } from "../../appwrite";
+import { profileMediaService, profileService } from "../../appwrite";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addOtherProfile } from "../../features/profile/otherProfileSlice";
+import { LoadingModal, Input } from "../index";
+import { toast } from "sonner";
 
 function EditProfileModal({ isOpen, onClose }) {
     const profileData = useSelector((state) => state.profile);
     const otherProfile = useSelector((state) => state.otherProfile);
     const dispatch = useDispatch();
-    const { register, handleSubmit, reset } = useForm({
+    const { register, handleSubmit, reset, formState } = useForm({
         defaultValues: {
             name: profileData?.name || "",
             bio: profileData?.bio || "",
@@ -21,17 +23,27 @@ function EditProfileModal({ isOpen, onClose }) {
     const [isEditDob, setIsEditDob] = useState(false);
     // preview and upload states for profile
     const [prevProfileImage, setPrevProfileImage] = useState(
-        profileMediaService.getFilePreview(profileData?.avatar) ||
-            "/defaultAvatar.png"
+        profileMediaService.getCustomFilePreview(
+            profileData?.avatar,
+            133,
+            133
+        ) || "/defaultAvatar.png"
     );
     const [uploadProfileImage, setUploadProfileImage] = useState(null);
     // preview and upload states foCover
     const [prevCoverImage, setPrevCoverImage] = useState(
-        profileMediaService.getFilePreview(profileData?.profileCover) || ""
+        profileMediaService.getCustomFilePreview(
+            profileData?.profileCover,
+            598,
+            199
+        ) || ""
     );
     const [uploadCoverImage, setUploadCoverImage] = useState(null);
 
     const [dob, setDob] = useState(profileData?.dob);
+
+    const { errors } = formState;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         reset({
@@ -74,6 +86,7 @@ function EditProfileModal({ isOpen, onClose }) {
     };
 
     const saveProfile = async (data) => {
+        setLoading(true);
         try {
             if (uploadCoverImage) {
                 const file = await profileMediaService.uploadFile(
@@ -105,8 +118,6 @@ function EditProfileModal({ isOpen, onClose }) {
                 }
             }
 
-            // const updateAuthData = await authService.
-
             const updatedProfileData = await profileService.updateProfile(
                 profileData?.$id,
                 {
@@ -121,11 +132,15 @@ function EditProfileModal({ isOpen, onClose }) {
                     dispatch(addOtherProfile({ ...updatedProfileData }));
                 }
             }
+
+            toast.success("Profile updated successfully");
         } catch (error) {
             console.log("Error updating user profile :: ", error);
+            toast.error("Profile updating failed");
         } finally {
             reset();
             onClose();
+            setLoading(false);
         }
     };
 
@@ -146,27 +161,44 @@ function EditProfileModal({ isOpen, onClose }) {
         setUploadCoverImage(null);
     };
 
+    const handleClose = () => {
+        onClose();
+        reset({
+            name: profileData?.name || "",
+            bio: profileData?.bio || "",
+            location: profileData?.location || "",
+            website: profileData?.website || "",
+        });
+    };
+
     if (!isOpen) return null;
 
     return createPortal(
         <div
-            className="close-outer fixed top-0 left-0 right-0 bottom-0 bg-gray-600 bg-opacity-50 flex justify-center items-center"
-            onClick={onClose}
+            className="close-outer fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-gray-600 bg-opacity-50 flex justify-center items-center"
+            onClick={handleClose}
         >
+            <LoadingModal isOpen={loading} />
+
             <form
-                className="bg-white overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen text-black"
+                className="bg-white text-black dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg overflow-y-auto opacity-100 px-1 rounded-xl shadow-lg absolute xl:w-[30%] lg:w-[40%] md:w-[60%] h-[60vh] max-[765px]:h-screen max-[765px]:w-screen"
                 onSubmit={handleSubmit(saveProfile)}
                 onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault(); // Prevent default Enter key behavior
+                    }
+                }}
             >
-                <div className="flex gap-5 py-1 sticky top-0 bg-white opacity-80">
+                <div className="flex gap-5 py-1 sticky z-30 top-0 bg-white opacity-80 dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white">
                     <button
                         className="rounded-lg bg-none border-none text-2xl cursor-pointer my-auto px-3"
-                        onClick={onClose}
+                        onClick={handleClose}
                     >
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"
-                            className="w-5 fill-black r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                            className="w-5 fill-black dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
                         >
                             <g>
                                 <path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"></path>
@@ -178,7 +210,7 @@ function EditProfileModal({ isOpen, onClose }) {
                         Edit Profile
                     </span>
                     <button
-                        className="justify-self-end p-2 px-4 my-auto font-bold text-base border text-white bg-black border-zinc-300 rounded-full"
+                        className="justify-self-end p-2 px-4 my-auto font-bold text-base border text-white bg-black dark:bg-white dim:bg-white dark:text-black dim:text-black border-zinc-300 rounded-full"
                         type="submit"
                     >
                         Save
@@ -276,60 +308,46 @@ function EditProfileModal({ isOpen, onClose }) {
 
                 {/* user info */}
                 <div className="">
-                    <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
-                        <label
-                            htmlFor="name"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Name
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            className="focus:outline-none"
-                            {...register("name", { required: true })}
+                    <div className="flex flex-col p-2 my-5 mx-3 rounded-lg">
+                        <Input
+                            label="Name"
+                            className="dark:text-white dim:text-white"
+                            maxlength="50"
+                            {...register("name", {
+                                required: "Name can't be empty",
+                            })}
                         />
                     </div>
-                    <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
-                        <label
-                            htmlFor="bio"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Bio
-                        </label>
-                        <textarea
-                            name=""
-                            id="bio"
-                            rows="3"
-                            className="focus:outline-none"
+                    {errors.name?.message && (
+                        <div className="mx-3 text-red-500">
+                            {errors.name?.message}
+                        </div>
+                    )}
+                    <div
+                        className="flex flex-col p-2 my-5 mx-3 rounded-lg"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Input
+                            label="Bio"
+                            type="textarea"
+                            className="dark:text-white dim:text-white"
+                            maxlength="125"
                             {...register("bio")}
-                        ></textarea>
+                        />
                     </div>
-                    <div className="flex flex-col border p-2 my-5 mx-3 rounded-lg">
-                        <label
-                            htmlFor="location"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Location
-                        </label>
-                        <input
-                            id="location"
-                            type="text"
-                            className="focus:outline-none"
+                    <div className="flex flex-col p-2 my-5 mx-3 rounded-lg">
+                        <Input
+                            label="Location"
+                            className="dark:text-white dim:text-white"
+                            maxlength="30"
                             {...register("location")}
                         />
                     </div>
-                    <div className="flex flex-col border p-2 my-5 mx-3">
-                        <label
-                            htmlFor="website"
-                            className="text-[13px] text-gray-500"
-                        >
-                            Website
-                        </label>
-                        <input
-                            id="website"
-                            type="text"
-                            className="focus:outline-none"
+                    <div className="flex flex-col p-2 my-5 mx-3">
+                        <Input
+                            label="Website"
+                            maxlength="80"
+                            className="dark:text-white dim:text-white"
                             {...register("website")}
                         />
                     </div>
@@ -337,7 +355,7 @@ function EditProfileModal({ isOpen, onClose }) {
                         <div className="text-gray-500 flex gap-1">
                             <div>Birth date</div>
                             <div
-                                className="text-twitter-blue cursor-pointer"
+                                className="hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600 cursor-pointer"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setIsEditDob((prev) => !prev);
@@ -346,19 +364,29 @@ function EditProfileModal({ isOpen, onClose }) {
                                 {isEditDob ? "Save" : "Edit"}
                             </div>
                         </div>
-                        <div className="text-xl">{toLocalDate(dob)}</div>
+                        <div className="text-xl dark:text-white dim:text-white">
+                            {toLocalDate(dob)}
+                        </div>
                         {isEditDob && (
                             <div>
                                 <input
                                     type="date"
                                     placeholder="DOB"
                                     className="focus:outline-none"
-                                    {...register("dob", { required: true })}
+                                    {...register("dob", {
+                                        required:
+                                            "Please enter correct birth date",
+                                    })}
                                     onChange={(e) => setDob(e.target.value)}
                                 />
                             </div>
                         )}
                     </div>
+                    {errors.dob?.message && (
+                        <div className="mx-3 my-3 text-red-500">
+                            {errors.dob?.message} !!
+                        </div>
+                    )}
                 </div>
             </form>
         </div>,

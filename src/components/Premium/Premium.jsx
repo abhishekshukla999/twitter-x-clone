@@ -1,35 +1,126 @@
 import { useState } from "react";
-import PremiumModal from "../Modals/PremiumModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Premium() {
-    const [isOpen, setIsOpen] = useState(true);
+    const profileData = useSelector((state) => state.profile);
     const navigate = useNavigate();
+    const [basic, setBasic] = useState({
+        name: "Basic",
+        price: "₹215.87/month",
+        status: false,
+    });
+    const [premium, setPremium] = useState({
+        name: "Premium",
+        price: "₹566.67/month",
+        status: true,
+    });
+    const [premiumPlus, setPremiumPlus] = useState({
+        name: "Premium+",
+        price: "₹1,133.3/month",
+        status: false,
+    });
 
-    const handleClose = () => {
-        setIsOpen(false);
-        navigate("/home");
+    const [selectedPlan, setSelectedPlan] = useState(premium);
+
+    const handleBasic = () => {
+        setBasic((prev) => ({ ...prev, status: true }));
+        setPremium((prev) => ({ ...prev, status: false }));
+        setPremiumPlus((prev) => ({ ...prev, status: false }));
+
+        setSelectedPlan(basic);
     };
-    return (
-        <div>
-            <PremiumModal isOpen={isOpen} onClose={handleClose}>
-                <div className="text-white">
-                    <h1 className="text-4xl font-bold my-4 text-center">
-                        Upgrade to Premium
-                    </h1>
-                    <p className="text-gray-400 text-center">
-                        Enjoy an enhanced experience, exclusive creator tools,
-                        top-tier verification and security.
-                    </p>
+    const handlePremium = () => {
+        setPremium((prev) => ({ ...prev, status: true }));
+        setBasic((prev) => ({ ...prev, status: false }));
+        setPremiumPlus((prev) => ({ ...prev, status: false }));
 
-                    <div className="m-6 rounded-lg focus:ring cursor-pointer">
+        setSelectedPlan(premium);
+    };
+    const handlePremiumPlus = () => {
+        setPremiumPlus((prev) => ({ ...prev, status: true }));
+        setBasic((prev) => ({ ...prev, status: false }));
+        setPremium((prev) => ({ ...prev, status: false }));
+
+        setSelectedPlan(premiumPlus);
+    };
+
+    return profileData?.premiumMember ? (
+        <div className="overflow-y-auto h-screen w-full">
+            <div className="top flex p-2 sticky z-50 border-b dark:border-gray-800 dim:border-gray-800 top-0 backdrop-blur-[400px] opacity-[100%]">
+                <NavLink
+                    className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
+                    onClick={() => navigate(-2)}
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        className="w-5 dark:fill-white dim:fill-white m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                    >
+                        <g>
+                            <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
+                        </g>
+                    </svg>
+                </NavLink>
+
+                <div className="right ml-4 my-auto">
+                    <p className="font-bold text-xl">Premium</p>
+                </div>
+            </div>
+            <div>
+                <h1 className="text-4xl font-bold p-4 text-center">
+                    You&apos;re already subscribed !!
+                </h1>
+                <p className="text-gray-400 text-center mx-2">
+                    Enjoy an enhanced experience, exclusive creator tools,
+                    top-tier verification and security.
+                </p>
+            </div>
+        </div>
+    ) : (
+        <div className="overflow-y-auto h-screen w-full">
+            <div className="top flex p-2 sticky z-50 border-b top-0 dark:border-gray-800 dim:border-gray-800 backdrop-blur-[400px] opacity-[100%]">
+                <NavLink
+                    className="left my-auto p-3 hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full"
+                    onClick={() => navigate(-1)}
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        className="w-5 dark:fill-white dim:fill-white m-auto r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
+                    >
+                        <g>
+                            <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
+                        </g>
+                    </svg>
+                </NavLink>
+
+                <div className="right ml-4 my-auto">
+                    <p className="font-bold text-xl">Premium</p>
+                </div>
+            </div>
+            <div>
+                <h1 className="text-4xl font-bold p-4 text-center">
+                    Upgrade to Premium
+                </h1>
+                <p className="text-gray-400 text-center">
+                    Enjoy an enhanced experience, exclusive creator tools,
+                    top-tier verification and security.
+                </p>
+
+                <div className="flex flex-wrap gap-2 justify-center items-center max-[1180px]:flex-col">
+                    <div
+                        className="m-6 rounded-lg focus:ring cursor-pointer"
+                        onClick={handleBasic}
+                    >
                         <div className="flex justify-between p-2 text-2xl">
                             <label htmlFor="basic">Basic</label>
                             <input
-                                className="w-6"
+                                className="w-6 cursor-pointer"
                                 type="radio"
                                 name="premiumVersion"
                                 id="basic"
+                                checked={basic.status}
                             />
                         </div>
                         <div>
@@ -49,7 +140,7 @@ function Premium() {
                         <ul className="list-none flex flex-col gap-1 p-2">
                             <li>
                                 &#10003;
-                                <span className="mx-1">Schedule Tweets</span>
+                                <span className="mx-1">Edit Tweets</span>
                             </li>
                             <li className="flex">
                                 &#10003;
@@ -73,14 +164,23 @@ function Premium() {
                             </li>
                         </ul>
                     </div>
-                    <div className="m-6 rounded-lg focus:ring cursor-pointer">
+                    <div
+                        className="m-6 rounded-lg focus:ring cursor-pointer"
+                        onClick={handlePremium}
+                    >
                         <div className="flex justify-between p-2 text-2xl">
-                            <label htmlFor="premium">Premium</label>
+                            <label htmlFor="premium">
+                                Premium{" "}
+                                <small className="font-light text-base mr-3">
+                                    &#40;recommended&#41;
+                                </small>
+                            </label>
                             <input
                                 className="w-6"
                                 type="radio"
                                 name="premiumVersion"
                                 id="premium"
+                                checked={premium.status}
                             />
                         </div>
                         <div>
@@ -100,7 +200,7 @@ function Premium() {
                         <ul className="list-none flex flex-col gap-1 p-2">
                             <li>
                                 &#10003;
-                                <span className="mx-1">Schedule Tweets</span>
+                                <span className="mx-1">Edit Tweets</span>
                             </li>
                             <li className="flex">
                                 &#10003;
@@ -124,7 +224,10 @@ function Premium() {
                             </li>
                         </ul>
                     </div>
-                    <div className="m-6 rounded-lg focus:ring cursor-pointer">
+                    <div
+                        className="m-6 rounded-lg focus:ring cursor-pointer"
+                        onClick={handlePremiumPlus}
+                    >
                         <div className="flex justify-between p-2 text-2xl">
                             <label htmlFor="premiumplus">Premium+</label>
                             <input
@@ -132,6 +235,7 @@ function Premium() {
                                 type="radio"
                                 name="premiumVersion"
                                 id="premiumplus"
+                                checked={premiumPlus.status}
                             />
                         </div>
                         <div>
@@ -151,7 +255,7 @@ function Premium() {
                         <ul className="list-none flex flex-col gap-1 p-2">
                             <li>
                                 &#10003;
-                                <span className="mx-1">Schedule Tweets</span>
+                                <span className="mx-1">Edit Tweets</span>
                             </li>
                             <li className="flex">
                                 &#10003;
@@ -175,15 +279,20 @@ function Premium() {
                             </li>
                         </ul>
                     </div>
-
-                    <div className="m-6 flex flex-wrap justify-center items-center">
-                        <div className="p-1">Your Plan and price</div>
-                        <button type="submit" className="font-bold mx-2 w-[70%] p-1 rounded-full bg-twitter-blue">
-                            Subscribe and Pay
-                        </button>
-                    </div>
                 </div>
-            </PremiumModal>
+
+                <div className="m-6 p-4 flex gap-1 flex-col justify-center items-center">
+                    <div className="p-1 font-[500]">Your selected Plan</div>
+                    <div className="p-1 font-[500]">{`${selectedPlan.name} ${selectedPlan.price}`}</div>
+                    <button
+                        type="submit"
+                        className="font-bold mx-2 w-[70%] p-2 rounded-full text-white bg-twitter-blue"
+                        onClick={() => navigate("/checkout")}
+                    >
+                        Subscribe and Pay
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

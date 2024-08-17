@@ -1,21 +1,27 @@
 import { NavLink } from "react-router-dom";
+import { SettingItemsContainer, MobileBackButton } from "../../index";
 
 function Accessibilities() {
+    document.title = "Accessibility and display / X";
+
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                <div className="font-bold text-xl py-3">
-                    Accessibility and display
+                <div className="flex gap-5">
+                    <MobileBackButton />
+                    <div className="font-bold text-xl py-3">
+                        Accessibility and display
+                    </div>
                 </div>
             </div>
             <div>
-                <div className="py-3 text-[13px] text-gray-500">
+                <div className="py-3 mx-2 text-[13px] text-gray-500">
                     Manage how X content is displayed to you.
                 </div>
                 <div>
                     <NavLink
                         to="/settings/accessibility"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -51,7 +57,7 @@ function Accessibilities() {
                     </NavLink>
                     <NavLink
                         to="/settings/display"
-                        className="flex py-3 hover:bg-gray-100"
+                        className="flex py-3 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                     >
                         <div className="my-auto py-2 px-4 mr-4">
                             <svg
@@ -89,7 +95,7 @@ function Accessibilities() {
                     </NavLink>
                 </div>
             </div>
-        </div>
+        </SettingItemsContainer>
     );
 }
 

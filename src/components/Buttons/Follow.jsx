@@ -7,24 +7,32 @@ function Follow({ followerId, followingId }) {
     const [hover, setHover] = useState(false);
 
     useEffect(() => {
-        const fetchFollowing = async () => {
-            try {
-                const myFollow = await followService.getFollows([
-                    Query.and([
-                        Query.equal("followingId", [followingId]),
-                        Query.equal("followerId", followerId),
-                    ]),
-                ]);
+        let unsubscribe = false;
 
-                if (myFollow.documents.length !== 0) {
-                    setIsFollowing(myFollow.documents["0"]);
+        const fetchFollowing = async () => {
+            if (!unsubscribe) {
+                try {
+                    const myFollow = await followService.getFollows([
+                        Query.and([
+                            Query.equal("followingId", [followingId]),
+                            Query.equal("followerId", [followerId]),
+                        ]),
+                    ]);
+
+                    if (myFollow.documents.length !== 0) {
+                        setIsFollowing(myFollow.documents["0"]);
+                    }
+                } catch (error) {
+                    console.log("Error fetching follow :: ", error);
                 }
-            } catch (error) {
-                console.log("Error fetching follow :: ", error);
             }
         };
 
         fetchFollowing();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [followerId, followingId]);
 
     const handleFollow = async () => {
@@ -99,7 +107,7 @@ function Follow({ followerId, followingId }) {
             className={`p-1.5 px-4 font-bold text-[15px] border ${
                 hover
                     ? "text-red-600 bg-red-100 border-red-300"
-                    : "text-black bg-white border-gray-300 "
+                    : "text-black bg-white border-gray-300 dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg dark:text-white dim:text-white dark:border-gray-600 dim:border-gray-600"
             } rounded-full`}
             onClick={handleFollow}
             onPointerEnter={() => setHover(true)}
@@ -109,7 +117,7 @@ function Follow({ followerId, followingId }) {
         </button>
     ) : (
         <button
-            className="p-1.5 px-4 font-bold text-[15px] border text-white bg-black border-zinc-300 rounded-full"
+            className="p-1.5 px-4 font-bold text-[15px] border text-white bg-black border-zinc-300 dark:bg-white dim:bg-white dark:text-black dim:text-black rounded-full"
             onClick={handleFollow}
         >
             Follow

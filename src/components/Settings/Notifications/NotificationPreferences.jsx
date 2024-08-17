@@ -1,39 +1,27 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function NotificationPreferences() {
-    const navigate = useNavigate();
+    document.title = "Preferences / X";
 
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
+                    <BackButton />
                     <div className="font-bold text-xl py-3">Preferences</div>
                 </div>
             </div>
             <div>
                 <div className="py-3 px-2 text-[13px] text-gray-500">
                     Select your preferences by notification type.
-                    <span className="text-twitter-blue hover:underline cursor-pointer">
+                    <span className="hover:underline cursor-pointer text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
                         {""} Learn more
                     </span>
                 </div>
                 <NavLink
                     to="/settings/push_notifications"
-                    className="flex py-3 px-2 my-1 justify-between w-full hover:bg-gray-100"
+                    className="flex py-3 px-2 my-1 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                 >
                     <div className="text-[15px]">Push notifications</div>
 
@@ -51,7 +39,7 @@ function NotificationPreferences() {
                 </NavLink>
                 <NavLink
                     to="/settings/email_notifications"
-                    className="flex py-3 px-2 my-1 justify-between w-full hover:bg-gray-100"
+                    className="flex py-3 px-2 my-1 justify-between w-full hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                 >
                     <div className="text-[15px]">Email notifications</div>
 
@@ -68,7 +56,7 @@ function NotificationPreferences() {
                     </div>
                 </NavLink>
             </div>
-        </div>
+        </SettingItemsContainer>
     );
 }
 

@@ -4,7 +4,7 @@ import {
     faBookmark as faBookmarkSolid,
     faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     bookmarkService,
     likeService,
@@ -23,7 +23,13 @@ import { addLikes } from "../../features/like/likeSlice";
 import { useNavigate } from "react-router-dom";
 import { addProfileData } from "../../features/profile/profileSlice";
 import { addTweets } from "../../features/tweet/tweetSlice";
-import FollowTweet from "../Buttons/FollowTweet";
+import { toast } from "sonner";
+import {
+    LoadingModal,
+    FollowTweet,
+    MediaLoader,
+    UserCardLoader,
+} from "../index";
 
 function TweetCard({
     tweetId,
@@ -59,153 +65,252 @@ function TweetCard({
         repliesCount: 0,
     });
 
+    const [mediaLoader, setMediaLoader] = useState(true);
+    const [authorInfoLoader, setAuthorInfoLoader] = useState(true);
     const navigate = useNavigate();
+    const [navLoading, setNavLoading] = useState(false);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const avatarUrl = async () => {
-            const authorData = await profileService.getProfile(author);
+            if (!unsubscribe) {
+                try {
+                    const authorData = await profileService.getProfile(author);
 
-            if (authorData) {
-                const url = profileMediaService.getFilePreview(
-                    authorData.avatar
-                );
-                const URL = url ? url : "/defaultAvatar.png";
+                    if (authorData) {
+                        const authorData = await profileService.getProfile(
+                            author
+                        );
 
-                setAvatarURL(URL);
+                        if (authorData) {
+                            const url = profileMediaService.getFilePreview(
+                                authorData.avatar
+                            );
+                            const URL = url ? url : "/defaultAvatar.png";
 
-                setAuthorInfo({
-                    name: authorData.name,
-                    username: authorData.username,
-                });
+                            setAvatarURL(URL);
+
+                            setAuthorInfo({
+                                name: authorData.name,
+                                username: authorData.username,
+                            });
+
+                            setAuthorInfoLoader(false);
+                        }
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching profile in tweets card :: ",
+                        error
+                    );
+                }
             }
         };
 
         avatarUrl();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [author]);
 
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchMedia = async () => {
-            if (media) {
-                setMediaURL(tweetMediaService.getFilePreview(media));
+            if (media && !unsubscribe) {
+                const img = new Image();
+                img.src = tweetMediaService.getCustomQualityFilePreview({
+                    fileId: media,
+                    quality: 70,
+                });
+
+                img.onload = () => {
+                    setMediaURL(img.src);
+                    setMediaLoader(false);
+                };
+
+                img.onerror = () => {
+                    mediaURL("/errorImage.png");
+                    setMediaLoader(false);
+                };
+
+                if (img.complete) {
+                    setMediaURL(img.src);
+                    setMediaLoader(false);
+                }
             }
         };
 
         fetchMedia();
         setDate(toLocalDate(createdAt));
+
+        return () => {
+            unsubscribe = true;
+        };
     }, [media]);
 
     // bookmarks
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchBookmarksData = async () => {
-            const allBookmarks = await bookmarkService.getBookmarks([
-                Query.equal("tweetId", [tweetId]),
-            ]);
-
-            if (allBookmarks.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    bookmarksCount: allBookmarks.documents.length,
-                }));
-
-                const isMyBook = await bookmarkService.getBookmarks([
-                    Query.and([
+            if (!unsubscribe) {
+                try {
+                    const allBookmarks = await bookmarkService.getBookmarks([
                         Query.equal("tweetId", [tweetId]),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
-                ]);
+                    ]);
 
-                if (isMyBook.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        myBookmark: true,
-                    }));
+                    if (allBookmarks.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            bookmarksCount: allBookmarks.documents.length,
+                        }));
+
+                        const isMyBook = await bookmarkService.getBookmarks([
+                            Query.and([
+                                Query.equal("tweetId", [tweetId]),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyBook.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myBookmark: true,
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.log("Bookmarks loading failed :: ", error);
                 }
             }
         };
 
         fetchBookmarksData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // likes
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchLikesData = async () => {
-            const allLikes = await likeService.getLikes([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allLikes.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    likesCount: allLikes.documents.length,
-                }));
-
-                const isMyLike = await likeService.getLikes([
-                    Query.and([
+            if (!unsubscribe) {
+                try {
+                    const allLikes = await likeService.getLikes([
                         Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
-                ]);
+                    ]);
 
-                if (isMyLike.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        myLike: true,
-                    }));
+                    if (allLikes.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            likesCount: allLikes.documents.length,
+                        }));
+
+                        const isMyLike = await likeService.getLikes([
+                            Query.and([
+                                Query.equal("tweetId", tweetId),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyLike.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myLike: true,
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.log("Likes loading failed :: ", error);
                 }
             }
         };
 
         fetchLikesData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // retweets
     useEffect(() => {
+        let unsubscribe = false;
+
         const fetchRetweetsData = async () => {
-            const allRetweets = await retweetService.getRetweets([
-                Query.equal("tweetId", tweetId),
-            ]);
-
-            if (allRetweets.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    retweetsCount: allRetweets.documents.length,
-                }));
-
-                const isMyRetweet = await retweetService.getRetweets([
-                    Query.and([
+            if (!unsubscribe) {
+                try {
+                    const allRetweets = await retweetService.getRetweets([
                         Query.equal("tweetId", tweetId),
-                        Query.equal("userId", [authData.$id]),
-                    ]),
-                ]);
+                    ]);
 
-                if (isMyRetweet.documents.length !== 0) {
-                    setInteractions((interactions) => ({
-                        ...interactions,
-                        myRetweet: true,
-                    }));
+                    if (allRetweets.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            retweetsCount: allRetweets.documents.length,
+                        }));
+
+                        const isMyRetweet = await retweetService.getRetweets([
+                            Query.and([
+                                Query.equal("tweetId", tweetId),
+                                Query.equal("userId", [authData.$id]),
+                            ]),
+                        ]);
+
+                        if (isMyRetweet.documents.length !== 0) {
+                            setInteractions((interactions) => ({
+                                ...interactions,
+                                myRetweet: true,
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.log("Retweets loading failed :: ", error);
                 }
             }
         };
 
         fetchRetweetsData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // replies
     useEffect(() => {
-        const fetchRepliesData = async () => {
-            const allReplies = await replyService.getReplies([
-                Query.equal("tweetId", [tweetId]),
-            ]);
+        let unsubscribe = false;
 
-            if (allReplies.documents.length !== 0) {
-                setInteractions((interactions) => ({
-                    ...interactions,
-                    repliesCount: allReplies.documents.length,
-                }));
+        const fetchRepliesData = async () => {
+            if (!unsubscribe) {
+                try {
+                    const allReplies = await replyService.getReplies([
+                        Query.equal("tweetId", [tweetId]),
+                    ]);
+
+                    if (allReplies.documents.length !== 0) {
+                        setInteractions((interactions) => ({
+                            ...interactions,
+                            repliesCount: allReplies.documents.length,
+                        }));
+                    }
+                } catch (error) {
+                    console.log("Replies loading failed :: ", error);
+                }
             }
         };
 
         fetchRepliesData();
+
+        return () => {
+            unsubscribe = true;
+        };
     }, []);
 
     // converting date to local
@@ -246,7 +351,7 @@ function TweetCard({
             const deletedTweet = await tweetService.deleteTweet(tweetId);
 
             if (deletedTweet) {
-                console.log("Tweet Deleted");
+                // console.log("Tweet Deleted");
 
                 const updatedTweetsCount = profileData?.tweets - 1;
                 const updatedProfileData = await profileService.updateProfile(
@@ -334,8 +439,11 @@ function TweetCard({
                     console.error("Error deleting some bookmark:", error);
                 }
             }
+
+            toast.success("Tweet deleted successfully");
         } catch (error) {
-            console.error("Error deleting tweet :: ", error);
+            // console.error("Error deleting tweet :: ", error);
+            toast.error("Tweet deletion failed");
         }
     };
 
@@ -370,12 +478,15 @@ function TweetCard({
                             bookmarksCount: currentBooksCount,
                         }));
                     }
+
+                    toast.success("Tweet added to bookmarks");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myBookmark: false,
                     }));
-                    console.error("Error adding bookmark :: ", error);
+                    // console.error("Error adding bookmark :: ", error);
+                    toast.error("Failed adding Tweet to bookmarks ");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -411,12 +522,15 @@ function TweetCard({
                                 currentUserbookmarks.documents.length,
                         })
                     );
+
+                    toast.success("Tweet removed from bookmarks");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myBookmark: true,
                     }));
                     console.error("Error deleting bookmark :: ", error);
+                    toast.error("Failed removing tweet from bookmarks");
                 }
             }
         }
@@ -530,12 +644,15 @@ function TweetCard({
                             retweetsCount: currentRetweetsCount,
                         }));
                     }
+
+                    toast.success("Tweet reposted");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: false,
                     }));
-                    console.log("Error adding retweet :: ", error);
+                    // console.log("Error adding retweet :: ", error);
+                    toast.error("Tweet reposting failed");
                 }
             } else {
                 setInteractions((interactions) => ({
@@ -558,46 +675,70 @@ function TweetCard({
                             retweetsCount: currentRetweetsCount,
                         }));
                     }
+
+                    toast.success("Tweet repost deleted");
                 } catch (error) {
                     setInteractions((interactions) => ({
                         ...interactions,
                         myRetweet: true,
                     }));
-                    console.log("Error deleting retweet :: ", error);
+                    // console.log("Error deleting retweet :: ", error);
+                    toast.error("Failed deleting repost tweet");
                 }
             }
         }
     };
 
-    const handleTweetNavigation = () => {
-        profileService
-            .getProfile(author)
-            .then((res) => {
-                // console.log("Handletweet", res);
-                navigate(`/${res.username}/status/${tweetId}`);
-            })
-            .catch((err) =>
-                console.log("Error in handle tweet navigation :: ", err)
-            );
-    };
+    const handleTweetNavigation = useCallback(
+        (e) => {
+            e.stopPropagation();
+            setNavLoading(true);
 
-    const handleProfileNavigation = (e) => {
+            profileService
+                .getProfile(author)
+                .then((res) => {
+                    // console.log("Handletweet", res);
+                    navigate(`/${res.username}/status/${tweetId}`);
+                })
+                .catch((err) =>
+                    console.log("Error in handle tweet navigation :: ", err)
+                )
+                .finally(() => setNavLoading(false));
+        },
+        [navigate, tweetId, author]
+    );
+
+    const handleProfileNavigation = useCallback(
+        (e) => {
+            e.stopPropagation();
+            setNavLoading(true);
+
+            profileService
+                .getProfile(author)
+                .then((res) => {
+                    navigate(`/${res.username}`);
+                })
+                .catch((err) =>
+                    console.log("Error in handle profile navigation :: ", err)
+                )
+                .finally(() => setNavLoading(false));
+        },
+        [navigate, author]
+    );
+
+    const handelFileDownload = (e) => {
         e.stopPropagation();
 
-        profileService
-            .getProfile(author)
-            .then((res) => {
-                navigate(`/${res.username}`);
-            })
-            .catch((err) =>
-                console.log("Error in handle profile navigation :: ", err)
-            );
+        if (media) {
+            const URL = tweetMediaService.downloadFile(media);
+            window.location.href = URL.href;
+        }
     };
 
     return (
         <>
             <div
-                className="parent post px-2 border border-t-0 pt-2 cursor-pointer hover:bg-[#F7F7F7]"
+                className="parent post px-2 border border-t-0 dark:border-gray-800 dim:border-gray-800 pt-2 cursor-pointer hover:bg-[#F7F7F7] dark:hover:bg-slate-700 dim:hover:bg-slate-800"
                 onClick={handleTweetNavigation}
             >
                 {interactions.myRetweet && (
@@ -621,129 +762,137 @@ function TweetCard({
                 )}
                 <div className="flex">
                     {/* User avatar */}
-                    <div className="avatar w-[9%]">
-                        <div className="m-1">
-                            <img
-                                className="w-full rounded-full"
-                                src={avatarURL}
-                                alt=""
-                            />
-                        </div>
+                    <div className="avatar m-1 min-w-[40px] max-w-[43px]">
+                        <img
+                            className="w-full rounded-full"
+                            src={avatarURL}
+                            alt="avatar"
+                            loading="lazy"
+                        />
                     </div>
 
                     <div className="content w-[90%]">
                         {/* User details */}
-                        <div className="flex justify-between flex-wrap">
-                            <div
-                                className="user-details flex flex-wrap mx-0.5 text-base"
-                                onClick={handleProfileNavigation}
-                            >
-                                <span className="mx-0.5 font-bold hover:underline">
-                                    {authorInfo?.name}
-                                </span>
-                                <span className="mx-0.5 text-zin font-light">
-                                    @{authorInfo?.username}
-                                </span>
-                                <span className="mx-0.5 font-light">
-                                    &middot;
-                                </span>
-                                <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
-
-                                {createdAt !== updatedAt && (
-                                    <>
+                        <div className="relative">
+                            {authorInfoLoader ? (
+                                <UserCardLoader />
+                            ) : (
+                                <div className="flex justify-between">
+                                    <div
+                                        className="user-details flex flex-wrap mx-0.5 text-base"
+                                        onClick={handleProfileNavigation}
+                                    >
+                                        <span className="mx-0.5 font-bold hover:underline">
+                                            {authorInfo?.name}
+                                        </span>
+                                        <span className="mx-0.5 text-zin font-light">
+                                            @{authorInfo?.username}
+                                        </span>
                                         <span className="mx-0.5 font-light">
                                             &middot;
                                         </span>
-                                        <span className="mx-0.5 font-light">
-                                            Edited
-                                        </span>
-                                    </>
-                                )}
-                            </div>
+                                        <span className="mx-0.5 font-light">{`${date.month} ${date.date}, ${date.year}`}</span>
 
-                            {/* options */}
-                            <div
-                                className="w-9 cursor-pointer relative"
-                                title="Options"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setisOpen(true);
-                                }}
-                            >
-                                <div className="">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                        className="w-9 p-2 hover:bg-blue-100 rounded-full fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                        {createdAt !== updatedAt && (
+                                            <>
+                                                <span className="mx-0.5 font-light">
+                                                    &middot;
+                                                </span>
+                                                <span className="mx-0.5 text-[13px] font-light">
+                                                    Edited
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    {/* options */}
+                                    <div
+                                        className="w-9 cursor-pointer relative"
+                                        title="Options"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setisOpen(true);
+                                        }}
                                     >
-                                        <g>
-                                            <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
-                                        </g>
-                                    </svg>
-                                </div>
-
-                                {/* options layover */}
-                                {isOpen && (
-                                    <div className="absolute bg-white right-full w-[340px] border rounded-xl shadow-2xl">
-                                        <button
-                                            className="font-bold mx-3 text-3xl"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setisOpen(false);
-                                            }}
-                                        >
-                                            &times;
-                                        </button>
-                                        <div className="my-2 w-full">
-                                            {author === authData.$id && (
-                                                <div
-                                                    className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 w-full"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDelete();
-                                                    }}
-                                                >
-                                                    <span>
-                                                        <svg
-                                                            viewBox="0 0 24 24"
-                                                            aria-hidden="true"
-                                                            className="w-5 fill-red-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1q142lx r-9l7dzd"
-                                                        >
-                                                            <g>
-                                                                <path d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07zM9 17v-6h2v6H9zm4 0v-6h2v6h-2z"></path>
-                                                            </g>
-                                                        </svg>
-                                                    </span>
-                                                    <span>Delete</span>
-                                                </div>
-                                            )}
-                                            {author !== authData.$id && (
-                                                <FollowTweet
-                                                    followingId={author}
-                                                    followerId={authData.$id}
-                                                    username={
-                                                        authorInfo?.username
-                                                    }
-                                                />
-                                            )}
+                                        <div className="">
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                aria-hidden="true"
+                                                className="w-9 p-2 hover:bg-blue-100 hover:fill-twitter-blue dark:hover:bg-slate-800 dim:hover:bg-slate-700 rounded-full fill-gray-500 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                                            >
+                                                <g>
+                                                    <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
+                                                </g>
+                                            </svg>
                                         </div>
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
+                            {/* options layover */}
+                            {isOpen && (
+                                <div className="absolute bg-white dark:bg-twitter-lightsout-bg dim:bg-twitter-dim-bg z-20 top-1 left-1/2 transform -translate-x-1/3 w-2/3 border dark:border-gray-500 dim:border-gray-500 rounded-xl shadow-2xl dark:shadow-inner dim:shadow-gray-500">
+                                    <button
+                                        className="font-bold mx-3 text-3xl"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setisOpen(false);
+                                        }}
+                                    >
+                                        &times;
+                                    </button>
+                                    <div className="my-2 w-full">
+                                        {author === authData.$id && (
+                                            <div
+                                                className="flex gap-2 mr-5 text-base font-bold px-5 py-1 hover:bg-gray-200 dark:hover:bg-slate-700 dim:hover:bg-slate-800 w-full"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete();
+                                                }}
+                                            >
+                                                <span>
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        aria-hidden="true"
+                                                        className="w-5 fill-red-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1q142lx r-9l7dzd"
+                                                    >
+                                                        <g>
+                                                            <path d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07zM9 17v-6h2v6H9zm4 0v-6h2v6h-2z"></path>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                                <span>Delete</span>
+                                            </div>
+                                        )}
+                                        {author !== authData.$id && (
+                                            <FollowTweet
+                                                followingId={author}
+                                                followerId={authData.$id}
+                                                username={authorInfo?.username}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* User content */}
                         <div className="text mx-1.5 mb-1 mt-0.5">{content}</div>
 
-                        {media && (
-                            <div className="image m-1.5">
-                                <img
-                                    className="rounded-2xl w-full"
-                                    src={mediaURL}
-                                    alt=""
-                                />
-                            </div>
-                        )}
+                        {media &&
+                            (mediaLoader ? (
+                                <div className="m-1.5">
+                                    <MediaLoader />
+                                </div>
+                            ) : (
+                                <div className="image m-1.5">
+                                    <img
+                                        className="rounded-2xl w-full"
+                                        src={mediaURL}
+                                        alt="tweet media"
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ))}
 
                         {/* Bottom Interactions */}
                         <div className="flex justify-between">
@@ -845,47 +994,68 @@ function TweetCard({
                             </div>
 
                             {/* BookMark and share */}
-                            <div className="flex">
-                                <div
-                                    className="rounded-full  my-auto text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-blue-100 hover:text-twitter-blue"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleBookmark();
-                                    }}
-                                >
-                                    {interactions.myBookmark ? (
-                                        <FontAwesomeIcon
-                                            icon={faBookmarkSolid}
-                                            className="w-5 text-twitter-blue"
-                                        />
-                                    ) : (
-                                        <FontAwesomeIcon
-                                            icon={faBookmark}
-                                            className="w-5"
-                                        />
+                            <div className="flex gap-1">
+                                <div className="flex">
+                                    <div
+                                        className="rounded-full  my-auto text-[15px] p-2 cursor-pointer text-gray-500 hover:bg-blue-100 hover:text-twitter-blue"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleBookmark();
+                                        }}
+                                    >
+                                        {interactions.myBookmark ? (
+                                            <FontAwesomeIcon
+                                                icon={faBookmarkSolid}
+                                                className="w-5 text-twitter-blue"
+                                            />
+                                        ) : (
+                                            <FontAwesomeIcon
+                                                icon={faBookmark}
+                                                className="w-5"
+                                            />
+                                        )}
+                                    </div>
+                                    {author === authData.$id && (
+                                        <span className="text-gray-500 m-auto">
+                                            {interactions.bookmarksCount}
+                                        </span>
                                     )}
                                 </div>
-                                {author === authData.$id && (
-                                    <span className="text-gray-500 m-auto">
-                                        {interactions.bookmarksCount}
-                                    </span>
-                                )}
-                                <div className="cursor-pointer p-2 m-auto hover:bg-red-100 rounded-full">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                        className="w-5 fill-gray-500 hover:fill-red-500 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1xvli5t r-1hdv0qi"
+                                {profileData.premiumMember && (
+                                    <div
+                                        className="cursor-pointer p-2 m-auto hover:bg-blue-100 rounded-full"
+                                        title="Download media"
+                                        onClick={handelFileDownload}
                                     >
-                                        <g>
-                                            <path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"></path>
-                                        </g>
-                                    </svg>
-                                </div>
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-5 fill-[#6b7280] hover:fill-twitter-blue"
+                                        >
+                                            <g
+                                                id="SVGRepo_bgCarrier"
+                                                strokeWidth="0"
+                                            ></g>
+                                            <g
+                                                id="SVGRepo_tracerCarrier"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            ></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path d="M12.5535 16.5061C12.4114 16.6615 12.2106 16.75 12 16.75C11.7894 16.75 11.5886 16.6615 11.4465 16.5061L7.44648 12.1311C7.16698 11.8254 7.18822 11.351 7.49392 11.0715C7.79963 10.792 8.27402 10.8132 8.55352 11.1189L11.25 14.0682V3C11.25 2.58579 11.5858 2.25 12 2.25C12.4142 2.25 12.75 2.58579 12.75 3V14.0682L15.4465 11.1189C15.726 10.8132 16.2004 10.792 16.5061 11.0715C16.8118 11.351 16.833 11.8254 16.5535 12.1311L12.5535 16.5061Z"></path>
+                                                <path d="M3.75 15C3.75 14.5858 3.41422 14.25 3 14.25C2.58579 14.25 2.25 14.5858 2.25 15V15.0549C2.24998 16.4225 2.24996 17.5248 2.36652 18.3918C2.48754 19.2919 2.74643 20.0497 3.34835 20.6516C3.95027 21.2536 4.70814 21.5125 5.60825 21.6335C6.47522 21.75 7.57754 21.75 8.94513 21.75H15.0549C16.4225 21.75 17.5248 21.75 18.3918 21.6335C19.2919 21.5125 20.0497 21.2536 20.6517 20.6516C21.2536 20.0497 21.5125 19.2919 21.6335 18.3918C21.75 17.5248 21.75 16.4225 21.75 15.0549V15C21.75 14.5858 21.4142 14.25 21 14.25C20.5858 14.25 20.25 14.5858 20.25 15C20.25 16.4354 20.2484 17.4365 20.1469 18.1919C20.0482 18.9257 19.8678 19.3142 19.591 19.591C19.3142 19.8678 18.9257 20.0482 18.1919 20.1469C17.4365 20.2484 16.4354 20.25 15 20.25H9C7.56459 20.25 6.56347 20.2484 5.80812 20.1469C5.07435 20.0482 4.68577 19.8678 4.40901 19.591C4.13225 19.3142 3.9518 18.9257 3.85315 18.1919C3.75159 17.4365 3.75 16.4354 3.75 15Z"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <LoadingModal isOpen={navLoading} />
         </>
     );
 }

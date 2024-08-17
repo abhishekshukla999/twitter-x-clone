@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authService, profileMediaService } from "../../appwrite";
 import { logout } from "../../features/auth/authSlice";
-import { removeProfileData } from "../../features/profile/profileSlice";
-import { removeTweets } from "../../features/tweet/tweetSlice";
-import LogoutModal from "../Modals/LogoutModal";
-import { removeOtherProfile } from "../../features/profile/otherProfileSlice";
-import { removeBookmarks } from "../../features/bookmark/bookmarkSlice";
-import { removeLikes } from "../../features/like/likeSlice";
-import { removeTweetPageData } from "../../features/tweet/tweetPageSlice";
-import { removeFollowData } from "../../features/follow/follow";
+import { LogoutModal } from "../index";
 
 function LogoutButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,13 +12,6 @@ function LogoutButton() {
     const authLogout = () => {
         authService.logout().then(() => {
             dispatch(logout());
-            dispatch(removeProfileData());
-            dispatch(removeTweets());
-            dispatch(removeOtherProfile());
-            dispatch(removeBookmarks());
-            dispatch(removeLikes());
-            dispatch(removeTweetPageData());
-            dispatch(removeFollowData());
         });
     };
 
@@ -44,17 +30,18 @@ function LogoutButton() {
     return (
         <>
             <div
-                className="m-2 p-0.5 text-base rounded-full hover:bg-zinc-200 cursor-pointer"
+                className="my-2 mr-2 p-0.5 text-base rounded-full hover:bg-zinc-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 cursor-pointer"
                 onClick={() => {
                     setIsOpen(true);
                 }}
             >
                 <div className="flex justify-center items-center max-w-xl">
-                    <div className="profile m-2">
+                    <div className="profile m-2 min-w-[40px] max-w-[43px]">
                         <img
-                            className="w-[40px] rounded-full"
+                            className="w-full rounded-full"
                             src={imageUrl()}
                             alt="avatar"
+                            loading="lazy"
                         />
                     </div>
                     <div className="flex-[0_0_60%] flex-nowrap hidden xl:block">
@@ -67,7 +54,7 @@ function LogoutButton() {
                         <svg
                             viewBox="0 0 24 24"
                             aria-hidden="true"
-                            className="w-[20px] fill-gray-500 r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
+                            className="w-[20px] fill-gray-500 dark:fill-white dim:fill-white r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-18jsvk2"
                         >
                             <g>
                                 <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
@@ -78,7 +65,7 @@ function LogoutButton() {
             </div>
             <LogoutModal isOpen={isOpen} onClose={handleClose}>
                 <div
-                    className="w-full hover:bg-gray-200 p-2 cursor-pointer font-bold rounded-lg border-2"
+                    className="w-full hover:bg-gray-200 dark:hover:bg-slate-800 dim:hover:bg-slate-700 border-2 dark:border-gray-500 dim:border-gray-500 p-2 cursor-pointer font-bold rounded-lg "
                     onClick={authLogout}
                 >
                     Logout @{profileData?.username}

@@ -1,6 +1,8 @@
 import { Aside, Feed, FeedContent } from "../components";
 
 function Home() {
+    document.title = "Home / X";
+
     return (
         <>
             <Feed>

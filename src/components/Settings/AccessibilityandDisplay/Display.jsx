@@ -1,28 +1,78 @@
-import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { SettingItemsContainer, BackButton } from "../../index";
 
 function Display() {
-    const navigate = useNavigate();
-    const [currentColor, setCurrentColor] = useState("#1D9BF0");
+    const [currentColor, setCurrentColor] = useState(
+        localStorage.getItem("color") || "default"
+    );
+    const [currentTheme, setCurrentTheme] = useState(
+        localStorage.getItem("theme") || "light"
+    );
+
+    useEffect(() => {
+        const html = document.querySelector("html");
+
+        // theme
+        html.classList.remove("light", "dim", "dark");
+
+        if (currentTheme) {
+            html.classList.add(currentTheme);
+            localStorage.setItem("theme", currentTheme);
+        } else {
+            const defaultTheme = "light";
+            html.classList.add(defaultTheme);
+            setCurrentTheme(defaultTheme);
+            localStorage("theme", defaultTheme);
+        }
+
+        // color
+        html.classList.remove(
+            "default",
+            "yellow",
+            "crimson",
+            "purple",
+            "orange",
+            "green"
+        );
+
+        if (currentColor) {
+            html.classList.add(currentColor);
+            localStorage.setItem("color", currentColor);
+        } else {
+            const defaultColor = "default";
+            html.classList.add(defaultColor);
+            setCurrentColor(defaultColor);
+            localStorage.setItem("color", defaultColor);
+        }
+    }, [currentColor, currentTheme]);
+
+    useEffect(() => {
+        const html = document.querySelector("html");
+        html.classList.remove(
+            "default",
+            "yellow",
+            "crimson",
+            "purple",
+            "orange",
+            "green"
+        );
+
+        if (!currentColor) {
+            localStorage.setItem("color", "");
+        }
+
+        html.classList.add(currentColor);
+
+        localStorage.setItem("color", currentColor);
+    }, [currentColor]);
+
+    document.title = "Display / X";
 
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
+        <SettingItemsContainer>
             <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
                 <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
+                    <BackButton />
                     <div className="font-bold text-xl py-3">Display</div>
                 </div>
             </div>
@@ -33,12 +83,13 @@ function Display() {
                     affect all the X accounts on this browser.
                 </div>
 
-                <div className="flex border-b py-3 px-2">
+                <div className="flex border-b dark:border-gray-800 dim:border-gray-800 py-3 px-2">
                     <div className="w-20">
                         <img
                             src="/twitter.ico"
                             alt="avatar"
                             className="rounded-full"
+                            loading="lazy"
                         />
                     </div>
                     <div className="px-2">
@@ -65,13 +116,21 @@ function Display() {
                             At the heart of X are short messages called posts —
                             just like this one — which can include photos,
                             videos, links, text, hashtags, and mentions like{" "}
-                            <span className="text-twitter-blue">@X</span>.
+                            <span className="text-twitter-blue hover:text-sky-600 yellow:text-twitter-yellow yellow:hover:text-yellow-600 crimson:text-twitter-crimson crimson:hover:text-rose-600 purple:text-twitter-purple purple:hover:text-purple-600 orange:text-twitter-orange orange:hover:text-orange-600 green:text-twitter-green green:hover:text-green-600">
+                                @X
+                            </span>
+                            .
                         </div>
                     </div>
                 </div>
 
-                <div className="border-b">
-                    <div className="px-2 py-3 text-xl font-bold">Font size</div>
+                <div className="border-b dark:border-gray-800 dim:border-gray-800">
+                    <div className="px-2 py-3 text-xl font-bold">
+                        Font size{" "}
+                        <small className="text-red-400 font-light">
+                            &#40;This feature will be availabe soon&#41;
+                        </small>
+                    </div>
                     <div className="flex px-2">
                         <span className="text-[13px] my-auto">Aa</span>
                         <div className="w-[90%] my-auto px-3 py-4">
@@ -89,20 +148,20 @@ function Display() {
                     </div>
                 </div>
 
-                <div className="border-b">
+                <div className="border-b dark:border-gray-800 dim:border-gray-800">
                     <div className="px-2 pt-3 pb-1 text-xl font-bold">
                         Color
                     </div>
                     <div className="flex gap-2 px-2 flex-wrap justify-around py-4">
                         <div
                             className="p-2.5 h-fit rounded-full bg-[#1D9BF0] cursor-pointer"
-                            onClick={() => setCurrentColor("#1D9BF0")}
+                            onClick={() => setCurrentColor("default")}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
                                 className={`w-5 ${
-                                    currentColor === "#1D9BF0"
+                                    currentColor === "default"
                                         ? "fill-white"
                                         : "fill-[#1D9BF0]"
                                 }  r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-jwli3a r-6zzn7w r-q1j0wu`}
@@ -114,13 +173,13 @@ function Display() {
                         </div>
                         <div
                             className="p-2.5 h-fit rounded-full bg-[#FFD400] cursor-pointer"
-                            onClick={() => setCurrentColor("#FFD400")}
+                            onClick={() => setCurrentColor("yellow")}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
                                 className={`w-5 ${
-                                    currentColor === "#FFD400"
+                                    currentColor === "yellow"
                                         ? "fill-white"
                                         : "fill-[#FFD400]"
                                 } r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-jwli3a r-6zzn7w r-q1j0wu`}
@@ -132,13 +191,13 @@ function Display() {
                         </div>
                         <div
                             className="p-2.5 h-fit rounded-full bg-[#F91880] cursor-pointer"
-                            onClick={() => setCurrentColor("#F91880")}
+                            onClick={() => setCurrentColor("crimson")}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
                                 className={`w-5 ${
-                                    currentColor === "#F91880"
+                                    currentColor === "crimson"
                                         ? "fill-white"
                                         : "fill-[#F91880]"
                                 } r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-jwli3a r-6zzn7w r-q1j0wu`}
@@ -150,13 +209,13 @@ function Display() {
                         </div>
                         <div
                             className="p-2.5 h-fit rounded-full bg-[#7856FF] cursor-pointer"
-                            onClick={() => setCurrentColor("#7856FF")}
+                            onClick={() => setCurrentColor("purple")}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
                                 className={`w-5 ${
-                                    currentColor === "#7856FF"
+                                    currentColor === "purple"
                                         ? "fill-white"
                                         : "fill-[#7856FF]"
                                 } r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-jwli3a r-6zzn7w r-q1j0wu`}
@@ -168,13 +227,13 @@ function Display() {
                         </div>
                         <div
                             className="p-2.5 h-fit rounded-full bg-[#FF7A00] cursor-pointer"
-                            onClick={() => setCurrentColor("#FF7A00")}
+                            onClick={() => setCurrentColor("orange")}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
                                 className={`w-5 ${
-                                    currentColor === "#FF7A00"
+                                    currentColor === "orange"
                                         ? "fill-white"
                                         : "fill-[#FF7A00]"
                                 } r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-jwli3a r-6zzn7w r-q1j0wu`}
@@ -186,13 +245,13 @@ function Display() {
                         </div>
                         <div
                             className="p-2.5 h-fit rounded-full bg-[#00BA7C] cursor-pointer"
-                            onClick={() => setCurrentColor("#00BA7C")}
+                            onClick={() => setCurrentColor("green")}
                         >
                             <svg
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
                                 className={`w-5 ${
-                                    currentColor === "#00BA7C"
+                                    currentColor === "green"
                                         ? "fill-white"
                                         : "fill-[#00BA7C]"
                                 } r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-jwli3a r-6zzn7w r-q1j0wu`}
@@ -205,43 +264,69 @@ function Display() {
                     </div>
                 </div>
 
-                <div className="border-b">
+                <div className="border-b dark:border-gray-800 dim:border-gray-800">
                     <div className="px-2 py-3 text-xl font-bold">
                         Background
                     </div>
-                    <div className="px-2 py-3 grid grid-cols-3 gap-2 w-full">
-                        <div className="flex px-4 py-5 my-auto font-bold rounded-md">
-                            <span>
-                                <input type="radio" name="theme" id="default" />
-                            </span>
+                    <div className="px-2 py-3 flex justify-evenly max-[704px]:flex-col gap-2 w-full">
+                        <div
+                            className={`flex px-4 py-5 my-auto font-bold rounded-md cursor-pointer dark:bg-white dim:bg-white dark:text-black dim:text-black ${
+                                currentTheme === "light" &&
+                                "ring-2 ring-twitter-blue"
+                            } min-[705px]:w-[180px] min-[705px]:h-[60px]`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrentTheme("light");
+                            }}
+                        >
                             <div className="mx-auto">
-                                <label htmlFor="default">Default</label>
+                                <label
+                                    htmlFor="default"
+                                    className="cursor-pointer"
+                                >
+                                    Default
+                                </label>
                             </div>
                         </div>
-                        <div className="flex px-4 py-5 my-auto font-bold text-white bg-[#15202B] rounded-md">
-                            <span>
-                                <input type="radio" name="theme" id="dim" />
-                            </span>
+                        <div
+                            className={`flex px-4 py-5 my-auto font-bold text-white bg-[#15202B] rounded-md cursor-pointer ${
+                                currentTheme === "dim" &&
+                                "ring-2 ring-twitter-blue"
+                            } min-[705px]:w-[180px] min-[705px]:h-[60px]`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrentTheme("dim");
+                            }}
+                        >
                             <div className="mx-auto">
-                                <label htmlFor="dim">Dim</label>
+                                <label htmlFor="dim" className="cursor-pointer">
+                                    Dim
+                                </label>
                             </div>
                         </div>
-                        <div className="flex px-4 py-5 my-auto font-bold text-white bg-black rounded-md">
-                            <span>
-                                <input
-                                    type="radio"
-                                    name="theme"
-                                    id="lightsOut"
-                                />
-                            </span>
+                        <div
+                            className={`flex px-4 py-5 my-auto font-bold text-white bg-black rounded-md cursor-pointer ${
+                                currentTheme === "dark" &&
+                                "ring-2 ring-twitter-blue"
+                            } min-[705px]:w-[180px] min-[705px]:h-[60px]`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrentTheme("dark");
+                            }}
+                        >
                             <div className="mx-auto">
-                                <label htmlFor="lightsOut">Lights out</label>
+                                <label
+                                    htmlFor="lightsOut"
+                                    className="cursor-pointer"
+                                >
+                                    Lights out
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </SettingItemsContainer>
     );
 }
 

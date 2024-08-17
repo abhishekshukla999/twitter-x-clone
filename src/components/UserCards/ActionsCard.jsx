@@ -1,20 +1,22 @@
-import React from "react";
 import { profileMediaService } from "../../appwrite";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Follow } from "../index";
+import { useSelector } from "react-redux";
 
-function ActionsCard({ name, username, media }) {
+function ActionsCard({ name, username, media, userId }) {
+    const authId = useSelector((state) => state.auth.userData.$id);
     const navigate = useNavigate();
 
     const avatarUrl = () => {
         if (media) {
-            return profileMediaService.getFilePreview(media);
+            return profileMediaService.getCustomFilePreview(media, 50, 50);
         } else {
             return "/defaultAvatar.png";
         }
     };
 
     return (
-        <div className="flex justify-between cursor-pointer my-1">
+        <div className="flex justify-between cursor-pointer my-1 hover:bg-gray-100 dark:hover:bg-slate-700 dim:hover:bg-slate-800">
             <NavLink className="flex" onClick={() => navigate(`/${username}`)}>
                 {/* User avatar */}
                 <div className="avatar m-1.5 w-[50px]">
@@ -22,6 +24,7 @@ function ActionsCard({ name, username, media }) {
                         className="rounded-full"
                         src={avatarUrl()}
                         alt="avatar"
+                        loading="lazy"
                     />
                 </div>
 
@@ -35,11 +38,11 @@ function ActionsCard({ name, username, media }) {
                     </div>
                 </div>
             </NavLink>
-            <div className="cursor-pointer my-auto" title="Follow">
-                <button className="p-2 px-4 font-bold text-base border text-white bg-black border-zinc-300 rounded-full">
-                    Follow
-                </button>
-            </div>
+            {authId !== userId && (
+                <div className="cursor-pointer my-auto" title="Follow">
+                    <Follow followingId={userId} followerId={authId} />
+                </div>
+            )}
         </div>
     );
 }

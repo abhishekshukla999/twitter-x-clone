@@ -1,19 +1,31 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { Input } from "../../../index";
+import {
+    SettingItemsContainer,
+    BackButton,
+    Input,
+    LoadingModal,
+} from "../../../index";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { profileService } from "../../../../appwrite";
 import { addProfileData } from "../../../../features/profile/profileSlice";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Query } from "appwrite";
 
 function UsernameChange() {
-    const navigate = useNavigate();
     const profileData = useSelector((state) => state.profile);
     const authData = useSelector((state) => state.auth.userData);
-    const { register, handleSubmit, watch } = useForm({
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { isValid, errors },
+    } = useForm({
         defaultValues: { username: profileData?.username || "" },
     });
     const [isSave, setIsSave] = useState(true);
+    const [usernameAvailable, setUsernameAvailable] = useState(true);
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
     const currentUsername = watch("username");
@@ -29,7 +41,44 @@ function UsernameChange() {
         }
     }, [currentUsername, profileData?.username]);
 
+    useEffect(() => {
+        let unsubscribe = false;
+
+        async function fetchUsername() {
+            if (!unsubscribe) {
+                try {
+                    const profileDocs = await profileService.getProfiles([
+                        Query.equal("username", [currentUsername]),
+                    ]);
+
+                    console.log(profileDocs.documents);
+
+                    if (profileDocs.documents.length !== 0) {
+                        setUsernameAvailable(false);
+                    } else {
+                        setUsernameAvailable(true);
+                    }
+                } catch (error) {
+                    console.log(
+                        "Error fetching profile in change username :: ",
+                        error
+                    );
+                }
+            }
+        }
+
+        fetchUsername();
+
+        return () => {
+            unsubscribe = true;
+        };
+    }, [currentUsername, profileData?.username]);
+
+    document.title = "Change username / X";
+
     const changeUsername = async (data) => {
+        setLoading(true);
+
         if (authData) {
             try {
                 const updatedProfileData = await profileService.updateProfile(
@@ -42,59 +91,88 @@ function UsernameChange() {
                 if (updatedProfileData) {
                     dispatch(addProfileData(updatedProfileData));
                 }
+
+                toast.success("Username changed successfully !!");
             } catch (error) {
-                console.log("Error updating username :: ", error);
+                // console.log("Error updating username :: ", error);
+                toast.error("Error changing username !!");
+            } finally {
+                setLoading(false);
             }
         }
     };
 
     return (
-        <div className="xl:flex-[0_0_43%] border-r h-full sticky top-0 overflow-y-auto">
-            <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
-                <div className="flex gap-5">
-                    <NavLink
-                        className="m-0.5 my-auto p-2 hover:bg-gray-200 rounded-full"
-                        onClick={() => navigate(-1)}
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            className="w-5 r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-z80fyv r-19wmn03"
-                        >
-                            <g>
-                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"></path>
-                            </g>
-                        </svg>
-                    </NavLink>
-                    <div className="font-bold text-xl py-3">
-                        Change username
+        <>
+            <SettingItemsContainer>
+                <div className="top flex sticky top-0 backdrop-blur-3xl opacity-[100%]">
+                    <div className="flex gap-5">
+                        <BackButton />
+                        <div className="font-bold text-xl py-3">
+                            Change username
+                        </div>
                     </div>
                 </div>
-            </div>
-            <form onSubmit={handleSubmit(changeUsername)}>
-                <div className="border-b py-4 px-3">
-                    <Input
-                        label="Username"
-                        type="text"
-                        placeholder="Type username"
-                        {...register("username", { required: true })}
-                    />
-                </div>
-                <div className="flex justify-end px-2 py-3">
-                    <button
-                        type="submit"
-                        className={`py-1.5 px-4 text-white font-bold ${
-                            isSave
-                                ? "bg-twitter-blue hover:bg-blue-500"
-                                : "bg-blue-300"
-                        } rounded-full`}
-                        disabled={!isSave}
-                    >
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
+                <form onSubmit={handleSubmit(changeUsername)}>
+                    <div className="border-b dark:border-gray-800 dim:border-gray-800 py-4 px-3">
+                        <Input
+                            label="Username"
+                            type="text"
+                            placeholder="Type username"
+                            {...register("username", {
+                                required: "Username is required",
+                                minLength: {
+                                    value: 3,
+                                    message:
+                                        "Username must be at least 3 characters long",
+                                },
+                                maxLength: {
+                                    value: 15,
+                                    message:
+                                        "Username cannot exceed 15 characters",
+                                },
+                                pattern: {
+                                    value: /^[a-zA-Z0-9_]+$/,
+                                    message:
+                                        "Username can only contain letters, numbers, and underscores",
+                                },
+                            })}
+                        />
+                        {!isValid ? (
+                            <small className="text-red-500">
+                                {errors.username?.message}
+                            </small>
+                        ) : profileData?.username !== currentUsername &&
+                          currentUsername.length !== 0 ? (
+                            usernameAvailable ? (
+                                <small className="text-green-500">
+                                    @{currentUsername} is available
+                                </small>
+                            ) : (
+                                <small className="text-red-500">
+                                    @{currentUsername} is already taken
+                                </small>
+                            )
+                        ) : null}
+                    </div>
+                    <div className="flex justify-end px-2 py-3">
+                        <button
+                            type="submit"
+                            className={`py-1.5 px-4 text-white font-bold ${
+                                isSave
+                                    ? "bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
+                                    : "bg-blue-300 yellow:bg-yellow-300 crimson:bg-rose-300 purple:bg-purple-300 orange:bg-orange-300 green:bg-green-300"
+                            } rounded-full`}
+                            disabled={!isSave}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </SettingItemsContainer>
+
+            <LoadingModal isOpen={loading} />
+        </>
     );
 }
 

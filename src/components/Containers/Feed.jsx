@@ -1,6 +1,6 @@
 import { useState } from "react";
 import NavigationBottom from "../Header/NavigationBottom";
-import PostModal from "../Modals/PostModal";
+import { PostModal } from "../index";
 
 function Feed({ children }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +10,7 @@ function Feed({ children }) {
     };
 
     return (
-        <section className="xl:flex-[0_0_46%] lg:flex-[0_0_50%]  md:flex-[0_0_70%] 200 w-full max-w-full border-r border-l">
+        <section className="xl:flex-[0_0_46%] lg:flex-[0_0_50%] md:flex-[0_0_70%] w-full max-w-full border-r border-l dark:border-gray-800 dim:border-gray-800">
             {children}
 
             <NavigationBottom />
@@ -18,7 +18,7 @@ function Feed({ children }) {
             {/* tweet form modal */}
             <div className="fixed bottom-20 right-6 hidden max-[499px]:block">
                 <button
-                    className="bg-twitter-blue p-3 w-[56px] rounded-full hover:bg-sky-600 hidden max-xl:block"
+                    className="bg-twitter-blue p-3 w-[56px] rounded-full hover:bg-sky-600 yellow:bg-twitter-yellow crimson:bg-twitter-crimson purple:bg-twitter-purple orange:bg-twitter-orange green:bg-twitter-green hidden max-xl:block"
                     onClick={() => setIsOpen(true)}
                 >
                     <svg
@@ -34,6 +34,7 @@ function Feed({ children }) {
 
                 <PostModal isOpen={isOpen} onClose={handleClose} />
             </div>
+            <div className="py-40"></div>
         </section>
     );
 }

@@ -9,11 +9,11 @@ import {
     Lists,
     Messages,
     Notifications,
+    PostPage,
     Premium,
     Profile,
     Settings,
     VerifiedOrgs,
-    SignUp,
 } from "./pages";
 import {
     Accessibilities,
@@ -26,6 +26,7 @@ import {
     Display,
     EmailChange,
     EmailNotifications,
+    Error,
     Followers,
     Following,
     Gender,
@@ -35,15 +36,16 @@ import {
     NotificationFilters,
     NotificationPreferences,
     NotificationSetting,
+    Payment,
     PhoneChange,
     Posts,
+    Protected,
     PushNotifications,
     Replies,
     UsernameChange,
+    WelcomeUser,
     YourAccount,
 } from "./components";
-import Protected from "./components/Protected.jsx";
-import PostPage from "./pages/PostPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -51,12 +53,18 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
+                index: true,
+                element: <WelcomeUser />,
+                errorElement: <Error />,
+            },
+            {
                 path: "home",
                 element: (
                     <Protected authentication={false}>
                         <Home />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: ":username",
@@ -65,6 +73,7 @@ const router = createBrowserRouter([
                         <Profile />
                     </Protected>
                 ),
+                errorElement: <Error />,
                 children: [
                     {
                         index: true,
@@ -87,10 +96,12 @@ const router = createBrowserRouter([
             {
                 path: ":username/following",
                 element: <Following />,
+                errorElement: <Error />,
             },
             {
                 path: ":username/followers",
                 element: <Followers />,
+                errorElement: <Error />,
             },
             {
                 path: "explore",
@@ -99,6 +110,7 @@ const router = createBrowserRouter([
                         <Explore />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "notifications",
@@ -107,6 +119,7 @@ const router = createBrowserRouter([
                         <Notifications />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "messages",
@@ -115,6 +128,7 @@ const router = createBrowserRouter([
                         <Messages />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "grok",
@@ -123,6 +137,7 @@ const router = createBrowserRouter([
                         <Grok />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "lists",
@@ -131,6 +146,7 @@ const router = createBrowserRouter([
                         <Lists />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "bookmarks",
@@ -139,6 +155,7 @@ const router = createBrowserRouter([
                         <Bookmarks />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "communities",
@@ -147,6 +164,7 @@ const router = createBrowserRouter([
                         <Communities />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "premium",
@@ -155,6 +173,16 @@ const router = createBrowserRouter([
                         <Premium />
                     </Protected>
                 ),
+                errorElement: <Error />,
+            },
+            {
+                path: "/checkout",
+                element: (
+                    <Protected authentication={false}>
+                        <Payment />
+                    </Protected>
+                ),
+                errorElement: <Error />,
             },
             {
                 path: "verified-orgs",
@@ -163,6 +191,7 @@ const router = createBrowserRouter([
                         <VerifiedOrgs />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
             {
                 path: "settings",
@@ -249,6 +278,7 @@ const router = createBrowserRouter([
                         element: <Display />,
                     },
                 ],
+                errorElement: <Error />,
             },
             {
                 path: ":username/status/:tweetId",
@@ -257,17 +287,9 @@ const router = createBrowserRouter([
                         <PostPage />
                     </Protected>
                 ),
+                errorElement: <Error />,
             },
         ],
-    },
-
-    {
-        path: "signup",
-        element: (
-            <Protected authentication>
-                <SignUp />
-            </Protected>
-        ),
     },
 ]);
 
