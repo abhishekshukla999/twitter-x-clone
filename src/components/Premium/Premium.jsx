@@ -286,7 +286,7 @@ function Premium() {
                     <div className="p-1 font-[500]">{`${selectedPlan.name} ${selectedPlan.price}`}</div>
                     <button
                         type="submit"
-                        className="font-bold mx-2 w-[70%] p-2 rounded-full text-white bg-twitter-blue"
+                        className="font-bold mx-2 w-[70%] p-2 rounded-full text-white bg-twitter-blue hover:bg-sky-600 yellow:bg-twitter-yellow yellow:hover:bg-yellow-600 crimson:bg-twitter-crimson crimson:hover:bg-rose-600 purple:bg-twitter-purple purple:hover:bg-purple-600 orange:bg-twitter-orange orange:hover:bg-orange-600 green:bg-twitter-green green:hover:bg-green-600"
                         onClick={() => navigate("/checkout")}
                     >
                         Subscribe and Pay
