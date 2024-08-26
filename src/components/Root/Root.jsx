@@ -11,7 +11,7 @@ function Entry() {
     return (
         <>
             <div className="flex flex-col bg-black overflow-auto text-white min-h-screen">
-                <div className="flex w-full min-h-svh max-lg:flex-col">
+                <div className="flex w-full flex-grow max-lg:flex-col">
                     <div className="logo flex flex-col items-center justify-center xl:flex-[0_0_45%] lg:flex-[0_0_30%] lg:ml-auto">
                         <div className="logo p-8">
                             <svg
@@ -47,13 +47,13 @@ function Entry() {
                     </div>
                     <div className="lg:flex-[0_0_45%] p-4 lg:my-auto lg:mr-auto max-lg:mx-auto">
                         <div className="p-5">
-                            <div>
-                                <p className="text-[64px] font-bold my-12">
+                            <div className="w-fit">
+                                <p className="text-3xl sm:text-[64px] font-bold my-6 sm:my-12 sm:leading-[4.5rem]">
                                     Happening now
                                 </p>
                             </div>
                             <div className="w-fit">
-                                <p className="text-[31px] font-bold mb-8">
+                                <p className="text-base  sm:text-[31px] font-bold mb-8">
                                     Join today.
                                 </p>
 
