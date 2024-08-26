@@ -73,6 +73,7 @@ function Search() {
                             username={user.username}
                             media={user.avatar}
                             userId={user.$id}
+                            premium={user.premiumMember}
                         />
                     ))}
                 </div>

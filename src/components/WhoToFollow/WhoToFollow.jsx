@@ -37,6 +37,7 @@ function WhoToFollow() {
                         username={user.username}
                         avatar={user.avatar}
                         userId={user.$id}
+                        premium={user.premiumMember}
                     />
                 ))
             )}

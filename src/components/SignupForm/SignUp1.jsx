@@ -19,8 +19,6 @@ function Step1({ register, onNext, formState, watch, trigger }) {
                         Query.equal("email", [currrentEmail || ""]),
                     ]);
 
-                    console.log(profileDocs.documents);
-
                     if (profileDocs.documents.length !== 0) {
                         setEmailAvailable(false);
                     } else {
