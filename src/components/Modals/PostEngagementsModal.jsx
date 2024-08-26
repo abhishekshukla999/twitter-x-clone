@@ -191,6 +191,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                                             username={user.username}
                                             media={user.avatar}
                                             userId={user.$id}
+                                            premium={user.premiumMember}
                                         />
                                     ));
                                 case "retweets":
@@ -201,6 +202,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                                             username={user.username}
                                             media={user.avatar}
                                             userId={user.$id}
+                                            premium={user.premiumMember}
                                         />
                                     ));
                                 case "bookmarks":
@@ -211,6 +213,7 @@ function PostEngagementsModal({ isOpen, onClose, tweetId }) {
                                             username={user.username}
                                             media={user.avatar}
                                             userId={user.$id}
+                                            premium={user.premiumMember}
                                         />
                                     ));
                                 default:
