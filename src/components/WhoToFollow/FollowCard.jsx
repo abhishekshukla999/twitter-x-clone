@@ -1,9 +1,11 @@
 import { profileMediaService } from "../../appwrite";
 import { useSelector } from "react-redux";
 import { Follow } from "../index";
+import { useNavigate } from "react-router-dom";
 
 function FollowCard({ name, username, avatar, userId }) {
     const authId = useSelector((state) => state.auth.userData.$id);
+    const navigate = useNavigate();
 
     function fetchAvatar(avatar) {
         if (!avatar) {
@@ -16,7 +18,7 @@ function FollowCard({ name, username, avatar, userId }) {
     return (
         <div>
             <div className="flex justify-between text-base">
-                <div className="flex">
+                <div className="flex" onClick={() => navigate(`/${username}`)}>
                     <div className="m-3 min-w-[40px] max-w-[43px]">
                         <img
                             className="w-full rounded-full"
@@ -26,8 +28,8 @@ function FollowCard({ name, username, avatar, userId }) {
                         />
                     </div>
                     <div className="flex flex-col p-1">
-                        <span className="font-bold">{name}</span>
-                        <span>@{username}</span>
+                        <span className="font-bold hover:underline cursor-pointer">{name}</span>
+                        <span className="text-sm text-gray-500 hover:underline cursor-pointer" >@{username}</span>
                     </div>
                 </div>
                 <div className="mx-2">

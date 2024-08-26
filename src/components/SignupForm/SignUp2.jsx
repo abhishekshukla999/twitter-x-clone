@@ -20,8 +20,6 @@ function Step2({ register, onBack, formState, watch }) {
                         Query.equal("username", [currentUsername]),
                     ]);
 
-                    console.log(profileDocs.documents);
-
                     if (profileDocs.documents.length !== 0) {
                         setUsernameAvailable(false);
                     } else {

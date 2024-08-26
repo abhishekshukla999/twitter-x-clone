@@ -31,9 +31,8 @@ function Feed({ children }) {
                         </g>
                     </svg>
                 </button>
-
-                <PostModal isOpen={isOpen} onClose={handleClose} />
             </div>
+            <PostModal isOpen={isOpen} onClose={handleClose} />
             <div className="py-40"></div>
         </section>
     );

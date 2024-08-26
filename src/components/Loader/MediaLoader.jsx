@@ -3,7 +3,7 @@ import LoadCardContainer from "./LoadCardContainer";
 function MediaLoader() {
     return (
         <LoadCardContainer>
-            <div className="flex items-center justify-center h-48 mb-4 bg-gray-300 rounded dark:bg-gray-700 dim:bg-gray-800">
+            <div className="flex items-center justify-center h-30 mb-4 bg-gray-300 rounded dark:bg-gray-700 dim:bg-gray-800">
                 <svg
                     className="w-10 h-10 text-gray-200 dark:text-gray-600 dim:text-gray-700"
                     aria-hidden="true"
