@@ -2,8 +2,10 @@ import { ContentLoader, FollowCard } from "../index";
 import { useEffect, useState } from "react";
 import { profileService } from "../../appwrite";
 import { Query } from "appwrite";
+import { useSelector } from "react-redux";
 
 function WhoToFollow() {
+    const profileData = useSelector((state) => state.profile);
     const [followUsersData, setFollowUsersData] = useState();
     const [loading, setLoading] = useState(true);
 
@@ -12,8 +14,12 @@ function WhoToFollow() {
 
         if (!unsubscribe) {
             profileService
-                .getProfiles([Query.limit(3), Query.orderDesc("$createdAt")])
-                .then((res) => setFollowUsersData(res.documents))
+                .getProfiles([
+                    Query.limit(3),
+                    Query.notEqual("$id", [profileData.$id]),
+                    Query.orderDesc("$createdAt"),
+                ])
+                .then((res) => setFollowUsersData(res?.documents))
                 .catch((err) =>
                     console.log("Error fetching who to follow :: ", err)
                 )
