@@ -37,10 +37,12 @@ View the project's original repo here: [Orginial Project Repo Link](https://gith
 
 ## Project Video
 
-Click the below preview to watch demo video
+Click the below preview to watch the demo video
 
 [![Video Preview](https://img.youtube.com/vi/ttLXzbxJu5M/0.jpg)](https://www.youtube.com/watch?v=ttLXzbxJu5M)
-Or click here: [Watch](https://www.youtube.com/watch?v=ttLXzbxJu5M))
+
+&nbsp;
+Or click here: [Watch](https://www.youtube.com/watch?v=ttLXzbxJu5M)
 
 ## Tech Stack
 
@@ -134,7 +136,7 @@ VITE_APPWRITE_TWEETS_BUCKET_ID = ''
 
 ## Contributing
 
-I am not accepting contributions at the moment.
+Unfortunately, I am not accepting any contributions right now.
 
 ## Contact
 
