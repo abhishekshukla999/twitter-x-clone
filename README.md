@@ -39,7 +39,7 @@ View the project's original repo here: [Orginial Project Repo Link](https://gith
 
 Click the below preview to watch the demo video
 
-[![Video Preview](https://img.youtube.com/vi/ttLXzbxJu5M/0.jpg)](https://www.youtube.com/watch?v=Dv_amrVcgbU)
+[![Video Preview](https://img.youtube.com/vi/Dv_amrVcgbU/0.jpg)](https://www.youtube.com/watch?v=Dv_amrVcgbU)
 
 &nbsp;
 Or click here: [Watch](https://www.youtube.com/watch?v=Dv_amrVcgbU)
