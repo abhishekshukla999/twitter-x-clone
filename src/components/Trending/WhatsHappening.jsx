@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 function WhatsHappening() {
     return (
         <>
-            <div className="mt-6 border border-zinc-200 dark:border-gray-800 dim:border-gray-800 rounded-xl">
+            <div className="mt-3 border border-zinc-200 dark:border-gray-800 dim:border-gray-800 rounded-xl">
                 <h1 className="m-3 font-bold text-xl">What&apos;s Happening</h1>
 
                 <div className="flex mx-3 my-4 max-w-[20rem]">
