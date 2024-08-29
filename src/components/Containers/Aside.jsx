@@ -6,7 +6,7 @@ function Aside() {
             <Search />
             <WhatsHappening />
             <WhoToFollow />
-            <div className="p-5 text-zinc-600 text-[13px] max-w-[22rem]">
+            <div className="p-2 text-zinc-600 text-[13px] max-w-[22rem]">
                 <ul className="flex gap-2 flex-wrap">
                     <li className="hover:underline cursor-pointer">Terms of Service</li>
                     <li className="hover:underline cursor-pointer">Privacy Policy</li>
