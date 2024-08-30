@@ -81,15 +81,18 @@ function PostCard({
                     const authorData = await profileService.getProfile(author);
 
                     if (authorData) {
-                        const url = profileMediaService.getCustomFilePreview(
-                            authorData?.avatar,
-                            50,
-                            50
-                        );
+                        if (authorData?.avatar) {
+                            const url =
+                                profileMediaService.getCustomFilePreview(
+                                    authorData?.avatar,
+                                    50,
+                                    50
+                                );
 
-                        const URL = url ? url : "/defaultAvatar.png";
+                            const URL = url ? url : "/defaultAvatar.png";
 
-                        setAvatarURL(URL);
+                            setAvatarURL(URL);
+                        }
 
                         setAuthorInfo({
                             name: authorData?.name,
@@ -743,7 +746,7 @@ function PostCard({
                                     @{authorInfo?.username || ""}
                                 </div>
                             </div>
-                            {authorInfo?.premiumMember &&
+                            {authorInfo?.premiumMember && (
                                 <span>
                                     <svg
                                         viewBox="0 0 22 22"
@@ -757,7 +760,7 @@ function PostCard({
                                         </g>
                                     </svg>
                                 </span>
-                            }
+                            )}
                         </div>
                     )}
 
