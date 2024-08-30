@@ -104,6 +104,15 @@ function App() {
         }
     }, [currentColor, currentTheme]);
 
+    console.log(
+        "%cWarning!",
+        "color: red; font-size: 30px; font-weight: bold;"
+    );
+    console.log(
+        "%cThis browser feature is intended for developers. If someone told you to copy and paste something here, it is likely a scam and could compromise your security.",
+        "color: black; font-size: 16px;"
+    );
+
     if (!status) return <Root />;
 
     return (

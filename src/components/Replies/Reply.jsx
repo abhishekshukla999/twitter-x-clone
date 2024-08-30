@@ -43,13 +43,16 @@ function Reply({
                     const authorData = await profileService.getProfile(userId);
 
                     if (authorData) {
-                        const url = profileMediaService.getCustomFilePreview(
-                            authorData.avatar,
-                            50,
-                            50
-                        );
+                        if (authorData?.avatar) {
+                            const url =
+                                profileMediaService.getCustomFilePreview(
+                                    authorData.avatar,
+                                    50,
+                                    50
+                                );
 
-                        setAvatarURL(url || "/defaultAvatar.png");
+                            setAvatarURL(url || "/defaultAvatar.png");
+                        }
 
                         setAuthorInfo({
                             name: authorData.name,

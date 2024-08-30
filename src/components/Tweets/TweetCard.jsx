@@ -79,26 +79,22 @@ function TweetCard({
                     const authorData = await profileService.getProfile(author);
 
                     if (authorData) {
-                        const authorData = await profileService.getProfile(
-                            author
-                        );
-
-                        if (authorData) {
+                        if (authorData?.avatar) {
                             const url = profileMediaService.getFilePreview(
-                                authorData.avatar
+                                authorData?.avatar
                             );
+
                             const URL = url ? url : "/defaultAvatar.png";
 
                             setAvatarURL(URL);
-
-                            setAuthorInfo({
-                                name: authorData.name,
-                                username: authorData.username,
-                                premiumMember: authorData.premiumMember,
-                            });
-
-                            setAuthorInfoLoader(false);
                         }
+                        setAuthorInfo({
+                            name: authorData.name,
+                            username: authorData.username,
+                            premiumMember: authorData.premiumMember,
+                        });
+
+                        setAuthorInfoLoader(false);
                     }
                 } catch (error) {
                     console.log(

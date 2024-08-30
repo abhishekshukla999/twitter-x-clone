@@ -36,7 +36,7 @@ function WhoToFollow() {
             {loading ? (
                 <ContentLoader />
             ) : (
-                followUsersData.map((user) => (
+                followUsersData?.map((user) => (
                     <FollowCard
                         key={user.$id}
                         name={user.name}
