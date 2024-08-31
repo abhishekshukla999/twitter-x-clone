@@ -1033,7 +1033,7 @@ function TweetCard({
                                         </span>
                                     )}
                                 </div>
-                                {profileData.premiumMember && (
+                                {profileData.premiumMember && media && (
                                     <div
                                         className="cursor-pointer p-2 m-auto hover:bg-blue-100 rounded-full"
                                         title="Download media"

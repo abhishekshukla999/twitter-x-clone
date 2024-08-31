@@ -1136,7 +1136,7 @@ function PostCard({
                             </span>
                         )}
                     </div>
-                    {profileData.premiumMember && (
+                    {(profileData.premiumMember && media) && (
                         <div
                             className="cursor-pointer my-auto hover:bg-blue-100 rounded-full"
                             title="Download media"
